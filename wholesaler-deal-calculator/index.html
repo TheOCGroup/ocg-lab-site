@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>OCG LAB Advanced Wholesaler Deal Calculator</title>
+<style>
+:root{--navy:#142536;--ink:#243545;--muted:#6b7a89;--blue:#3b668a;--cyan:#51a9c4;--green:#62b48c;--line:#dfe7ed;--soft:#f7fafc;--shadow:0 18px 55px rgba(20,37,54,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:radial-gradient(circle at 12% 0,rgba(81,169,196,.1),transparent 25%),#fff}
+.wrap{width:min(1180px,92vw);margin:auto}.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.topin{height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:11px}.mark{font-weight:950;letter-spacing:-.06em;font-size:24px;color:#111;white-space:nowrap}.mark span{background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));-webkit-background-clip:text;color:transparent}.sub{font-size:9px;letter-spacing:.18em;color:#7d8c98}.badge{padding:8px 11px;border:1px solid var(--line);border-radius:999px;font-size:10px;font-weight:900;color:var(--blue);background:#fff}
+.hero{padding:56px 0 28px}.eyebrow{font-size:10px;font-weight:950;letter-spacing:.16em;color:var(--blue)}h1{font-size:clamp(38px,6vw,70px);line-height:.95;letter-spacing:-.06em;margin:12px 0 18px;color:var(--navy)}.grad{background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));-webkit-background-clip:text;color:transparent}.lead{max-width:760px;color:var(--muted);font-size:16px;line-height:1.65}
+.workspace{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;padding:20px 0 60px}.panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow)}.panel h2{margin:0 0 4px;color:var(--navy);font-size:20px}.hint{font-size:12px;color:var(--muted);margin-bottom:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#66798a;margin:0 0 6px}.field input{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;background:#fafcfd;color:var(--navy);font-size:14px;outline:none}.field input:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(81,169,196,.08)}
+.actions{display:flex;gap:9px;margin-top:17px}.btn{border:0;border-radius:13px;padding:12px 15px;font-weight:900;cursor:pointer}.primary{color:#fff;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));box-shadow:0 10px 24px rgba(59,102,138,.18)}.secondary{background:#f3f6f8;color:#52697c}
+.score{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:17px;border-bottom:1px solid var(--line)}.score small{font-size:9px;letter-spacing:.13em;font-weight:900;color:#748697}.score strong{font-size:34px;color:var(--navy)}.verdict{font-size:11px;font-weight:950;padding:8px 11px;border-radius:999px;background:#edf8f3;color:#378566}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.metric{padding:13px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(180deg,#fff,#fafcfd)}.metric span{display:block;font-size:9px;color:#7a8b99;font-weight:850;text-transform:uppercase;letter-spacing:.06em}.metric b{display:block;font-size:18px;color:var(--navy);margin-top:5px}
+.chart{height:120px;display:flex;align-items:flex-end;gap:7px;margin:18px 0 8px;padding:0 8px;border-bottom:1px solid var(--line)}.bar{flex:1;border-radius:7px 7px 0 0;background:linear-gradient(180deg,var(--cyan),var(--green));transform-origin:bottom;animation:grow .8s cubic-bezier(.2,.8,.2,1)}@keyframes grow{from{transform:scaleY(0)}}
+.insight{margin-top:14px;padding:15px;border-radius:16px;background:linear-gradient(135deg,#f2f8fc,#f2faf6);border:1px solid #dce9e6}.insight b{color:var(--navy)}.insight p{font-size:12px;line-height:1.55;color:#617486;margin:5px 0 0}.flags{display:grid;gap:8px;margin-top:12px}.flag{display:flex;gap:10px;padding:11px;border:1px solid var(--line);border-radius:13px;font-size:11px;color:#607384}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:3px;flex:none}
+.scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.scenario{padding:12px;border-radius:14px;background:#f8fafc;border:1px solid var(--line)}.scenario span{font-size:9px;font-weight:900;color:#718391;text-transform:uppercase}.scenario b{display:block;margin-top:4px;font-size:14px;color:var(--navy)}
+.footer{border-top:1px solid var(--line);padding:22px 0 35px;color:#7d8c98;font-size:10px}
+@media(max-width:850px){.workspace{grid-template-columns:1fr}.metrics,.scenarios{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}
+</style>
+<style id="ocg-approved-logo-lock">
+/* LOCKED OCG LAB LOGO — use the approved product-family asset, never recreate with text */
+.brand{
+  min-width:175px!important;
+  height:58px!important;
+  display:flex!important;
+  align-items:center!important;
+  overflow:visible!important;
+}
+.ocg-approved-logo{
+  display:block!important;
+  width:160px!important;
+  max-width:160px!important;
+  max-height:48px!important;
+  height:auto!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+  overflow:visible!important;
+  clip-path:none!important;
+}
+@media(max-width:700px){
+  .brand{min-width:125px!important}
+  .ocg-approved-logo{width:120px!important;max-width:120px!important}
+}
+</style><style id="ocg-70-rule-lock">
+.rule70{margin-top:14px;padding:14px 15px;border:1px solid var(--line);border-radius:16px;background:#f8fafc}
+.rule70 span{display:block;font-size:9px;font-weight:950;letter-spacing:.12em;color:#748697}
+.rule70 b{display:block;margin-top:4px;font-size:16px;color:var(--navy)}
+.rule70 small{display:block;margin-top:3px;color:#7a8b99;font-size:10px}
+.rule70.pass{background:#edf8f3;border-color:#d4eadf}.rule70.pass b{color:#378566}
+.rule70.fail{background:#fff4f1;border-color:#f0d9d2}.rule70.fail b{color:#a85643}
+</style></head>
+<body>
+<header class="top"><div class="wrap topin"><div class="brand"><img alt="The OCG Lab" class="ocg-approved-logo" src="/assets/approved-logo.png"/></div><div class="badge">ADVANCED CALCULATOR SERIES</div></div></header>
+<main>
+<section class="hero wrap"><div class="eyebrow">CANONICAL PRODUCT MASTER</div><h1>WHOLESALER DEAL <span class="grad">CALCULATOR</span></h1><p class="lead">Calculate MAO, assignment spread, buyer margin, projected profit, and deal cushion so you can see whether the contract leaves enough room for both you and the end buyer.</p></section>
+<section class="workspace wrap">
+<div class="panel"><h2>Deal Inputs</h2><div class="hint">Change any assumption. Results update instantly.</div>
+<div class="grid"><div class="field"><label>After Repair Value (ARV)</label><input id="arv" min="0" step="1" type="number" value="0"/></div><div class="field"><label>Estimated Repairs</label><input id="repairs" min="0" step="1" type="number" value="0"/></div><div class="field"><label>Contract Price</label><input id="contract" min="0" step="1" type="number" value="0"/></div><div class="field"><label>Target Assignment Fee</label><input id="assignment" min="0" step="1" type="number" value="0"/></div><div class="field"><label>Buyer Rule % of ARV</label><input id="buyerPct" min="0" step="0.1" type="number" value="70"/></div><div class="field"><label>Closing / Transaction Costs</label><input id="closing" min="0" step="1" type="number" value="0"/></div><div class="field"><label>Buyer Holding + Financing %</label><input id="holding" min="0" step="0.1" type="number" value="0"/></div><div class="field"><label>Buyer Target Profit</label><input id="buyerProfit" min="0" step="1" type="number" value="0"/></div></div><div class="actions"><button class="btn primary" onclick="calc()" type="button">Analyze Wholesale Deal</button><button aria-label="Reset calculator to default values" class="btn secondary" id="ocgResetButton" onclick="resetCalc()" type="button">Reset</button></div>
+<div class="insight"><b>Decision discipline</b><p>The wholesale spread only works if the end buyer still has a viable deal. Verify ARV, repairs, title, transaction costs, local assignment rules, and buyer demand before relying on the result.</p></div>
+</div>
+<div class="panel">
+<div class="score">
+<div><small>AVAILABLE ASSIGNMENT SPREAD</small><strong id="spread">$0</strong></div>
+<div class="verdict" id="verdict">WAITING FOR INPUTS</div>
+</div>
+<div class="rule70" id="maobox">
+<span>MAO CHECK</span>
+<b id="maostatus">WAITING FOR INPUTS</b>
+<small id="maodetail">MAO = (ARV × Buyer Rule %) − Repairs</small>
+</div>
+<div class="metrics">
+<div class="metric"><span>Buyer MAO</span><b id="mao">$0</b></div>
+<div class="metric"><span>Max Contract for Target Fee</span><b id="maxcontract">$0</b></div>
+<div class="metric"><span>Projected Buyer Profit</span><b id="buyerprofitout">$0</b></div>
+<div class="metric"><span>Assignment Fee</span><b id="assignmentout">$0</b></div>
+<div class="metric"><span>Buyer Margin on ARV</span><b id="buyermargin">0%</b></div>
+<div class="metric"><span>Contract Cushion</span><b id="cushion">$0</b></div>
+</div>
+<div class="chart" id="chart"></div>
+<div class="scenarios">
+<div class="scenario"><span>ARV -5%</span><b id="arvstress">$0</b></div>
+<div class="scenario"><span>Base Spread</span><b id="base">$0</b></div>
+<div class="scenario"><span>Repairs +10%</span><b id="repairstress">$0</b></div>
+</div>
+<div class="insight">
+<b>AI-style deal brief</b>
+<p id="brief">Enter your assumptions to generate the wholesale deal brief.</p>
+</div>
+<div class="flags" id="flags"></div>
+</div>
+</section></main>
+<footer class="footer"><div class="wrap">THE OCG LAB · Advanced Calculator Series · Wholesaler Deal Calculator</div></footer>
+<script id="ocg-wholesaler-calculator-js">
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number.isFinite(n)?n:0);
+const num=id=>parseFloat($(id)?.value)||0;
+
+function model(overrides={}){
+  const arv=overrides.arv ?? num('arv');
+  const repairs=overrides.repairs ?? num('repairs');
+  const contract=overrides.contract ?? num('contract');
+  const assignment=overrides.assignment ?? num('assignment');
+  const buyerPct=overrides.buyerPct ?? num('buyerPct');
+  const closing=overrides.closing ?? num('closing');
+  const holdingPct=overrides.holding ?? num('holding');
+  const buyerTarget=overrides.buyerProfit ?? num('buyerProfit');
+
+  const mao=arv*(buyerPct/100)-repairs;
+  const maxContractForTarget=Math.max(0,mao-assignment);
+  const availableSpread=Math.max(0,mao-contract);
+  const actualAssignment=Math.min(assignment,availableSpread);
+  const buyerPurchase=contract+actualAssignment;
+  const holding=arv*(holdingPct/100);
+  const buyerAllIn=buyerPurchase+repairs+closing+holding;
+  const buyerProfit=arv-buyerAllIn;
+  const buyerMargin=arv>0?buyerProfit/arv*100:0;
+  const cushion=maxContractForTarget-contract;
+
+  return {arv,repairs,contract,assignment,buyerPct,closing,holdingPct,buyerTarget,mao,maxContractForTarget,availableSpread,actualAssignment,buyerPurchase,holding,buyerAllIn,buyerProfit,buyerMargin,cushion};
+}
+
+function calc(){
+  const m=model();
+
+  $('spread').textContent=money(m.availableSpread);
+  $('mao').textContent=money(m.mao);
+  $('maxcontract').textContent=money(m.maxContractForTarget);
+  $('buyerprofitout').textContent=money(m.buyerProfit);
+  $('assignmentout').textContent=money(m.actualAssignment);
+  $('buyermargin').textContent=m.buyerMargin.toFixed(1)+'%';
+  $('cushion').textContent=money(m.cushion);
+
+  const hasInputs=m.arv>0||m.contract>0||m.repairs>0;
+  let verdict='WAITING FOR INPUTS';
+  if(hasInputs){
+    if(m.contract<=m.maxContractForTarget && m.buyerProfit>=m.buyerTarget) verdict='ROOM FOR ASSIGNMENT';
+    else if(m.contract<=m.mao) verdict='TIGHT SPREAD';
+    else verdict='ABOVE BUYER MAO';
+  }
+  $('verdict').textContent=verdict;
+
+  const box=$('maobox');
+  box.classList.remove('pass','fail');
+  if(!hasInputs){
+    $('maostatus').textContent='WAITING FOR INPUTS';
+    $('maodetail').textContent='MAO = (ARV × Buyer Rule %) − Repairs';
+  }else if(m.contract<=m.mao){
+    box.classList.add('pass');
+    $('maostatus').textContent='CONTRACT IS AT OR BELOW BUYER MAO';
+    $('maodetail').textContent=`Contract is ${money(Math.max(0,m.mao-m.contract))} below the calculated buyer MAO of ${money(m.mao)}.`;
+  }else{
+    box.classList.add('fail');
+    $('maostatus').textContent='CONTRACT IS ABOVE BUYER MAO';
+    $('maodetail').textContent=`Contract is ${money(m.contract-m.mao)} above the calculated buyer MAO of ${money(m.mao)}.`;
+  }
+
+  const arvStress=model({arv:num('arv')*.95});
+  const repairStress=model({repairs:num('repairs')*1.10});
+  $('arvstress').textContent=money(arvStress.availableSpread);
+  $('base').textContent=money(m.availableSpread);
+  $('repairstress').textContent=money(repairStress.availableSpread);
+
+  let brief='Enter your assumptions to generate the wholesale deal brief.';
+  if(hasInputs){
+    brief=`Calculated buyer MAO is ${money(m.mao)} and the available spread between MAO and contract price is ${money(m.availableSpread)}. `;
+    if(m.contract<=m.maxContractForTarget){
+      brief+=`The contract supports the ${money(m.assignment)} target assignment fee under the buyer-rule assumption entered. `;
+    }else{
+      brief+=`The contract does not fully support the ${money(m.assignment)} target assignment fee at the current assumptions. `;
+    }
+    brief+=`Projected buyer profit after listed costs is ${money(m.buyerProfit)}. Verify buyer criteria and local demand before marketing the assignment.`;
+  }
+  $('brief').textContent=brief;
+
+  const flags=[];
+  if(hasInputs){
+    if(m.actualAssignment<m.assignment) flags.push(`Available spread supports only about ${money(m.actualAssignment)} of the ${money(m.assignment)} target assignment fee.`);
+    else flags.push(`The current spread supports the target assignment fee of ${money(m.assignment)}.`);
+    if(m.buyerProfit<m.buyerTarget && m.buyerTarget>0) flags.push(`Projected buyer profit is ${money(m.buyerTarget-m.buyerProfit)} below the buyer target entered.`);
+    if(m.buyerMargin<10) flags.push('Projected buyer margin is below 10% of ARV; end-buyer demand may be limited.');
+    if(num('buyerPct')!==70) flags.push(`Buyer rule is set to ${num('buyerPct').toFixed(1)}%, not the traditional 70% screening rule.`);
+  }
+  $('flags').innerHTML=flags.map(x=>`<div class="flag"><span class="dot"></span><span>${x}</span></div>`).join('');
+
+  const vals=[Math.max(0,m.contract),Math.max(0,m.actualAssignment),Math.max(0,m.repairs),Math.max(0,m.buyerProfit)];
+  const max=Math.max(...vals,1);
+  $('chart').innerHTML=vals.map(v=>`<div class="bar" style="height:${Math.max(8,v/max*100)}%" title="${money(v)}"></div>`).join('');
+}
+
+function resetCalc(){
+  ['arv','repairs','contract','assignment','closing','holding','buyerProfit']
+    .forEach(id=>{if($(id))$(id).value=0;});
+  if($('buyerPct')) $('buyerPct').value=70;
+  calc();
+  const btn=$('ocgResetButton');
+  if(btn){const old=btn.textContent;btn.textContent='Reset ✓';setTimeout(()=>btn.textContent=old,1200);}
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));
+calc();
+</script></body></html>
