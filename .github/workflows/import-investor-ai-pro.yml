@@ -1,0 +1,45 @@
+name: Import Real Estate Investor AI PRO
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-investor-ai-pro.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import-product:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download exact public product snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p real-estate-investor-ai-pro
+          curl -L --fail --silent --show-error \
+            'https://real-estate-investor-ai-pro.genaroo.chatgpt.site/' \
+            -o real-estate-investor-ai-pro/index.html
+          grep -qi 'REAL ESTATE INVESTOR AI PRO' real-estate-investor-ai-pro/index.html
+          if grep -Eqi 'localhost|127\.0\.0\.1|file:///' real-estate-investor-ai-pro/index.html; then
+            echo 'Unsafe local link detected in imported product.' >&2
+            exit 1
+          fi
+
+      - name: Commit imported product
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'OCG Lab Product Publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add real-estate-investor-ai-pro/index.html
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Publish Real Estate Investor AI PRO product route'
+          git push
