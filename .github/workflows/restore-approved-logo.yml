@@ -1,0 +1,66 @@
+name: Restore approved OCG Lab logo
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/restore-approved-logo.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  restore-logo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Recover approved logo from canonical product
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          curl -L --fail --silent --show-error \
+            'https://real-estate-investor-ai-pro.genaroo.chatgpt.site/' \
+            -o /tmp/canonical-product.html
+          python - <<'PY'
+          import base64, re, pathlib, sys
+          html = pathlib.Path('/tmp/canonical-product.html').read_text(encoding='utf-8', errors='ignore')
+          patterns = [
+              r'logo-lockup.*?<img[^>]+src=["\']data:image/png;base64,([^"\']+)',
+              r'mini-brand.*?<img[^>]+src=["\']data:image/png;base64,([^"\']+)',
+              r'<img[^>]+alt=["\']The OCG Lab["\'][^>]+src=["\']data:image/png;base64,([^"\']+)',
+              r'<img[^>]+src=["\']data:image/png;base64,([^"\']+)["\'][^>]+alt=["\']The OCG Lab["\']',
+          ]
+          data = None
+          for pat in patterns:
+              m = re.search(pat, html, flags=re.I|re.S)
+              if m:
+                  data = m.group(1)
+                  break
+          if not data:
+              raise SystemExit('Approved embedded OCG Lab logo not found in canonical product.')
+          raw = base64.b64decode(data)
+          if not raw.startswith(b'\x89PNG\r\n\x1a\n'):
+              raise SystemExit('Recovered logo is not a valid PNG.')
+          out = pathlib.Path('assets/approved-logo.png')
+          out.write_bytes(raw)
+          print(f'Wrote {out} ({len(raw)} bytes)')
+          PY
+          test -s assets/approved-logo.png
+          file assets/approved-logo.png
+
+      - name: Commit approved logo asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'OCG Lab Product Publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add assets/approved-logo.png
+          if git diff --cached --quiet; then
+            echo 'Approved logo already present and unchanged.'
+            exit 0
+          fi
+          git commit -m 'Restore approved OCG Lab logo asset'
+          git push
