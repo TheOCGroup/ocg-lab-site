@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The OCG Lab Report — Issue 002</title>
+<meta name="description" content="The OCG Lab Report Issue 002 — AI Just Crossed the Line From Assistant to Operator.">
+</head>
+<body style="margin:0;background:#eef2f6">
+<div id="loading" style="max-width:760px;margin:auto;padding:48px 28px;font-family:Arial,sans-serif;color:#07111c">Loading The OCG Lab Report — Issue 002…</div>
+<script>
+(async()=>{
+  const issueUrl='https://raw.githubusercontent.com/TheOCGroup/the-ocg-lab-report/main/archive/issue-002.html';
+  const masterUrl='https://raw.githubusercontent.com/TheOCGroup/the-ocg-lab-report/main/archive/issue-001.html';
+  const r=await fetch(issueUrl,{cache:'no-store'});
+  if(!r.ok) throw new Error('Unable to load Issue 002');
+  let html=await r.text();
+  html=html.replace("fetch('./issue-001.html',{cache:'no-store'})",`fetch('${masterUrl}',{cache:'no-store'})`);
+  document.open();
+  document.write(html);
+  document.close();
+})().catch(err=>{
+  document.getElementById('loading').innerHTML='<b>The OCG Lab Report could not load.</b><br><br>'+err.message;
+});
+</script>
+</body>
+</html>
