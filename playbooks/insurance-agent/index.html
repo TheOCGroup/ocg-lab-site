@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>OCG LAB Insurance Agent AI Playbook</title>
-<!-- V6 clarity-first build: self-contained assets, guided Daily AI Routine, guided 30-Day implementation, easy Prompt Vault. -->
+<!-- V10 production build: self-contained assets, guided Daily AI Routine, guided 30-Day implementation, easy Prompt Vault. -->
 <meta content="OCG LAB Interactive Digital Playbook for Insurance Agents" name="description"/>
 
 
@@ -29,7 +29,7 @@
 <main class="reader">
 <div class="book-wrap">
 <div class="book" id="book"></div>
-<div class="controls"><div class="control-group"><button class="navbtn" id="prevBtn" onclick="prevSpread()">← Previous</button></div><div class="center" id="spreadCounter">Spread 1 of 12</div><div class="control-group"><button class="navbtn primary" id="nextBtn" onclick="nextSpread()">Next →</button></div></div>
+<div class="controls"><div class="control-group"><button class="navbtn" id="prevBtn" onclick="prevSpread()">← Previous</button></div><div class="center" id="spreadCounter">Spread 1 of 14</div><div class="control-group"><button class="navbtn primary" id="nextBtn" onclick="nextSpread()">Next →</button></div></div>
 </div>
 </main>
 </div>
@@ -47,6 +47,6 @@
 </div>
 
 <script src="logo.js"></script><script src="cover.js"></script><script>
-(async()=>{const parts=['book-1.html','book-2.html','book-3.html','book-4.html'];const html=(await Promise.all(parts.map(p=>fetch(p).then(r=>r.text())))).join('');document.getElementById('book').innerHTML=html;document.querySelectorAll('[data-asset]').forEach(el=>{el.src=window.OCG_ASSETS?.[el.dataset.asset]||''});const s=document.createElement('script');s.src='app.js';document.body.appendChild(s)})();
+(async()=>{const parts=['book-1.html','book-2.html','book-3.html','book-4.html'];let html=(await Promise.all(parts.map(p=>fetch(p).then(r=>r.text())))).join('');html=html.replace('<b>10</b><span>interactive chapters</span>','<b>12</b><span>interactive chapters</span>');document.getElementById('book').innerHTML=html;document.querySelectorAll('[data-asset]').forEach(el=>{el.src=window.OCG_ASSETS?.[el.dataset.asset]||''});const s=document.createElement('script');s.src='app.js';document.body.appendChild(s)})();
 </script></body>
 </html>
