@@ -1,0 +1,57 @@
+const spreads=[...document.querySelectorAll('.spread')];
+let current=Number(localStorage.getItem('ocg-book-spread')||0);if(current<0||current>=spreads.length)current=0;
+const chapterList=document.getElementById('chapterList');
+spreads.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML=`<span>${s.dataset.chapter}</span><span>${s.dataset.title}</span><span class="chapter-status">•</span>`;b.onclick=()=>goTo(i);b.dataset.index=i;chapterList.appendChild(b)});
+function render(dir=0){spreads.forEach((s,i)=>{s.classList.toggle('active',i===current);if(i===current&&dir){s.querySelectorAll('.page').forEach(p=>{p.classList.remove('turn-next','turn-prev');void p.offsetWidth;p.classList.add(dir>0?'turn-next':'turn-prev')})}});document.querySelectorAll('.chapter-list button').forEach(b=>b.classList.toggle('active',Number(b.dataset.index)===current));document.getElementById('prevBtn').disabled=current===0;document.getElementById('nextBtn').disabled=current===spreads.length-1;document.getElementById('spreadCounter').textContent=`Spread ${current+1} of ${spreads.length}`;localStorage.setItem('ocg-book-spread',current);markRead(current);updateAssistantContext();window.scrollTo({top:0,behavior:'smooth'})}
+function nextSpread(){if(current<spreads.length-1){current++;render(1)}} function prevSpread(){if(current>0){current--;render(-1)}} function goTo(i){const dir=i>current?1:-1;current=i;render(dir)}
+function markRead(i){let read=JSON.parse(localStorage.getItem('ocg-book-read')||'[]');if(!read.includes(i)){read.push(i);localStorage.setItem('ocg-book-read',JSON.stringify(read))}updateProgress()}
+function assignmentStatus(){
+  const daily=[...document.querySelectorAll('[data-save^="daily"]')];
+  const dailyDone=daily.length>0&&daily.every(x=>x.value.trim());
+  const checks=[...document.querySelectorAll('[data-check]')];
+  const planDone=checks.length>0&&checks.every(x=>x.checked);
+  return {dailyDone,planDone};
+}
+function updateCompletionUI(){
+  const read=new Set(JSON.parse(localStorage.getItem('ocg-book-read')||'[]'));
+  document.querySelectorAll('.chapter-list button').forEach(b=>{const done=read.has(Number(b.dataset.index));b.classList.toggle('complete',done);const s=b.querySelector('.chapter-status');if(s)s.textContent=done?'✓':'•'});
+  const a=assignmentStatus();
+  [['assignment-daily',a.dailyDone],['assignment-plan',a.planDone]].forEach(([id,done])=>{const el=document.getElementById(id);if(el){el.classList.toggle('complete',done);el.querySelector('.assignment-check').textContent=done?'✓':'•'}});
+  const p=document.getElementById('pagesReadText');if(p)p.textContent=`${read.size} / ${spreads.length}`;
+  const at=document.getElementById('assignmentsText');if(at)at.textContent=`${Number(a.dailyDone)+Number(a.planDone)} / 2`;
+}
+function updateProgress(){const read=new Set(JSON.parse(localStorage.getItem('ocg-book-read')||'[]'));const checks=[...document.querySelectorAll('[data-check]')];const checked=checks.filter(x=>x.checked).length;const fields=[...document.querySelectorAll('[data-save^="daily"]')];const filled=fields.filter(x=>x.value.trim()).length;const total=spreads.length+checks.length+fields.length;const done=read.size+checked+filled;const pct=Math.round(done/total*100);document.getElementById('progressFill').style.width=pct+'%';document.getElementById('progressText').textContent=pct+'% complete';updateCompletionUI()}
+function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('ocg-book-theme',document.body.classList.contains('dark')?'dark':'light')} if(localStorage.getItem('ocg-book-theme')==='dark')document.body.classList.add('dark');
+async function copyText(id,btn){try{await navigator.clipboard.writeText(document.getElementById(id).innerText);const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1200)}catch(e){btn.textContent='Select + Copy'}}
+async function copyPromptText(text,btn){try{await navigator.clipboard.writeText(text);const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1000)}catch(e){btn.textContent='Select + Copy'}}
+function saveFields(){document.querySelectorAll('[data-save]').forEach(el=>{const key='ocg-field-'+el.dataset.save;el.value=localStorage.getItem(key)||'';el.addEventListener('input',()=>{localStorage.setItem(key,el.value);updateProgress();if(el.dataset.save.startsWith('profile_'))renderVault()})})}
+document.querySelectorAll('[data-check]').forEach(el=>{const key='ocg-check-'+el.dataset.check;el.checked=localStorage.getItem(key)==='1';el.addEventListener('change',()=>{localStorage.setItem(key,el.checked?'1':'0');updateProgress()})});saveFields();
+function resetAll(){if(confirm('Reset reading progress, checklist and worksheet answers on this device?')){localStorage.removeItem('ocg-book-read');localStorage.removeItem('ocg-book-spread');document.querySelectorAll('[data-check]').forEach(el=>{el.checked=false;localStorage.removeItem('ocg-check-'+el.dataset.check)});document.querySelectorAll('[data-save]').forEach(el=>{el.value='';localStorage.removeItem('ocg-field-'+el.dataset.save)});Object.keys(localStorage).filter(k=>k.startsWith('ocg-vault-situation-')).forEach(k=>localStorage.removeItem(k));current=0;render();renderVault()}}
+
+function getProfile(){return {
+  lines:localStorage.getItem('ocg-field-profile_lines')||'Not set yet',
+  audience:localStorage.getItem('ocg-field-profile_audience')||'Not set yet',
+  tone:localStorage.getItem('ocg-field-profile_tone')||'clear, professional and human',
+  market:localStorage.getItem('ocg-field-profile_market')||'Not specified',
+  rules:localStorage.getItem('ocg-field-profile_rules')||localStorage.getItem('ocg-field-daily3')||'All client-facing coverage and policy facts must be human-reviewed before use.'
+}}
+const SITUATION_HINTS={
+ 'Lead Response':'Paste the lead message, referral note, missed-call context or what happened so far.',
+ 'Qualification':'Paste the raw notes you already have. Messy notes are fine.',
+ 'Quotes':'Paste verified quote or policy details, client priorities and the question you need to solve.',
+ 'Follow Up':'Paste the last conversation, message, quote status and what the prospect did or did not do.',
+ 'Objections':'Paste exactly what the prospect said plus any verified context you already know.',
+ 'Closing':'Paste the client goals, verified option facts, concerns and current decision stage.',
+ 'Retention':'Paste the client history, renewal context, recent changes and any verified policy details.',
+ 'Cross Sell':'Paste current policies you know about and any recent life or business changes.',
+ 'Operations':'Paste your raw pipeline, task list or notes exactly as you have them.',
+ 'CRM':'Paste your raw call, text or meeting notes. Do not clean them up first.',
+ 'Marketing':'Tell us the topic, audience and what you want the reader to understand.'
+};
+function buildReadyPrompt(i){const p=PROMPTS[i],profile=getProfile();const situation=(localStorage.getItem('ocg-vault-situation-'+i)||'').trim();const task=TASKS[p.name]||p.text;return `You are the specialist inside the OCG LAB Insurance Agent AI Playbook. Help me apply the playbook to the situation below.\n\nMY PLAYBOOK PROFILE\nInsurance lines: ${profile.lines}\nTypical client: ${profile.audience}\nCommunication style: ${profile.tone}\nMarket/state: ${profile.market}\nHuman-review rule: ${profile.rules}\n\nNON-NEGOTIABLE INSURANCE GUARDRAIL\nUse only facts I provide for policy-specific coverage, limits, deductibles, exclusions, premiums, carrier rules and legal/compliance details. Never invent or assume them. When coverage information is supplied, explain it in plain English and distinguish what is verified from what still must be checked. If a critical fact is missing, ask the smallest number of clear questions needed before producing the final answer.\n\nCURRENT SITUATION\n${situation||'I have not added the situation yet. Ask me only for the specific information you need to complete this task.'}\n\nTASK\n${task}`}
+function saveSituation(i,val){localStorage.setItem('ocg-vault-situation-'+i,val);const pre=document.getElementById('ready-'+i);if(pre)pre.textContent=buildReadyPrompt(i)}
+function openVault(){const idx=chapterIndexByTitle('Prompt Vault');if(idx>=0)goTo(idx);setTimeout(()=>{const p=document.querySelector('[data-save="profile_lines"]');if(p)p.focus()},350)}
+function openVaultPrompt(name){const idx=chapterIndexByTitle('Prompt Vault');if(idx>=0)goTo(idx);setTimeout(()=>{const search=document.getElementById('vaultSearch');const cat=document.getElementById('vaultCategory');if(cat)cat.value='all';if(search)search.value=name;renderVault();setTimeout(()=>{const grid=document.getElementById('vaultGrid');if(grid)grid.scrollIntoView({behavior:'smooth',block:'start'})},100)},250)}
+function initVault(){const sel=document.getElementById('vaultCategory');if(!sel)return;[...new Set(PROMPTS.map(p=>p.cat))].forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)});renderVault()}
+function renderVault(){const grid=document.getElementById('vaultGrid');if(!grid)return;const q=(document.getElementById('vaultSearch')?.value||'').toLowerCase();const cat=document.getElementById('vaultCategory')?.value||'all';const items=PROMPTS.map((p,index)=>({p,index})).filter(({p})=>(cat==='all'||p.cat===cat)&&(!q||`${p.name} ${p.cat} ${p.when} ${p.inputs} ${TASKS[p.name]||p.text}`.toLowerCase().includes(q)));grid.innerHTML=items.map(({p,index})=>`<div class="vault-card"><div class="meta"><span>${p.cat}</span><span class="ready-badge">Workbook profile added</span></div><h4>${p.name}</h4><div class="problem-label">Problem this solves</div><p class="problem-text">${p.when}</p><div class="quick-fill"><label>1. Tell us what is happening right now</label><textarea id="situation-${index}" placeholder="${SITUATION_HINTS[p.cat]||'Paste the situation or raw notes here.'}" oninput="saveSituation(${index},this.value)">${localStorage.getItem('ocg-vault-situation-'+index)||''}</textarea><div class="quick-help">You do not need to rewrite the prompt. Paste the real situation in plain English or drop in your raw notes.</div></div><div class="coverage-note"><b>Coverage-safe:</b> If you include verified coverage details, the prompt tells AI to explain them clearly. If details are missing, it must ask or flag them instead of guessing.</div><div class="problem-label" style="margin-top:12px">2. Your ready-to-use prompt</div><div class="ready-preview" id="ready-${index}">${buildReadyPrompt(index)}</div><div class="vault-actions"><button class="mini-btn primary" onclick="copyPromptText(buildReadyPrompt(${index}),this)">Copy Ready Prompt</button><button class="mini-btn" onclick="askAboutPrompt(${index})">Practice with Avery</button></div></div>`).join('')||'<div class="callout"><b>No prompt found.</b><p>Try a problem such as coverage explanation, price, ghosted, renewal, follow up or CRM.</p></div>'}
+function askAboutPrompt(i){const p=PROMPTS[i];openAssistant();guideMode='prompt';const sit=localStorage.getItem('ocg-vault-situation-'+i)||'';document.getElementById('askInput').value=`Help me practice the ${p.name} workflow.${sit?' Here is my situation: '+sit:''}`;answerQuestion()}

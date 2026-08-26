@@ -1,0 +1,1 @@
+document.write('<script src="cover-1.js"><\/script><script src="cover-2.js"><\/script><script src="cover-3.js"><\/script>');
