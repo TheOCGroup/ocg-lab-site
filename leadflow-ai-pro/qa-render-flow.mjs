@@ -1,0 +1,45 @@
+import { chromium } from 'playwright';
+const browser=await chromium.launch({headless:true});
+const result={checks:{},errors:[]};
+async function open(viewport,label){
+  const page=await browser.newPage({viewport});
+  page.on('pageerror',e=>result.errors.push(`${label}: pageerror ${e.message}`));
+  page.on('console',m=>{if(m.type()==='error')result.errors.push(`${label}: console ${m.text()}`)});
+  await page.goto('http://127.0.0.1:4173/leadflow-ai-pro/',{waitUntil:'networkidle'});
+  await page.waitForTimeout(1500);
+  return page;
+}
+const desktop=await open({width:1440,height:900},'desktop');
+const revealStates=await desktop.locator('.reveal').evaluateAll(nodes=>nodes.map(n=>({opacity:getComputedStyle(n).opacity,display:getComputedStyle(n).display,rect:n.getBoundingClientRect().height})));
+result.checks.allRevealContentRendered=revealStates.every(x=>x.opacity==='1'&&x.display!=='none'&&x.rect>0);
+const heroText=await desktop.locator('.mini-stats').innerText();
+result.checks.multiLeadHeroTruth=heroText.includes('Multi-lead')&&!heroText.includes('1 lead');
+const attentionText=await desktop.locator('#lfHeroAttention').innerText();
+result.checks.heroAttentionIsDynamic=!attentionText.includes('Robert')&&attentionText.includes('Training');
+result.checks.practiceConsoleVisible=await desktop.locator('#practice .console').isVisible();
+result.checks.connectPermissionsVisible=await desktop.locator('#connect .install-panel').isVisible();
+result.checks.deployPanelVisible=await desktop.locator('#deploy .install-panel').isVisible();
+result.checks.manageConsoleVisible=await desktop.locator('#manage .console').isVisible();
+result.checks.manageLeadMemoryVisible=await desktop.locator('#manage .install-panel').first().isVisible();
+const improveText=await desktop.locator('#improve').innerText();
+result.checks.improveIsOperational=!improveText.includes('$497')&&!improveText.includes('Founding launch')&&improveText.includes('Train → test → correct → retest');
+result.checks.trainingCoachVisible=await desktop.locator('#lfTrainingCoach').isVisible();
+result.checks.playbookLinkPresent=await desktop.locator('a[href="/playbooks/leadflow/"]').count()>=1;
+result.checks.desktopNoHorizontalOverflow=!(await desktop.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+2));
+await desktop.screenshot({path:'leadflow-ai-pro/qa-flow-desktop.png',fullPage:true});
+await desktop.close();
+
+const mobile=await open({width:390,height:844},'mobile');
+result.checks.mobileStageNavVisible=await mobile.locator('.lf-mobile-nav').isVisible();
+result.checks.mobileStageNavHasSevenLinks=await mobile.locator('.lf-mobile-nav a').count()===7;
+const mobileReveal=await mobile.locator('.reveal').evaluateAll(nodes=>nodes.map(n=>getComputedStyle(n).opacity));
+result.checks.mobileAllContentRendered=mobileReveal.every(x=>x==='1');
+result.checks.mobileNoHorizontalOverflow=!(await mobile.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+2));
+await mobile.screenshot({path:'leadflow-ai-pro/qa-flow-mobile.png',fullPage:true});
+await mobile.close();
+await browser.close();
+const failed=Object.entries(result.checks).filter(([,v])=>!v);
+result.passed=failed.length===0&&result.errors.length===0;
+result.failedChecks=failed.map(([k])=>k);
+console.log(JSON.stringify(result,null,2));
+if(!result.passed)process.exit(1);
