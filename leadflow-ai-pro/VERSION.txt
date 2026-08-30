@@ -1,0 +1,7 @@
+LeadFlow AI PRO
+Version: 1.0 Release Candidate
+Canonical: LeadFlow AI Receptionist & Follow-Up System
+Positioning: Train Your Own AI Lead Employee
+Founding Launch: $149 one-time
+Regular: $249 one-time
+Release Branch: release/leadflow-ai-pro-2026-08-30
