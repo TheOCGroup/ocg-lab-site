@@ -22,23 +22,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p wedding-destination-concierge
-          cat \
-            .release/wedding/part01.b64 \
-            .release/wedding/part02.b64 \
-            .release/wedding/part03.b64 \
-            .release/wedding/fix04.b64 \
-            .release/wedding/part05.b64 \
-            .release/wedding/fix06.b64 \
-            .release/wedding/part07.b64 \
-            .release/wedding/fix08.b64 \
-            .release/wedding/part09.b64 \
-            .release/wedding/part10.b64 \
-            .release/wedding/part11.b64 \
-            .release/wedding/part12-13.b64 \
-            .release/wedding/part14-15.b64 \
-            .release/wedding/part16-17.b64 \
-            .release/wedding/part18.b64 \
-            | base64 -d | gzip -d > wedding-destination-concierge/index.html
+          base64 -d .release/wedding/artifact.b64 \
+            | gzip -d > wedding-destination-concierge/index.html
           echo "ca0bd76f7a0162bd2cd717c15a89e916706cbd9f7340edab5851fc5584ac98b2  wedding-destination-concierge/index.html" | sha256sum -c -
           test "$(wc -c < wedding-destination-concierge/index.html)" -eq 232638
       - name: Commit assembled release
