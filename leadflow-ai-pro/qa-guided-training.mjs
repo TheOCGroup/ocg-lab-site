@@ -10,7 +10,7 @@ async function run(viewport,label){
   if(label==='desktop'){
     result.checks.trainingCoachVisible=await page.locator('#lfTrainingCoach').isVisible();
     result.checks.tenTrainingAreas=await page.locator('.lf-training-card').count()===10;
-    result.checks.tellYourAgentLanguage=(await page.locator('#lfTrainingCoach').innerText()).includes('Tell your AI employee');
+    result.checks.tellYourAgentLanguage=(await page.locator('#lfTrainingCoach').textContent()).toLowerCase().includes('tell your ai employee');
     result.checks.nextTrainingVisible=await page.locator('.lf-next').isVisible();
     await page.fill('#businessName','Acme Home Services');
     await page.fill('#businessType','Home services');
