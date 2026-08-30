@@ -1,0 +1,1 @@
+window.OCG_ASSETS={logo:'/assets/approved-logo.png'};
