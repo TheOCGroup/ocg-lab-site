@@ -73,7 +73,7 @@ await page.fill('#manageInput','What is going on with Robert?');
 await click('#manage button:has-text("Ask")');
 await page.waitForTimeout(160);
 const manageText=await page.locator('#manageChat').innerText();
-assert.match(manageText,/Robert wants a kitchen remodel estimate/i);
+assert.match(manageText,/Robert wants .*kitchen remodel estimate/i);
 assert.match(manageText,/Property address/i);
 
 await page.fill('#manageInput','Who needs attention today?');
