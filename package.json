@@ -1,0 +1,8 @@
+{
+  "name": "ocg-lab-products",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "ai": "^7.0.0"
+  }
+}
