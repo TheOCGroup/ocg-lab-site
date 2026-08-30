@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 const browser=await chromium.launch({headless:true});
-const result={checks:{},errors:[],visualSpreads:{desktop:[],mobile:[]}};
+const result={checks:{},errors:[],visualSpreads:{desktop:[],mobile:[]},overflow:{desktop:{horizontal:[],vertical:[]},mobile:{horizontal:[]}}};
 async function run(viewport,label){
   const context=await browser.newContext({viewport,permissions:['clipboard-read','clipboard-write']});
   const page=await context.newPage();
@@ -24,6 +24,9 @@ async function run(viewport,label){
     result.checks.promptVaultRenders=await page.locator('#vaultGrid .vault-card').count()>0;
     await page.fill('#vaultSearch','attention');await page.waitForTimeout(80);
     result.checks.promptVaultSearchWorks=await page.locator('#vaultGrid .vault-card').count()>=1;
+    await page.fill('#vaultSearch','');await page.waitForTimeout(50);
+    const firstCard=page.locator('#vaultGrid .vault-card').first();
+    result.checks.promptVaultCardReadable=await firstCard.evaluate(el=>{const h=el.querySelector('h4'),p=el.querySelector('p');return !!h&&!!p&&h.getBoundingClientRect().height>8&&p.getBoundingClientRect().height>8&&el.getBoundingClientRect().height>=120});
     await page.evaluate(()=>goTo(2));await page.waitForTimeout(50);
     await page.click('button:has-text("Talk to LeadFlow")');
     result.checks.assistantOpens=await page.locator('#assistant').evaluate(el=>el.classList.contains('open'));
@@ -43,13 +46,14 @@ async function run(viewport,label){
   for(let i=0;i<spreads;i++){
     await page.evaluate(i=>goTo(i),i);await page.waitForTimeout(60);
     const active=page.locator('section.spread').nth(i);
-    const metrics=await active.locator('.page').evaluateAll(nodes=>nodes.map(el=>({sw:el.scrollWidth,cw:el.clientWidth,sh:el.scrollHeight,ch:el.clientHeight})));
-    metrics.forEach((m,j)=>{if(m.sw>m.cw+2)ho.push([i,j,m]);if(label==='desktop'&&m.sh>m.ch+2)vo.push([i,j,m])});
     const title=await active.getAttribute('data-title');
+    const metrics=await active.locator('.page').evaluateAll(nodes=>nodes.map(el=>({sw:el.scrollWidth,cw:el.clientWidth,sh:el.scrollHeight,ch:el.clientHeight})));
+    metrics.forEach((m,j)=>{if(m.sw>m.cw+2)ho.push({spread:i+1,title,side:j===0?'left':'right',...m});if(label==='desktop'&&m.sh>m.ch+2)vo.push({spread:i+1,title,side:j===0?'left':'right',...m})});
     const path=`leadflow-ai-pro/qa-playbook-${label}-spread-${String(i+1).padStart(2,'0')}.png`;
     await page.locator('.book-wrap').screenshot({path,animations:'disabled'});
     result.visualSpreads[label].push({spread:i+1,title,path});
   }
+  result.overflow[label].horizontal=ho;if(label==='desktop')result.overflow.desktop.vertical=vo;
   result.checks[`${label}AllSpreadsCaptured`]=result.visualSpreads[label].length===14;
   result.checks[`${label}NoHorizontalPageOverflow`]=ho.length===0;
   if(label==='desktop')result.checks.desktopNoVerticalPageOverflow=vo.length===0;
