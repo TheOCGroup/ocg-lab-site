@@ -1,0 +1,7 @@
+{
+  "release": "playbook-family-2026-08-30",
+  "branch": "release/playbook-family-2026-08-30",
+  "products": ["insurance-agent","content-creator","diy-home-improvement","digital-marketer","youtube-creator","videographer","candle-maker","real-estate-investor-business-coaching","airbnb-short-term-rental","midterm-rental","property-management","sommelier","gamer-streaming"],
+  "etsy_assets_built": true,
+  "live_qa_required": true
+}
