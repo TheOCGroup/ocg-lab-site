@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 const browser=await chromium.launch({headless:true});
-const result={checks:{},errors:[]};
+const result={checks:{},errors:[],visualSpreads:{desktop:[],mobile:[]}};
 async function run(viewport,label){
   const context=await browser.newContext({viewport,permissions:['clipboard-read','clipboard-write']});
   const page=await context.newPage();
@@ -30,19 +30,27 @@ async function run(viewport,label){
     await page.fill('#askInput','How should I train my business rules?');await page.click('button:has-text("Ask LeadFlow")');
     const answer=await page.locator('#assistantAnswer').innerText();
     result.checks.assistantAnswersTraining=answer.toLowerCase().includes('train')||answer.toLowerCase().includes('services');
+    await page.click('.assistant-head button');
     await page.evaluate(()=>goTo(5));await page.waitForTimeout(40);
     result.checks.readingPositionSaved=await page.evaluate(()=>localStorage.getItem('lf-current')==='5');
     await page.reload({waitUntil:'networkidle'});await page.waitForFunction(()=>typeof goTo==='function'&&typeof PROMPTS!=='undefined');
     result.checks.readingPositionRestored=await page.locator('section.spread.active').getAttribute('data-title')!==null && await page.evaluate(()=>localStorage.getItem('lf-current')==='5');
     await page.emulateMedia({media:'print'});
     result.checks.printMediaRenders=await page.locator('.book').isVisible();
+    await page.emulateMedia({media:'screen'});
   }
   const ho=[];const vo=[];
   for(let i=0;i<spreads;i++){
-    await page.evaluate(i=>goTo(i),i);await page.waitForTimeout(25);
-    const metrics=await page.locator('section.spread').nth(i).locator('.page').evaluateAll(nodes=>nodes.map(el=>({sw:el.scrollWidth,cw:el.clientWidth,sh:el.scrollHeight,ch:el.clientHeight})));
+    await page.evaluate(i=>goTo(i),i);await page.waitForTimeout(60);
+    const active=page.locator('section.spread').nth(i);
+    const metrics=await active.locator('.page').evaluateAll(nodes=>nodes.map(el=>({sw:el.scrollWidth,cw:el.clientWidth,sh:el.scrollHeight,ch:el.clientHeight})));
     metrics.forEach((m,j)=>{if(m.sw>m.cw+2)ho.push([i,j,m]);if(label==='desktop'&&m.sh>m.ch+2)vo.push([i,j,m])});
+    const title=await active.getAttribute('data-title');
+    const path=`leadflow-ai-pro/qa-playbook-${label}-spread-${String(i+1).padStart(2,'0')}.png`;
+    await page.locator('.book-wrap').screenshot({path,animations:'disabled'});
+    result.visualSpreads[label].push({spread:i+1,title,path});
   }
+  result.checks[`${label}AllSpreadsCaptured`]=result.visualSpreads[label].length===14;
   result.checks[`${label}NoHorizontalPageOverflow`]=ho.length===0;
   if(label==='desktop')result.checks.desktopNoVerticalPageOverflow=vo.length===0;
   await page.screenshot({path:`leadflow-ai-pro/qa-playbook-${label}.png`,fullPage:true});
