@@ -26,7 +26,10 @@ jobs:
           python3 -m http.server 4173 >/tmp/leadflow-http.log 2>&1 &
           sleep 2
       - name: Run LeadFlow end-to-end product QA
-        run: node leadflow-ai-pro/qa-product.mjs | tee leadflow-ai-pro/qa-result.json
+        shell: bash
+        run: |
+          set -o pipefail
+          node leadflow-ai-pro/qa-product.mjs | tee leadflow-ai-pro/qa-result.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4
