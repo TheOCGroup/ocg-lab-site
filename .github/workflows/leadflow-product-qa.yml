@@ -64,4 +64,6 @@ jobs:
             leadflow-ai-pro/qa-playbook-result.json
             leadflow-ai-pro/qa-playbook-desktop.png
             leadflow-ai-pro/qa-playbook-mobile.png
+            leadflow-ai-pro/qa-playbook-desktop-spread-*.png
+            leadflow-ai-pro/qa-playbook-mobile-spread-*.png
           if-no-files-found: warn
