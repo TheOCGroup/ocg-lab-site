@@ -1,0 +1,105 @@
+{
+  "version": "2026-08-31",
+  "status": "working-catalog",
+  "principles": {
+    "visualSourceOfTruth": "www.theocglab.com live light/ice experience",
+    "productTreatment": "peer products within clear families; no product gets a special homepage hierarchy",
+    "imageStrategy": "every product reserves a premium visual slot for interface imagery, branded renders, device mockups, or relevant editorial photography; no generic stock placeholders"
+  },
+  "families": [
+    {
+      "id": "ai-pro",
+      "name": "AI PRO",
+      "description": "Focused AI-powered business systems built around a defined job-to-be-done."
+    },
+    {
+      "id": "ai-super-pro",
+      "name": "AI SUPER PRO",
+      "description": "Deeper, high-touch operating systems with broader workflow coverage and tailored implementation."
+    },
+    {
+      "id": "digital-playbooks",
+      "name": "Digital Playbooks",
+      "description": "Interactive implementation systems for learning, prompts, workflows, and guided execution."
+    },
+    {
+      "id": "decision-tools",
+      "name": "Decision Tools",
+      "description": "Focused calculators and utilities for fast, high-confidence decisions."
+    }
+  ],
+  "products": [
+    {
+      "id": "real-estate-investor-ai-pro",
+      "name": "Real Estate Investor AI PRO",
+      "family": "ai-pro",
+      "route": "/real-estate-investor-ai-pro/",
+      "status": "verify-current-revision-before-publish",
+      "outcome": "Underwrite, evaluate, and operate real-estate investment decisions with AI-assisted workflows.",
+      "image": {"status": "planned", "type": "interface-or-deal-analysis-scene"}
+    },
+    {
+      "id": "leadflow-ai-pro",
+      "name": "LeadFlow AI PRO",
+      "family": "ai-pro",
+      "route": "/leadflow-ai-pro/",
+      "status": "released-current",
+      "outcome": "Respond to, remember, prioritize, and follow up with leads more consistently.",
+      "image": {"status": "planned", "type": "lead-workspace-or-conversation-interface"}
+    },
+    {
+      "id": "wedding-destination-concierge",
+      "name": "Wedding & Destination Concierge",
+      "family": "ai-super-pro",
+      "route": "/wedding-destination-concierge/",
+      "status": "released-current",
+      "outcome": "Coordinate destination, vendor, guest, timeline, and day-of wedding operations through one intelligent concierge system.",
+      "image": {"status": "planned", "type": "premium-destination-and-concierge-interface"}
+    },
+    {
+      "id": "insurance-agent-ai-playbook",
+      "name": "Insurance Agent AI Playbook",
+      "family": "digital-playbooks",
+      "route": "/insurance-agent-playbook/",
+      "status": "verify-current-revision-before-publish",
+      "outcome": "Implement practical AI workflows, prompts, and specialist guidance for insurance operations.",
+      "image": {"status": "planned", "type": "book-cover-and-spread-mockup"}
+    },
+    {
+      "id": "fix-flip-calculator",
+      "name": "Fix & Flip Calculator",
+      "family": "decision-tools",
+      "route": "/fix-flip-calculator/",
+      "status": "verify-current-revision-before-publish",
+      "outcome": "Evaluate flip economics, offer limits, rehab assumptions, and projected returns.",
+      "image": {"status": "planned", "type": "property-and-calculator-interface"}
+    },
+    {
+      "id": "brrrr-calculator",
+      "name": "BRRRR Calculator",
+      "family": "decision-tools",
+      "route": "/brrrr-calculator/",
+      "status": "verify-current-revision-before-publish",
+      "outcome": "Model buy, rehab, rent, refinance, and retained-capital performance.",
+      "image": {"status": "planned", "type": "property-finance-interface"}
+    },
+    {
+      "id": "wholesaler-deal-calculator",
+      "name": "Wholesaler Deal Calculator",
+      "family": "decision-tools",
+      "route": "/wholesaler-deal-calculator/",
+      "status": "verify-current-revision-before-publish",
+      "outcome": "Analyze wholesale spreads, assignment economics, and offer constraints quickly.",
+      "image": {"status": "planned", "type": "deal-analysis-interface"}
+    },
+    {
+      "id": "rental-property-calculator",
+      "name": "Rental Property Calculator",
+      "family": "decision-tools",
+      "route": "/rental-property-calculator/",
+      "status": "verify-current-revision-before-publish",
+      "outcome": "Evaluate rental cash flow, financing, returns, and operating assumptions.",
+      "image": {"status": "planned", "type": "rental-property-and-cashflow-interface"}
+    }
+  ]
+}
