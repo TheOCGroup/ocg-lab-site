@@ -1,0 +1,52 @@
+{
+  "version": "2026-08-31.1",
+  "status": "working-discoverability-plan",
+  "canonicalDomain": "https://www.theocglab.com",
+  "goal": "Make OCG LAB understandable, crawlable, indexable, and entity-clear for Google Search and AI-assisted discovery without exposing proprietary implementation details.",
+  "entity": {
+    "name": "The OCG LAB",
+    "alternateName": "OCG LAB",
+    "type": "Organization",
+    "description": "AI innovation company building intelligent systems, specialized agents, software, guided playbooks, automations, and decision tools for real business workflows."
+  },
+  "publicContentArchitecture": [
+    "home",
+    "about-the-lab",
+    "built-by-the-lab",
+    "products",
+    "product-detail-pages",
+    "build-with-us",
+    "lab-report"
+  ],
+  "requiredTechnicalSignals": {
+    "robotsTxt": true,
+    "xmlSitemap": true,
+    "selfReferencingCanonicals": true,
+    "crawlableInternalLinks": true,
+    "indexableServerRenderedOrInitialHTMLContent": true,
+    "uniqueTitlesAndMetaDescriptions": true,
+    "openGraphMetadata": true,
+    "structuredDataInInitialHTML": true,
+    "descriptiveImageAltText": true,
+    "mobileResponsive": true,
+    "fastStablePages": true
+  },
+  "structuredData": {
+    "home": ["Organization", "WebSite"],
+    "products": ["Product", "SoftwareApplication"],
+    "playbooks": ["Product"],
+    "decisionTools": ["SoftwareApplication"],
+    "labReport": ["Article", "Organization"],
+    "breadcrumbs": ["BreadcrumbList"]
+  },
+  "aiDiscoveryContentRules": [
+    "State clearly what OCG LAB is and what it builds in visible HTML.",
+    "Use specific product and system names with plain-language outcome descriptions.",
+    "Separate Available from the Lab from Built by the Lab so machines and visitors can distinguish commercial products from capability examples.",
+    "Provide high-level system descriptions that explain purpose and category without publishing prompts, architecture, workflow logic, data models, implementation methods, credentials, or private operating details.",
+    "Use strong internal links between company story, capability proof, Atlas, products, and Build With Us.",
+    "Keep canonical URLs consistent across metadata, sitemap, structured data, and internal navigation.",
+    "Do not rely on llms.txt as a substitute for standard crawlability, indexability, useful content, or structured data."
+  ],
+  "indexingGate": "Do not publish or submit sitemap until the real live source and canonical domain deployment relationship are verified."
+}
