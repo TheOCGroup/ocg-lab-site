@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>OCG LAB — Product Access</title>
+  <style>
+    :root{--navy:#0d2438;--ink:#183047;--muted:#6f7f8e;--line:#dfe7ed;--grad:linear-gradient(100deg,#245f95 0%,#42a8c8 52%,#5bbb84 100%)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:linear-gradient(rgba(36,95,149,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(36,95,149,.04) 1px,transparent 1px),radial-gradient(circle at 50% 10%,rgba(69,169,199,.12),transparent 34%),#fff;background-size:44px 44px,44px 44px,auto;padding:24px}.card{width:min(720px,100%);padding:46px;border:1px solid rgba(13,36,56,.09);border-radius:30px;background:rgba(255,255,255,.94);box-shadow:0 28px 90px rgba(13,36,56,.09);text-align:center}.brand{font-size:26px;font-weight:950;letter-spacing:-.05em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.eyebrow{margin-top:28px;font-size:10px;font-weight:950;letter-spacing:.17em;text-transform:uppercase;color:#2e6ea5}.orb{width:86px;height:86px;margin:18px auto;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff 0 7%,#8fe0e3 18%,#4a91b4 44%,#50b482 70%,#143149 100%);box-shadow:0 16px 40px rgba(46,110,165,.24),inset 0 0 18px rgba(255,255,255,.35)}h1{margin:0;color:var(--navy);font-size:clamp(36px,7vw,58px);line-height:.98;letter-spacing:-.055em}p{max-width:560px;margin:18px auto 0;color:var(--muted);line-height:1.7}.status{margin:28px auto 0;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:#f8fbfd;font-size:12px;color:#5f7384}.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:28px}.actions a{padding:12px 17px;border-radius:999px;font-size:11px;font-weight:900;text-decoration:none}.primary{background:var(--navy);color:#fff}.secondary{border:1px solid var(--line);color:var(--navy);background:#fff}@media(max-width:600px){.card{padding:34px 22px}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">OCG LAB</div>
+    <div class="orb" aria-hidden="true"></div>
+    <div class="eyebrow">Protected product</div>
+    <h1 id="title">Purchase required.</h1>
+    <p>This is a commercial OCG LAB product. The product application is not available through a public direct link.</p>
+    <div class="status">Checkout and verified customer access are being connected. This page intentionally does not simulate a purchase or grant access.</div>
+    <div class="actions">
+      <a class="primary" href="/experiments/original-cleanup/#products">View product details</a>
+      <a class="secondary" href="/experiments/original-cleanup/#atlas">Ask Atlas</a>
+    </div>
+  </main>
+  <script>
+    const names={
+      'real-estate-investor-ai-pro':'Real Estate Investor AI PRO',
+      'leadflow-ai-pro':'LeadFlow AI PRO',
+      'wedding-destination-concierge':'Wedding & Destination Concierge',
+      'insurance-agent-ai-playbook':'Insurance Agent AI Playbook'
+    };
+    const key=new URLSearchParams(location.search).get('product');
+    if(key&&names[key]) document.getElementById('title').textContent=names[key]+' requires verified access.';
+  </script>
+</body>
+</html>
