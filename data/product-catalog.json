@@ -1,0 +1,29 @@
+{
+  "version": "2026-08-31.4",
+  "status": "working-catalog",
+  "principles": {
+    "visualSourceOfTruth": "www.theocglab.com live light/ice experience",
+    "productTreatment": "peer products within clear families; no product gets a special homepage hierarchy",
+    "imageStrategy": "every product reserves a premium visual slot for interface imagery, branded renders, device mockups, or relevant editorial photography; no generic stock placeholders",
+    "publishRule": "only expose products whose current route and current revision are verified",
+    "commerceRule": "paid products may be publicly marketed but their full application/content route must fail closed until canonical checkout and verified entitlement are connected",
+    "directRouteRule": "a paid product route is not considered protected merely because its link is hidden from navigation"
+  },
+  "displayOrder": ["ai-pro", "ai-super-pro", "digital-playbooks", "decision-tools"],
+  "families": [
+    {"id":"ai-pro","name":"AI PRO","description":"Focused AI-powered business systems built around a defined job-to-be-done."},
+    {"id":"ai-super-pro","name":"AI SUPER PRO","description":"Deeper, high-touch operating systems with broader workflow coverage and tailored implementation."},
+    {"id":"digital-playbooks","name":"Digital Playbooks","description":"Interactive implementation systems for learning, prompts, workflows, and guided execution."},
+    {"id":"decision-tools","name":"Decision Tools","description":"Focused calculators and utilities for fast, high-confidence decisions."}
+  ],
+  "products": [
+    {"id":"real-estate-investor-ai-pro","name":"Real Estate Investor AI PRO","family":"ai-pro","route":"/real-estate-investor-ai-pro/","status":"route-and-current-product-page-verified","commerce":{"access":"paid","protection":"required-before-production","checkout":"unresolved","entitlement":"unresolved"},"outcome":"Underwrite, evaluate, and operate real-estate investment decisions with AI-assisted workflows.","image":{"status":"planned","type":"interface-or-deal-analysis-scene","aspect":"4:3"}},
+    {"id":"leadflow-ai-pro","name":"LeadFlow AI PRO","family":"ai-pro","route":"/leadflow-ai-pro/","status":"released-current","commerce":{"access":"paid","protection":"required-before-production","checkout":"unresolved","entitlement":"unresolved"},"outcome":"Respond to, remember, prioritize, and follow up with leads more consistently.","image":{"status":"planned","type":"lead-workspace-or-conversation-interface","aspect":"4:3"}},
+    {"id":"wedding-destination-concierge","name":"Wedding & Destination Concierge","family":"ai-super-pro","route":"/wedding-destination-concierge/","status":"released-current","commerce":{"access":"paid","protection":"required-before-production","checkout":"unresolved","entitlement":"unresolved"},"outcome":"Coordinate destination, vendor, guest, timeline, and day-of wedding operations through one intelligent concierge system.","image":{"status":"planned","type":"premium-destination-and-concierge-interface","aspect":"4:3"}},
+    {"id":"insurance-agent-ai-playbook","name":"Insurance Agent AI Playbook","family":"digital-playbooks","route":"/playbooks/insurance-agent/","legacyRoute":"/insurance-agent-playbook/","status":"canonical-route-verified","commerce":{"access":"paid","protection":"required-before-production","checkout":"unresolved","entitlement":"unresolved","samplePolicy":"not-approved"},"outcome":"Implement practical AI workflows, prompts, and specialist guidance for insurance operations.","image":{"status":"planned","type":"book-cover-and-spread-mockup","aspect":"4:3"}},
+    {"id":"fix-flip-calculator","name":"Fix & Flip Calculator","family":"decision-tools","route":"/fix-flip-calculator/","status":"canonical-current-verified","commerce":{"access":"decision-pending","protection":"must-be-explicit-before-production"},"outcome":"Evaluate flip economics, offer limits, rehab assumptions, projected returns, 70% rule MAO, and downside scenarios.","image":{"status":"planned","type":"property-and-calculator-interface","aspect":"4:3"}},
+    {"id":"brrrr-calculator","name":"BRRRR Calculator","family":"decision-tools","route":"/brrrr-calculator/","status":"canonical-current-verified","commerce":{"access":"decision-pending","protection":"must-be-explicit-before-production"},"outcome":"Model buy, rehab, rent, refinance, cash recovery, equity, DSCR, and retained-capital performance.","image":{"status":"planned","type":"property-finance-interface","aspect":"4:3"}},
+    {"id":"wholesaler-deal-calculator","name":"Wholesaler Deal Calculator","family":"decision-tools","route":"/wholesaler-deal-calculator/","status":"canonical-current-verified","commerce":{"access":"decision-pending","protection":"must-be-explicit-before-production"},"outcome":"Analyze buyer MAO, assignment spread, buyer margin, deal cushion, and downside scenarios.","image":{"status":"planned","type":"deal-analysis-interface","aspect":"4:3"}},
+    {"id":"rental-property-calculator","name":"Rental Property Calculator","family":"decision-tools","route":"/rental-property-calculator/","status":"canonical-current-verified","commerce":{"access":"decision-pending","protection":"must-be-explicit-before-production"},"outcome":"Evaluate rental cash flow, cap rate, cash-on-cash return, DSCR, break-even occupancy, and downside scenarios.","image":{"status":"planned","type":"rental-property-and-cashflow-interface","aspect":"4:3"}}
+  ]
+}
