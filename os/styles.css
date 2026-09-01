@@ -455,6 +455,55 @@ main {
   padding: 58px 20px;
   color: var(--muted);
 }
+.commerce-layout {
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+}
+.commercial-products {
+  margin-top: 16px;
+}
+.gate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px;
+  border: 1px solid #18343d;
+  background: #0b1d24;
+  border-radius: 13px;
+}
+.gate b {
+  font-size: 13px;
+}
+.gate small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.45;
+}
+.release-lock {
+  min-height: 100%;
+  border: 1px solid #69343a;
+  background: linear-gradient(145deg, #2b171a, #171519);
+  border-radius: 17px;
+  padding: 22px;
+}
+.release-lock span {
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+.release-lock b {
+  display: block;
+  font-size: 20px;
+  line-height: 1.35;
+  margin-top: 10px;
+}
+.release-lock p {
+  color: #b79ca0;
+  font-size: 12px;
+  line-height: 1.6;
+}
 .table-head {
   display: grid;
   grid-template-columns: minmax(180px, 1.4fr) minmax(100px, 0.6fr) minmax(

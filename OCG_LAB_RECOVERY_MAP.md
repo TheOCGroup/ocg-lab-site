@@ -22,6 +22,7 @@ This map covers OCG LAB only. OCG OS, OCG MEDIA, and OCG HOME OS are explicitly 
 | Technology intelligence/radar | Governing requirements | No implementation found | None | Provider evaluation data and review workflow | Install schema first; connect feeds only with cost/security controls |
 | QA/release evidence | Per-product files, repositories and deployment histories | Partial | Evidence is fragmented | Canonical verification ledger | Normalize evidence without upgrading claimed states |
 | Paid-product access control | `.release/PAID_PRODUCT_ACCESS_GATE.md` on recovered product-organization branch | Yes | Current public application routes may expose paid products anonymously | Canonical checkout + server-verified entitlement | Treat as a P0 release blocker and fail closed before storefront certification |
+| Commerce provider | Whop references in prior OCG interfaces and official integration model | Architecture only | Sibling UI contains hardcoded commerce claims without recovered implementation evidence | Canonical company/store identity, product IDs, webhook, customer auth and entitlement store | Keep `NOT CONNECTED`; verify provider account and reuse existing auth/data services if recovered |
 | Infrastructure/cost control | GitHub and Vercel inventory recovered | Partial | Numerous test/unlinked projects | Billing, domains, cloud and provider inventories | Reconcile before any paid provisioning or cleanup |
 
 ## Phase 0 decision
