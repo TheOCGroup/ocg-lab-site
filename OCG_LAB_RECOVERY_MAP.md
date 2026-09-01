@@ -7,6 +7,7 @@ This map covers OCG LAB only. OCG OS, OCG MEDIA, and OCG HOME OS are explicitly 
 | Found | Canonical | Reuse | Duplicate / Risk | Missing | Recommended action |
 | --- | --- | --- | --- | --- | --- |
 | Product delivery repository | `TheOCGroup/ocg-lab-site` | Yes | None confirmed at repository level | Technology Department OS | Extend this repository; preserve every existing product route |
+| Prior product-organization work | Branch `aiden/ocg-lab-product-organization` at `426712a` | Selectively | Experimental storefront modules must not be confused with the internal Technology Department OS | Branch reconciliation | Reuse its canonical product catalog and paid-access findings; do not blindly merge experimental pages |
 | Product delivery deployment | Vercel `ocg-lab-products`, `prj_KzPT5VKcYdi8YrHd4ulXzBuxQeng` | Yes | Older `ocg-lab-site` and test projects require reconciliation | Authenticated internal OS deployment boundary | Do not delete; map domains and last-known-good releases first |
 | Approved OCG LAB logo | `assets/approved-logo.png` | Yes | Multiple embedded/base64 copies exist in product artifacts | Central token package | Reuse canonical asset; extract tokens only after visual comparison |
 | Commercial products | Existing routes plus linked product repositories | Yes | Several products have test/handoff Vercel variants | Unified canonical product registry | Register one product identity with multiple evidence relationships |
@@ -20,6 +21,7 @@ This map covers OCG LAB only. OCG OS, OCG MEDIA, and OCG HOME OS are explicitly 
 | Technical workforce | Requirements and prior operating model | Partial | Decorative/runtime claims would be misleading | Secured orchestration backend | Define responsibilities now; label runtime `NOT CONNECTED` |
 | Technology intelligence/radar | Governing requirements | No implementation found | None | Provider evaluation data and review workflow | Install schema first; connect feeds only with cost/security controls |
 | QA/release evidence | Per-product files, repositories and deployment histories | Partial | Evidence is fragmented | Canonical verification ledger | Normalize evidence without upgrading claimed states |
+| Paid-product access control | `.release/PAID_PRODUCT_ACCESS_GATE.md` on recovered product-organization branch | Yes | Current public application routes may expose paid products anonymously | Canonical checkout + server-verified entitlement | Treat as a P0 release blocker and fail closed before storefront certification |
 | Infrastructure/cost control | GitHub and Vercel inventory recovered | Partial | Numerous test/unlinked projects | Billing, domains, cloud and provider inventories | Reconcile before any paid provisioning or cleanup |
 
 ## Phase 0 decision
