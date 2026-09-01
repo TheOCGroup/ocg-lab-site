@@ -1,0 +1,38 @@
+{
+  "redirects": [
+    {
+      "source": "/real-estate-investor-ai-pro/:path*",
+      "destination": "/access-required/?product=real-estate-investor-ai-pro",
+      "permanent": false
+    },
+    {
+      "source": "/leadflow-ai-pro/:path*",
+      "destination": "/access-required/?product=leadflow-ai-pro",
+      "permanent": false
+    },
+    {
+      "source": "/wedding-destination-concierge/:path*",
+      "destination": "/access-required/?product=wedding-destination-concierge",
+      "permanent": false
+    },
+    {
+      "source": "/playbooks/insurance-agent/:path*",
+      "destination": "/access-required/?product=insurance-agent-ai-playbook",
+      "permanent": false
+    },
+    {
+      "source": "/insurance-agent-playbook/:path*",
+      "destination": "/access-required/?product=insurance-agent-ai-playbook",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/access-required/:path*",
+      "headers": [
+        {"key": "X-Robots-Tag", "value": "noindex, nofollow"},
+        {"key": "Cache-Control", "value": "no-store"}
+      ]
+    }
+  ]
+}
