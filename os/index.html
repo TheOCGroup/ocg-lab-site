@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#061016">
+  <title>OCG LAB — Technology Department</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="/os/" aria-label="OCG LAB Technology Department home">
+      <img src="/assets/approved-logo.png" alt="OCG LAB">
+      <span><b>TECHNOLOGY DEPARTMENT</b><small>Verified operating view</small></span>
+    </a>
+    <button class="command-trigger" id="commandTrigger"><span>Ask the LAB</span><kbd>⌘ K</kbd></button>
+    <div class="source-state"><i></i><span>Recovered sources</span><b>2026-09-01</b></div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <nav id="nav"></nav>
+      <div class="scope-lock"><span>SCOPE LOCK</span><b>OCG LAB only</b><small>OCG OS, MEDIA and HOME OS excluded</small></div>
+    </aside>
+
+    <main id="app" tabindex="-1"></main>
+  </div>
+
+  <dialog id="commandDialog">
+    <form method="dialog" class="command-panel">
+      <div class="command-head"><span>LAB EXECUTIVE AGENT</span><button value="cancel" aria-label="Close">×</button></div>
+      <h2>What do you need from the LAB?</h2>
+      <p>The conversational executive agent is <b>NOT CONNECTED</b>. These commands navigate the recovered operating record without pretending to execute AI work.</p>
+      <input id="commandInput" autocomplete="off" placeholder="Try: What are we building?">
+      <div id="commandResults" class="command-results"></div>
+    </form>
+  </dialog>
+  <script src="./app.js"></script>
+</body>
+</html>
