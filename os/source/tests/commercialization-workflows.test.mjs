@@ -67,3 +67,18 @@ test('C9 Aiden ranks real product readiness for revenue instead of using hard-co
   assert.ok(verificationIndex > -1 && verificationIndex < draftIndex && draftIndex < registrationIndex, 'revenue priority must be verification > draft > registration');
 });
 
+test('C10 Aiden can persist an idempotent authenticated commerce verification work order for the nearest revenue gate', () => {
+  const storage = fs.readFileSync(new URL('../src/data/storageEngine.ts', import.meta.url), 'utf8');
+  assert.match(storage, /ensureCommerceVerificationDispatch/);
+  assert.match(storage, /obj-commerce-verify-\$\{input\.productId\}-\$\{channelKey\}/);
+  assert.match(storage, /wo-commerce-verify-\$\{input\.productId\}-\$\{channelKey\}/);
+  assert.match(storage, /existingObjective && existingWorkOrder/);
+  assert.match(storage, /DISPATCH_COMMERCE_VERIFICATION/);
+  assert.match(storage, /does not authorize publication or fabricate live state/);
+  assert.match(aiden, /dispatch nearest revenue gate/i);
+  assert.match(aiden, /ensureCommerceVerificationDispatch/);
+  assert.match(aiden, /READY \/ EXTERNAL VERIFICATION/);
+  assert.match(aiden, /no duplicate was created/i);
+  assert.match(aiden, /No external Live state inferred/);
+});
+

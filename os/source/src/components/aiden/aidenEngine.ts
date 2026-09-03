@@ -22,9 +22,41 @@ export class AidenEngine {
       return { reply: `### **OCG LAB Commercialization Control Plane**\n\n${lines}\n\n**Lifecycle**: ${COMMERCIALIZATION_LIFECYCLE.join(' → ')}\n\nOnly externally verified channels may be represented as live.`, category: 'EXECUTIVE_BRIEFING', suggestedArea: 'storefronts', evidence: 'Commercial workflow registry; live state requires external verification.' };
     }
 
-    if ((q.includes('prepare') || q.includes('commercialize')) && q.includes('whop')) {
+    if (((q.includes('prepare') || q.includes('commercialize')) && q.includes('whop')) || q.includes('dispatch nearest revenue gate') || q.includes('execute nearest revenue gate')) {
       const whop = COMMERCIAL_WORKFLOWS.find(w => w.id === 'wf-whop')!;
-      return { reply: `### **Whop Commercialization Work Order**\n\n**Status:** ${whop.status}\n**Owner:** ${whop.owner}\n**Independent QA:** ${whop.qaOwner}\n\n**Required stages**:\n${whop.stages.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n**Release gate:** ${whop.completionGate}\n\nWhop remains **READY / UNVERIFIED** until the authenticated seller account, product, pricing, checkout and buyer access are read back from Whop. Do not infer live state from local catalog records.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared generalized Whop commercialization workflow without fabricating external state', evidence: 'wf-whop registry entry; authenticated Whop verification still required.' };
+      const channelPriority: Record<string, number> = {
+        'READY / EXTERNAL VERIFICATION': 0,
+        'DRAFT': 1,
+        'NOT REGISTERED': 2,
+        'VERIFIED LIVE': 3
+      };
+      const candidate = [...PRODUCT_COMMERCIALIZATION_READINESS]
+        .filter(item => item.channels.some(channel => channel.channel === 'Whop' && channel.state !== 'VERIFIED LIVE'))
+        .sort((a, b) => {
+          const aState = a.channels.find(channel => channel.channel === 'Whop')?.state || 'NOT REGISTERED';
+          const bState = b.channels.find(channel => channel.channel === 'Whop')?.state || 'NOT REGISTERED';
+          return channelPriority[aState] - channelPriority[bState];
+        })[0];
+      const candidateWhop = candidate?.channels.find(channel => channel.channel === 'Whop');
+
+      if (candidate && candidateWhop?.state === 'READY / EXTERNAL VERIFICATION') {
+        const dispatch = StorageEngine.ensureCommerceVerificationDispatch({
+          productId: candidate.productId,
+          productName: candidate.productName,
+          channel: 'Whop',
+          nextAction: candidate.nextAction,
+          leadAgent: candidate.leadAgent
+        });
+        return {
+          reply: `### **Whop Revenue Verification Dispatched**\n\n**Product:** ${candidate.productName}\n**Channel state:** ${candidateWhop.state}\n**Work order:** \`${dispatch.workOrder.id}\` — **${dispatch.workOrder.status}**\n**Owner:** ${dispatch.workOrder.assignedAgent} / ${dispatch.workOrder.departmentName}\n**Independent QA gate:** qa-testing-release\n\n**Next action:** ${candidate.nextAction}\n\n${dispatch.created ? 'A durable objective and work order were created and written to the audit ledger.' : 'The existing durable work order was reused; no duplicate was created.'} Whop remains **READY / UNVERIFIED** until authenticated seller-side read-back and independent QA complete.`,
+          category: 'TASK_DISPATCH',
+          suggestedArea: 'storefronts',
+          actionTaken: `${dispatch.created ? 'Created' : 'Reused'} durable Whop verification work order ${dispatch.workOrder.id}`,
+          evidence: 'Dispatch derived from canonical PRODUCT_COMMERCIALIZATION_READINESS. No external Live state inferred.'
+        };
+      }
+
+      return { reply: `### **Whop Commercialization Work Order**\n\n**Status:** ${whop.status}\n**Owner:** ${whop.owner}\n**Independent QA:** ${whop.qaOwner}\n\n**Required stages**:\n${whop.stages.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n**Release gate:** ${whop.completionGate}\n\nNo Whop product is currently at the authenticated-verification gate. Aiden will not create a fake verification run ahead of draft/package work.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared generalized Whop commercialization workflow without fabricating external state', evidence: 'wf-whop registry entry; readiness engine found no Whop item at READY / EXTERNAL VERIFICATION.' };
     }
 
     if (q.includes('commercialize') && (q.includes('everywhere') || q.includes('all approved') || q.includes('all channels'))) {
