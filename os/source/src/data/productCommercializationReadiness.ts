@@ -2,12 +2,12 @@ import { PORTFOLIO_DATA } from './portfolio';
 import { STOREFRONT_ITEMS_DATA } from './storefronts';
 import { PRODUCT_COMMERCIALIZATION_TEMPLATES } from './productCommercializationTemplates';
 
-export type ProductReadinessState = 'LIVE' | 'CHANNEL VERIFICATION' | 'CHANNEL REGISTRATION' | 'FOUNDATION BLOCKED';
+export type ProductReadinessState = 'LIVE' | 'CHANNEL VERIFICATION' | 'CHANNEL PUBLISH' | 'CHANNEL REGISTRATION' | 'FOUNDATION BLOCKED';
 export type ProductCommercializationType = 'PLAYBOOK' | 'AI PRO' | 'AI SUPER PRO' | 'CALCULATOR / TOOL';
 
 export interface ProductChannelReadiness {
   channel: 'Whop' | 'Etsy' | 'Direct';
-  state: 'VERIFIED LIVE' | 'READY / EXTERNAL VERIFICATION' | 'DRAFT' | 'NOT REGISTERED';
+  state: 'VERIFIED LIVE' | 'PUBLIC / SELLER QA PENDING' | 'READY TO PUBLISH' | 'DRAFT' | 'NOT REGISTERED';
 }
 
 export interface ProductCommercializationReadiness {
@@ -45,13 +45,15 @@ export const PRODUCT_COMMERCIALIZATION_READINESS: ProductCommercializationReadin
     const record = STOREFRONT_ITEMS_DATA.find(storefront => storefront.productId === item.id && storefront.channel === channel);
     if (!record) return { channel, state: 'NOT REGISTERED' };
     if (record.status === 'Live') return { channel, state: 'VERIFIED LIVE' };
-    if (record.status === 'Ready') return { channel, state: 'READY / EXTERNAL VERIFICATION' };
+    if (record.status === 'Ready' && record.fulfillmentUrl.includes('whop.com/')) return { channel, state: 'PUBLIC / SELLER QA PENDING' };
+    if (record.status === 'Ready') return { channel, state: 'READY TO PUBLISH' };
     return { channel, state: 'DRAFT' };
   });
 
   const missingRegistration = channels.find(channel => channel.state === 'NOT REGISTERED');
   const draftChannel = channels.find(channel => channel.state === 'DRAFT');
-  const verificationChannel = channels.find(channel => channel.state === 'READY / EXTERNAL VERIFICATION');
+  const verificationChannel = channels.find(channel => channel.state === 'PUBLIC / SELLER QA PENDING');
+  const publishChannel = channels.find(channel => channel.state === 'READY TO PUBLISH');
   const allLive = channels.length > 0 && channels.every(channel => channel.state === 'VERIFIED LIVE');
 
   let state: ProductReadinessState;
@@ -62,7 +64,10 @@ export const PRODUCT_COMMERCIALIZATION_READINESS: ProductCommercializationReadin
     nextAction = blockers[0];
   } else if (verificationChannel) {
     state = 'CHANNEL VERIFICATION';
-    nextAction = `Perform authenticated external verification for ${verificationChannel.channel}; only then may it be marked Live.`;
+    nextAction = `Perform authenticated seller-side verification for ${verificationChannel.channel}; only then may it be marked Live.`;
+  } else if (publishChannel) {
+    state = 'CHANNEL PUBLISH';
+    nextAction = `Publish or recover the ${publishChannel.channel} listing using the certified channel package, then capture the public product URL for seller-side verification.`;
   } else if (draftChannel) {
     state = 'CHANNEL VERIFICATION';
     nextAction = `Complete ${draftChannel.channel} channel package and QA before external verification.`;

@@ -49,7 +49,8 @@ test('C8 real portfolio products are deterministically assigned to commercializa
   assert.match(readiness, /storefront\.productId === item\.id/);
   for (const mapping of ["ladder === 'PLAYBOOK'", "ladder === 'AI PRO'", "ladder === 'AI SUPER PRO'", "ladder === 'CALCULATOR'"]) assert.match(readiness, new RegExp(mapping.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.match(readiness, /CHANNEL REGISTRATION/);
-  assert.match(readiness, /READY \/ EXTERNAL VERIFICATION/);
+  assert.match(readiness, /READY TO PUBLISH/);
+  assert.match(readiness, /PUBLIC \/ SELLER QA PENDING/);
   assert.match(readiness, /only then may it be marked Live/);
   assert.match(page, /Product Commercialization Readiness/);
   assert.match(page, /Next action:/);
@@ -62,9 +63,10 @@ test('C9 Aiden ranks real product readiness for revenue instead of using hard-co
   assert.match(aiden, /priority\[a\.state\] - priority\[b\.state\]/);
   assert.doesNotMatch(aiden, /Fastest Revenue Opportunities \(Immediate Commercial Distribution\)/);
   const verificationIndex = readiness.indexOf("else if (verificationChannel)");
+  const publishIndex = readiness.indexOf("else if (publishChannel)");
   const draftIndex = readiness.indexOf("else if (draftChannel)");
   const registrationIndex = readiness.indexOf("else if (missingRegistration)");
-  assert.ok(verificationIndex > -1 && verificationIndex < draftIndex && draftIndex < registrationIndex, 'revenue priority must be verification > draft > registration');
+  assert.ok(verificationIndex > -1 && verificationIndex < publishIndex && publishIndex < draftIndex && draftIndex < registrationIndex, 'revenue priority must be verification > publish > draft > registration');
 });
 
 test('C10 Aiden can persist an idempotent authenticated commerce verification work order for the nearest revenue gate', () => {
@@ -77,7 +79,7 @@ test('C10 Aiden can persist an idempotent authenticated commerce verification wo
   assert.match(storage, /does not authorize publication or fabricate live state/);
   assert.match(aiden, /dispatch nearest revenue gate/i);
   assert.match(aiden, /ensureCommerceVerificationDispatch/);
-  assert.match(aiden, /READY \/ EXTERNAL VERIFICATION/);
+  assert.match(aiden, /PUBLIC \/ SELLER QA PENDING/);
   assert.match(aiden, /no duplicate was created/i);
   assert.match(aiden, /No external Live state inferred/);
 });
@@ -97,3 +99,18 @@ test('C11 commerce verification completion fails closed until authenticated evid
   assert.match(storage, /transitioned Ready → Live/);
 });
 
+
+
+test('C12 Whop distinguishes ready-to-publish from public seller-QA verification and dispatches publication durably', () => {
+  const readiness = fs.readFileSync(new URL('../src/data/productCommercializationReadiness.ts', import.meta.url), 'utf8');
+  const storage = fs.readFileSync(new URL('../src/data/storageEngine.ts', import.meta.url), 'utf8');
+  assert.match(readiness, /READY TO PUBLISH/);
+  assert.match(readiness, /PUBLIC \/ SELLER QA PENDING/);
+  assert.match(readiness, /record\.status === 'Ready' && record\.fulfillmentUrl\.includes\('whop\.com\/'\)/);
+  assert.match(storage, /ensureCommercePublicationDispatch/);
+  assert.match(storage, /DISPATCH_COMMERCE_PUBLICATION/);
+  assert.match(storage, /no public listing or Live state was inferred/);
+  assert.match(aiden, /Whop Publication Work Order Prepared/);
+  assert.match(aiden, /READY TO PUBLISH/);
+  assert.match(aiden, /This does not mark Whop Live/);
+});

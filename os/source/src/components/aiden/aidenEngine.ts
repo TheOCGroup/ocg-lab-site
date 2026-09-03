@@ -25,10 +25,11 @@ export class AidenEngine {
     if (((q.includes('prepare') || q.includes('commercialize')) && q.includes('whop')) || q.includes('dispatch nearest revenue gate') || q.includes('execute nearest revenue gate')) {
       const whop = COMMERCIAL_WORKFLOWS.find(w => w.id === 'wf-whop')!;
       const channelPriority: Record<string, number> = {
-        'READY / EXTERNAL VERIFICATION': 0,
-        'DRAFT': 1,
-        'NOT REGISTERED': 2,
-        'VERIFIED LIVE': 3
+        'PUBLIC / SELLER QA PENDING': 0,
+        'READY TO PUBLISH': 1,
+        'DRAFT': 2,
+        'NOT REGISTERED': 3,
+        'VERIFIED LIVE': 4
       };
       const candidate = [...PRODUCT_COMMERCIALIZATION_READINESS]
         .filter(item => item.channels.some(channel => channel.channel === 'Whop' && channel.state !== 'VERIFIED LIVE'))
@@ -39,7 +40,7 @@ export class AidenEngine {
         })[0];
       const candidateWhop = candidate?.channels.find(channel => channel.channel === 'Whop');
 
-      if (candidate && candidateWhop?.state === 'READY / EXTERNAL VERIFICATION') {
+      if (candidate && candidateWhop?.state === 'PUBLIC / SELLER QA PENDING') {
         const dispatch = StorageEngine.ensureCommerceVerificationDispatch({
           productId: candidate.productId,
           productName: candidate.productName,
@@ -48,7 +49,7 @@ export class AidenEngine {
           leadAgent: candidate.leadAgent
         });
         return {
-          reply: `### **Whop Revenue Verification Dispatched**\n\n**Product:** ${candidate.productName}\n**Channel state:** ${candidateWhop.state}\n**Work order:** \`${dispatch.workOrder.id}\` — **${dispatch.workOrder.status}**\n**Owner:** ${dispatch.workOrder.assignedAgent} / ${dispatch.workOrder.departmentName}\n**Independent QA gate:** qa-testing-release\n\n**Next action:** ${candidate.nextAction}\n\n${dispatch.created ? 'A durable objective and work order were created and written to the audit ledger.' : 'The existing durable work order was reused; no duplicate was created.'} Whop remains **READY / UNVERIFIED** until authenticated seller-side read-back and independent QA complete.`,
+          reply: `### **Whop Revenue Verification Dispatched**\n\n**Product:** ${candidate.productName}\n**Channel state:** ${candidateWhop.state}\n**Work order:** \`${dispatch.workOrder.id}\` — **${dispatch.workOrder.status}**\n**Owner:** ${dispatch.workOrder.assignedAgent} / ${dispatch.workOrder.departmentName}\n**Independent QA gate:** qa-testing-release\n\n**Next action:** ${candidate.nextAction}\n\n${dispatch.created ? 'A durable objective and work order were created and written to the audit ledger.' : 'The existing durable work order was reused; no duplicate was created.'} Whop remains **PUBLIC / SELLER QA PENDING** until authenticated seller-side read-back and independent QA complete.`,
           category: 'TASK_DISPATCH',
           suggestedArea: 'storefronts',
           actionTaken: `${dispatch.created ? 'Created' : 'Reused'} durable Whop verification work order ${dispatch.workOrder.id}`,
@@ -56,7 +57,24 @@ export class AidenEngine {
         };
       }
 
-      return { reply: `### **Whop Commercialization Work Order**\n\n**Status:** ${whop.status}\n**Owner:** ${whop.owner}\n**Independent QA:** ${whop.qaOwner}\n\n**Required stages**:\n${whop.stages.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n**Release gate:** ${whop.completionGate}\n\nNo Whop product is currently at the authenticated-verification gate. Aiden will not create a fake verification run ahead of draft/package work.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared generalized Whop commercialization workflow without fabricating external state', evidence: 'wf-whop registry entry; readiness engine found no Whop item at READY / EXTERNAL VERIFICATION.' };
+      if (candidate && candidateWhop?.state === 'READY TO PUBLISH') {
+        const dispatch = StorageEngine.ensureCommercePublicationDispatch({
+          productId: candidate.productId,
+          productName: candidate.productName,
+          channel: 'Whop',
+          nextAction: candidate.nextAction,
+          leadAgent: candidate.leadAgent
+        });
+        return {
+          reply: `### **Whop Publication Work Order Prepared**\n\n**Product:** ${candidate.productName}\n**Channel state:** ${candidateWhop.state}\n**Work order:** \`${dispatch.workOrder.id}\` — **${dispatch.workOrder.status}**\n\n**Next action:** ${candidate.nextAction}\n\n${dispatch.created ? 'A durable publication objective and work order were created.' : 'The existing publication work order was reused; no duplicate was created.'} This does not mark Whop Live. After publication, capture the exact public URL and route it through seller-side verification plus independent QA.`,
+          category: 'TASK_DISPATCH',
+          suggestedArea: 'storefronts',
+          actionTaken: `${dispatch.created ? 'Created' : 'Reused'} durable Whop publication work order ${dispatch.workOrder.id}`,
+          evidence: 'Dispatch derived from canonical readiness state READY TO PUBLISH. No public listing or Live state inferred.'
+        };
+      }
+
+      return { reply: `### **Whop Commercialization Work Order**\n\n**Status:** ${whop.status}\n**Owner:** ${whop.owner}\n**Independent QA:** ${whop.qaOwner}\n\n**Required stages**:\n${whop.stages.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n**Release gate:** ${whop.completionGate}\n\nNo Whop product is currently at the authenticated-verification gate. Aiden will not create a fake verification run ahead of draft/package work.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared generalized Whop commercialization workflow without fabricating external state', evidence: 'wf-whop registry entry; readiness engine found no Whop item at PUBLIC / SELLER QA PENDING.' };
     }
 
     if (q.includes('commercialize') && (q.includes('everywhere') || q.includes('all approved') || q.includes('all channels'))) {
@@ -170,13 +188,13 @@ export class AidenEngine {
     }
 
     if (q.includes('sell next') || q.includes('closest to revenue') || q.includes('revenue readiness') || q.includes('ready to sell') || q.includes('make money fastest')) {
-      const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL REGISTRATION': 1, 'FOUNDATION BLOCKED': 2, 'LIVE': 3 } as const;
+      const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL PUBLISH': 1, 'CHANNEL REGISTRATION': 2, 'FOUNDATION BLOCKED': 3, 'LIVE': 4 } as const;
       const ranked = [...PRODUCT_COMMERCIALIZATION_READINESS]
         .filter(item => item.state !== 'LIVE')
         .sort((a, b) => priority[a.state] - priority[b.state] || a.productName.localeCompare(b.productName));
       const lines = ranked.slice(0, 6).map((item, index) => `**${index + 1}. ${item.productName}** — ${item.state}\n   ${item.nextAction}`).join('\n\n');
       return {
-        reply: `### **Closest Products to Revenue**\n\n${lines || 'All registered commercial products are already verified Live.'}\n\nPriority is evidence-based: external verification outranks draft completion, which outranks creating a missing channel registration. No sales or live-state metrics are inferred.`,
+        reply: `### **Closest Products to Revenue**\n\n${lines || 'All registered commercial products are already verified Live.'}\n\nPriority is evidence-based: seller-side verification outranks publication, which outranks draft completion and missing channel registration. No sales or live-state metrics are inferred.`,
         category: 'LAUNCHES',
         suggestedArea: 'storefronts',
         evidence: 'Ranked from canonical product commercialization readiness state.'
@@ -190,7 +208,7 @@ export class AidenEngine {
 
       if (blockedObjectives.length === 0 && blockedProjects.length === 0) {
         return {
-          reply: `**No critical blockers detected across OCG LAB OS.**\n\nAll 12 departments are operating cleanly. The Insurance Agent AI Playbook is **LIVE on Etsy**. Whop remains **READY / UNVERIFIED** until authenticated seller-side read-back is completed.`,
+          reply: `**No critical blockers detected across OCG LAB OS.**\n\nAll 12 departments are operating cleanly. The Insurance Agent AI Playbook is **LIVE on Etsy**. Whop publication state is derived from canonical storefront evidence; public presence and seller-side verification are tracked separately.`,
           category: 'BLOCKERS',
           suggestedArea: 'command'
         };
@@ -208,7 +226,7 @@ export class AidenEngine {
 
     // 2. LAUNCHES & FASTEST REVENUE: legacy launch phrasing delegates to canonical readiness.
     if (q.includes('fastest') || q.includes('money') || q.includes('launch') || q.includes('ready to release') || q.includes('can launch')) {
-      const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL REGISTRATION': 1, 'FOUNDATION BLOCKED': 2, 'LIVE': 3 } as const;
+      const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL PUBLISH': 1, 'CHANNEL REGISTRATION': 2, 'FOUNDATION BLOCKED': 3, 'LIVE': 4 } as const;
       const ranked = [...PRODUCT_COMMERCIALIZATION_READINESS]
         .filter(item => item.state !== 'LIVE')
         .sort((a, b) => priority[a.state] - priority[b.state] || a.productName.localeCompare(b.productName));
