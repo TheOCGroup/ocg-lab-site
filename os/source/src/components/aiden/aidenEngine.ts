@@ -1,5 +1,6 @@
 import { StorageEngine } from '../../data/storageEngine';
 import { OperatingArea } from '../../types';
+import { COMMERCIAL_WORKFLOWS, COMMERCIALIZATION_LIFECYCLE } from '../../data/commercializationWorkflows';
 
 export interface AidenResolution {
   reply: string;
@@ -13,6 +14,31 @@ export class AidenEngine {
   public static processQuery(rawQuery: string): AidenResolution {
     const q = rawQuery.toLowerCase().trim();
     const state = StorageEngine.loadState();
+
+    // COMMERCE CONTROL PLANE — generalized channel/workflow commands.
+    if (q.includes('commercialization status') || q.includes('storefront status') || q.includes('commerce status')) {
+      const lines = COMMERCIAL_WORKFLOWS.map(w => `• **${w.name}** — ${w.status}: ${w.completionGate}`).join('\n');
+      return { reply: `### **OCG LAB Commercialization Control Plane**\n\n${lines}\n\n**Lifecycle**: ${COMMERCIALIZATION_LIFECYCLE.join(' → ')}\n\nOnly externally verified channels may be represented as live.`, category: 'EXECUTIVE_BRIEFING', suggestedArea: 'storefronts', evidence: 'Commercial workflow registry; live state requires external verification.' };
+    }
+
+    if ((q.includes('prepare') || q.includes('commercialize')) && q.includes('whop')) {
+      const whop = COMMERCIAL_WORKFLOWS.find(w => w.id === 'wf-whop')!;
+      return { reply: `### **Whop Commercialization Work Order**\n\n**Status:** ${whop.status}\n**Owner:** ${whop.owner}\n**Independent QA:** ${whop.qaOwner}\n\n**Required stages**:\n${whop.stages.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n**Release gate:** ${whop.completionGate}\n\nWhop remains **READY / UNVERIFIED** until the authenticated seller account, product, pricing, checkout and buyer access are read back from Whop. Do not infer live state from local catalog records.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared generalized Whop commercialization workflow without fabricating external state', evidence: 'wf-whop registry entry; authenticated Whop verification still required.' };
+    }
+
+    if (q.includes('commercialize') && (q.includes('everywhere') || q.includes('all approved') || q.includes('all channels'))) {
+      const channelWorkflows = COMMERCIAL_WORKFLOWS.filter(w => ['wf-etsy', 'wf-whop', 'wf-direct'].includes(w.id));
+      return { reply: `### **Multi-Channel Commercialization Plan**\n\n${channelWorkflows.map(w => `• **${w.name}** — ${w.status}\n  ${w.stages.join(' → ')}`).join('\n\n')}\n\nAiden will reuse the certified product package, adapt only channel-specific presentation/fulfillment, require independent QA, and refuse to mark a channel LIVE until public buyer verification succeeds.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Decomposed product commercialization across approved channel adapters', evidence: 'Universal commercialization lifecycle and channel adapters.' };
+    }
+
+    if (q.includes('incomplete listing') || q.includes('incomplete storefront') || q.includes('which storefronts')) {
+      const incomplete = COMMERCIAL_WORKFLOWS.filter(w => !['CERTIFIED', 'CONNECTED'].includes(w.status));
+      return { reply: `### **Incomplete / Unverified Commerce Workflows**\n\n${incomplete.map(w => `• **${w.name}** — ${w.status}: ${w.completionGate}`).join('\n')}\n\nThese states are operational truth, not simulated sales activity.`, category: 'STATUS', suggestedArea: 'storefronts' };
+    }
+
+    if (q.includes('audit') && (q.includes('buyer') || q.includes('access link') || q.includes('live link'))) {
+      return { reply: `### **Buyer Access Audit Dispatch**\n\nAiden has prepared a verification run for every channel marked connected/certified. Required evidence: public HTTP reachability, correct product/price, fulfillment/access path, mobile usability, and zero broken buyer links. Any channel without external read-back remains **VERIFY**, never LIVE by inference.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared buyer-access verification across certified/connected commerce channels', evidence: 'External read-back required before live-state certification.' };
+    }
 
     // 0A. DIRECTIVE: "Aiden, authorize publication of the Insurance Agent AI Playbook to Etsy..."
     if (
