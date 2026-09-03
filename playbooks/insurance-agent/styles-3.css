@@ -120,7 +120,7 @@ body.dark .chapter-index {
   .page:last-child {break-after:auto !important;page-break-after:auto !important;}
   .page.left:after,.page.right:before,.cover-overlay {display:none !important;}
   .cover-page {padding:0 !important;min-height:10.1in !important;display:flex !important;align-items:center !important;justify-content:center !important;}
-  .cover-page img {display:block !important;max-width:100% !important;max-height:10.1in !important;width:auto !important;height:auto !important;object-fit:contain !important;margin:auto !important;}
+  .cover-page img,.cover-art {display:flex !important;max-width:100% !important;max-height:10.1in !important;width:100% !important;height:10.1in !important;object-fit:contain !important;margin:auto !important;}
   .chapter-title {font-size:34pt !important;line-height:0.98 !important;margin:8pt 0 13pt !important;}
   .chapter-cover h2 {font-size:38pt !important;}
   .chapter-index {font-size:92pt !important;color:#dcecff !important;}

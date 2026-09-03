@@ -1,0 +1,4 @@
+.recordbox{overflow:hidden}
+.recordbox video{width:min(100%,420px);aspect-ratio:9/16;max-height:640px;object-fit:cover;border-radius:16px;background:#02060b}
+.recordbox video[hidden]{display:none}
+#teleprompter{max-height:320px;overflow:auto}
