@@ -6,13 +6,13 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     productId: 'playbook-insurance',
     productName: 'Insurance Agent AI Playbook',
     channel: 'Etsy',
-    listingTitle: 'Insurance Agent AI Playbook: The Complete Agency Implementation Guide & Prompt Vault (PDF + Digital Edition)',
-    price: 47,
-    status: 'Ready',
-    fulfillmentUrl: 'https://theocgroup.github.io/ocg-lab-site/insurance-agent-playbook/',
+    listingTitle: 'Insurance Agent AI Playbook | ChatGPT Prompts for Insurance Agents | Sales Follow Up System | Digital Download',
+    price: 19,
+    status: 'Live',
+    fulfillmentUrl: 'https://www.etsy.com/listing/4568082033/insurance-agent-ai-playbook-chatgpt',
     listingAssetPack: 'OCG_LAB_Insurance_Agent_ETSY_COMPLETE_PACKAGE_FINAL.zip (14.3MB)',
-    orderCount: 14,
-    deliveryFormat: 'Instant PDF Access Guide + Web Chassis Link'
+    orderCount: 0,
+    deliveryFormat: 'Instant PDF Access Guide + 14.3MB Complete Archive (Etsy Digital Files)'
   },
   {
     id: 'store-ins-playbook-whop',
