@@ -7,7 +7,7 @@
     "dev": "vite --port 5173 --host",
     "build": "tsc && vite build",
     "lint": "tsc --noEmit",
-    "test": "npx tsx --test tests/ocg-lab-os-verification.test.mjs",
+    "test": "npx tsx --test tests/*.test.mjs",
     "preview": "vite preview --port 5173 --host"
   },
   "dependencies": {

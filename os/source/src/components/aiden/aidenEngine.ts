@@ -1,5 +1,6 @@
 import { StorageEngine } from '../../data/storageEngine';
 import { OperatingArea } from '../../types';
+import { COMMERCIAL_WORKFLOWS, COMMERCIALIZATION_LIFECYCLE } from '../../data/commercializationWorkflows';
 
 export interface AidenResolution {
   reply: string;
@@ -13,6 +14,31 @@ export class AidenEngine {
   public static processQuery(rawQuery: string): AidenResolution {
     const q = rawQuery.toLowerCase().trim();
     const state = StorageEngine.loadState();
+
+    // COMMERCE CONTROL PLANE — generalized channel/workflow commands.
+    if (q.includes('commercialization status') || q.includes('storefront status') || q.includes('commerce status')) {
+      const lines = COMMERCIAL_WORKFLOWS.map(w => `• **${w.name}** — ${w.status}: ${w.completionGate}`).join('\n');
+      return { reply: `### **OCG LAB Commercialization Control Plane**\n\n${lines}\n\n**Lifecycle**: ${COMMERCIALIZATION_LIFECYCLE.join(' → ')}\n\nOnly externally verified channels may be represented as live.`, category: 'EXECUTIVE_BRIEFING', suggestedArea: 'storefronts', evidence: 'Commercial workflow registry; live state requires external verification.' };
+    }
+
+    if ((q.includes('prepare') || q.includes('commercialize')) && q.includes('whop')) {
+      const whop = COMMERCIAL_WORKFLOWS.find(w => w.id === 'wf-whop')!;
+      return { reply: `### **Whop Commercialization Work Order**\n\n**Status:** ${whop.status}\n**Owner:** ${whop.owner}\n**Independent QA:** ${whop.qaOwner}\n\n**Required stages**:\n${whop.stages.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n**Release gate:** ${whop.completionGate}\n\nWhop remains **READY / UNVERIFIED** until the authenticated seller account, product, pricing, checkout and buyer access are read back from Whop. Do not infer live state from local catalog records.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared generalized Whop commercialization workflow without fabricating external state', evidence: 'wf-whop registry entry; authenticated Whop verification still required.' };
+    }
+
+    if (q.includes('commercialize') && (q.includes('everywhere') || q.includes('all approved') || q.includes('all channels'))) {
+      const channelWorkflows = COMMERCIAL_WORKFLOWS.filter(w => ['wf-etsy', 'wf-whop', 'wf-direct'].includes(w.id));
+      return { reply: `### **Multi-Channel Commercialization Plan**\n\n${channelWorkflows.map(w => `• **${w.name}** — ${w.status}\n  ${w.stages.join(' → ')}`).join('\n\n')}\n\nAiden will reuse the certified product package, adapt only channel-specific presentation/fulfillment, require independent QA, and refuse to mark a channel LIVE until public buyer verification succeeds.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Decomposed product commercialization across approved channel adapters', evidence: 'Universal commercialization lifecycle and channel adapters.' };
+    }
+
+    if (q.includes('incomplete listing') || q.includes('incomplete storefront') || q.includes('which storefronts')) {
+      const incomplete = COMMERCIAL_WORKFLOWS.filter(w => !['CERTIFIED', 'CONNECTED'].includes(w.status));
+      return { reply: `### **Incomplete / Unverified Commerce Workflows**\n\n${incomplete.map(w => `• **${w.name}** — ${w.status}: ${w.completionGate}`).join('\n')}\n\nThese states are operational truth, not simulated sales activity.`, category: 'STATUS', suggestedArea: 'storefronts' };
+    }
+
+    if (q.includes('audit') && (q.includes('buyer') || q.includes('access link') || q.includes('live link'))) {
+      return { reply: `### **Buyer Access Audit Dispatch**\n\nAiden has prepared a verification run for every channel marked connected/certified. Required evidence: public HTTP reachability, correct product/price, fulfillment/access path, mobile usability, and zero broken buyer links. Any channel without external read-back remains **VERIFY**, never LIVE by inference.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', actionTaken: 'Prepared buyer-access verification across certified/connected commerce channels', evidence: 'External read-back required before live-state certification.' };
+    }
 
     // 0A. DIRECTIVE: "Aiden, authorize publication of the Insurance Agent AI Playbook to Etsy..."
     if (
@@ -102,7 +128,7 @@ export class AidenEngine {
 
       if (blockedObjectives.length === 0 && blockedProjects.length === 0) {
         return {
-          reply: `**No critical blockers detected across OCG LAB OS.**\n\nAll 12 departments are operating cleanly. The Insurance Agent AI Playbook is in state **READY TO LIST** and awaiting Founder live publication approval.`,
+          reply: `**No critical blockers detected across OCG LAB OS.**\n\nAll 12 departments are operating cleanly. The Insurance Agent AI Playbook is **LIVE on Etsy**. Whop remains **READY / UNVERIFIED** until authenticated seller-side read-back is completed.`,
           category: 'BLOCKERS',
           suggestedArea: 'command'
         };
@@ -122,10 +148,10 @@ export class AidenEngine {
     if (q.includes('fastest') || q.includes('money') || q.includes('launch') || q.includes('ready to release') || q.includes('can launch')) {
       return {
         reply: `**Fastest Revenue Opportunities (Immediate Commercial Distribution):**\n\n` +
-          `1. **Insurance Agent AI Playbook ($19.00 / Etsy & Whop)**\n` +
-          `   - Status: **READY TO LIST**\n` +
-          `   - Deliverables: 14.3MB complete Etsy package, 13 tags, 6 compliant images, instant access PDF guide.\n` +
-          `   - Time to revenue: Immediate upon Founder publish authorization.\n\n` +
+          `1. **Insurance Agent AI Playbook ($19.00)**\n` +
+          `   - Etsy: **LIVE & BUYER-VERIFIED** (listing 4568082033)\n` +
+          `   - Whop: **READY / UNVERIFIED** pending authenticated storefront audit\n` +
+          `   - Deliverables: certified playbook package, media, access guide, and fulfillment archive.\n\n` +
           `2. **Real Estate Investor AI Playbook ($19.00 - $47.00)**\n` +
           `   - Status: **RELEASE CERTIFIED**\n` +
           `   - Deliverables: Interactive underwriting playbook with 70% rule calculator.\n\n` +
@@ -135,7 +161,7 @@ export class AidenEngine {
           `4. **4-in-1 Financial Calculator Suite ($67.00)**\n` +
           `   - Status: **READY**\n` +
           `   - BRRRR, Fix & Flip, Rental, and Wholesaler calculators.\n\n` +
-          `*Aiden Recommendation: Authorize the Insurance Agent AI Playbook listing on Etsy to begin immediate marketplace cashflow.*`,
+          `*Aiden Recommendation: Certify the Whop buyer journey next, then push the second-wave products through the reusable commercialization pipeline.*`,
         category: 'LAUNCHES',
         suggestedArea: 'storefronts'
       };
@@ -201,8 +227,9 @@ export class AidenEngine {
           `• Master Chassis: Insurance Agent AI Playbook V10 Print Fixed (PASS)\n` +
           `• AI PRO: Insurance Agent AI PRO Access Guide Final (PASS)\n` +
           `• Storefront Delivery: 14.3MB Complete Etsy Package verified in Downloads\n` +
-          `• Commercial Readiness: READY TO LIST\n\n` +
-          `*Action executed: Objective state confirmed READY TO LIST. All 8 work orders green.*`,
+          `• Etsy Commerce Status: LIVE & BUYER-VERIFIED\n` +
+          `• Whop Commerce Status: READY / UNVERIFIED pending authenticated audit\n\n` +
+          `*Action executed: Product package remains certified; Etsy is live and Whop is the next external certification gate.*`,
         category: 'TASK_DISPATCH',
         suggestedArea: 'command',
         actionTaken: 'Aiden validated Insurance Agent commercial package',
@@ -254,7 +281,9 @@ export class AidenEngine {
     return {
       reply: `**Aiden Executive Operational Intelligence:**\n\n` +
         `I am actively coordinating the OCG LAB Operating System. Available executive directives:\n` +
-        `• *"Aiden, get this OCG LAB Digital Playbook commercially ready for Etsy."*\n` +
+        `• *"Aiden, prepare this product for Whop."*\n` +
+          `• *"Aiden, commercialize this product across all approved channels."*\n` +
+          `• *"Aiden, give me the commercialization status of the company."*\n` +
         `• *"What is blocking the Lab?"*\n` +
         `• *"What should OCG LAB work on right now?"*\n` +
         `• *"Which products can make money fastest?"*\n` +
