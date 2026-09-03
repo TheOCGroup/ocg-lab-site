@@ -1,3 +1,4 @@
+// Lender AI SUPER PRO production health check. Touch 2026-09-02 to refresh deployment environment.
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
   if(req.method!=='GET') return res.status(405).json({error:'GET required'});
