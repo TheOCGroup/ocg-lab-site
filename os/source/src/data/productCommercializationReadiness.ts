@@ -60,15 +60,15 @@ export const PRODUCT_COMMERCIALIZATION_READINESS: ProductCommercializationReadin
   if (blockers.length > 0) {
     state = 'FOUNDATION BLOCKED';
     nextAction = blockers[0];
-  } else if (missingRegistration) {
-    state = 'CHANNEL REGISTRATION';
-    nextAction = `Register ${missingRegistration.channel} commercialization record using the ${template.productType} template; do not infer external live state.`;
-  } else if (draftChannel) {
-    state = 'CHANNEL VERIFICATION';
-    nextAction = `Complete ${draftChannel.channel} channel package and QA before external verification.`;
   } else if (verificationChannel) {
     state = 'CHANNEL VERIFICATION';
     nextAction = `Perform authenticated external verification for ${verificationChannel.channel}; only then may it be marked Live.`;
+  } else if (draftChannel) {
+    state = 'CHANNEL VERIFICATION';
+    nextAction = `Complete ${draftChannel.channel} channel package and QA before external verification.`;
+  } else if (missingRegistration) {
+    state = 'CHANNEL REGISTRATION';
+    nextAction = `Register ${missingRegistration.channel} commercialization record using the ${template.productType} template; do not infer external live state.`;
   } else if (allLive) {
     state = 'LIVE';
     nextAction = 'Run buyer-experience QA, analytics, support, and optimization without fabricating commerce metrics.';

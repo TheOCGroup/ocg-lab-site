@@ -55,3 +55,15 @@ test('C8 real portfolio products are deterministically assigned to commercializa
   assert.match(page, /Next action:/);
 });
 
+test('C9 Aiden ranks real product readiness for revenue instead of using hard-coded launch claims', () => {
+  const readiness = fs.readFileSync(new URL('../src/data/productCommercializationReadiness.ts', import.meta.url), 'utf8');
+  assert.match(aiden, /PRODUCT_COMMERCIALIZATION_READINESS/);
+  for (const phrase of ['sell next','closest to revenue','Whop Revenue Gate','evidence-based','No sales or live-state metrics are inferred']) assert.match(aiden, new RegExp(phrase, 'i'));
+  assert.match(aiden, /priority\[a\.state\] - priority\[b\.state\]/);
+  assert.doesNotMatch(aiden, /Fastest Revenue Opportunities \(Immediate Commercial Distribution\)/);
+  const verificationIndex = readiness.indexOf("else if (verificationChannel)");
+  const draftIndex = readiness.indexOf("else if (draftChannel)");
+  const registrationIndex = readiness.indexOf("else if (missingRegistration)");
+  assert.ok(verificationIndex > -1 && verificationIndex < draftIndex && draftIndex < registrationIndex, 'revenue priority must be verification > draft > registration');
+});
+

@@ -1,6 +1,7 @@
 import { StorageEngine } from '../../data/storageEngine';
 import { OperatingArea } from '../../types';
 import { COMMERCIAL_WORKFLOWS, COMMERCIALIZATION_LIFECYCLE } from '../../data/commercializationWorkflows';
+import { PRODUCT_COMMERCIALIZATION_READINESS } from '../../data/productCommercializationReadiness';
 
 export interface AidenResolution {
   reply: string;
@@ -121,6 +122,35 @@ export class AidenEngine {
       };
     }
 
+    // REVENUE READINESS — derived from canonical portfolio + storefront state.
+    if ((q.includes('whop') && (q.includes('blocking') || q.includes('blocked') || q.includes('ready') || q.includes('status'))) || q.includes("what's blocking whop") || q.includes('what is blocking whop')) {
+      const whopItems = PRODUCT_COMMERCIALIZATION_READINESS.filter(item => item.channels.some(channel => channel.channel === 'Whop' && channel.state !== 'VERIFIED LIVE'));
+      const lines = whopItems.map(item => {
+        const whop = item.channels.find(channel => channel.channel === 'Whop');
+        return `• **${item.productName}** — ${whop?.state || 'NOT REGISTERED'}\n  Next: ${item.nextAction}`;
+      }).join('\n\n');
+      return {
+        reply: `### **Whop Revenue Gate**\n\n${lines || 'No Whop-targeted products require action.'}\n\nWhop is never represented as Live until authenticated external verification confirms the seller-side product and buyer journey.`,
+        category: 'BLOCKERS',
+        suggestedArea: 'storefronts',
+        evidence: 'Derived from PRODUCT_COMMERCIALIZATION_READINESS using exact portfolio/storefront product IDs.'
+      };
+    }
+
+    if (q.includes('sell next') || q.includes('closest to revenue') || q.includes('revenue readiness') || q.includes('ready to sell') || q.includes('make money fastest')) {
+      const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL REGISTRATION': 1, 'FOUNDATION BLOCKED': 2, 'LIVE': 3 } as const;
+      const ranked = [...PRODUCT_COMMERCIALIZATION_READINESS]
+        .filter(item => item.state !== 'LIVE')
+        .sort((a, b) => priority[a.state] - priority[b.state] || a.productName.localeCompare(b.productName));
+      const lines = ranked.slice(0, 6).map((item, index) => `**${index + 1}. ${item.productName}** — ${item.state}\n   ${item.nextAction}`).join('\n\n');
+      return {
+        reply: `### **Closest Products to Revenue**\n\n${lines || 'All registered commercial products are already verified Live.'}\n\nPriority is evidence-based: external verification outranks draft completion, which outranks creating a missing channel registration. No sales or live-state metrics are inferred.`,
+        category: 'LAUNCHES',
+        suggestedArea: 'storefronts',
+        evidence: 'Ranked from canonical product commercialization readiness state.'
+      };
+    }
+
     // 1. BLOCKERS: "What is blocking?" or "What is blocking the storefront?"
     if (q.includes('blocking') || q.includes('blocker') || q.includes('blocked')) {
       const blockedObjectives = state.objectives.filter(o => o.blockers && o.blockers.length > 0);
@@ -144,26 +174,18 @@ export class AidenEngine {
       };
     }
 
-    // 2. LAUNCHES & FASTEST REVENUE: "Which products can make money fastest?" or "Which products can launch?"
+    // 2. LAUNCHES & FASTEST REVENUE: legacy launch phrasing delegates to canonical readiness.
     if (q.includes('fastest') || q.includes('money') || q.includes('launch') || q.includes('ready to release') || q.includes('can launch')) {
+      const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL REGISTRATION': 1, 'FOUNDATION BLOCKED': 2, 'LIVE': 3 } as const;
+      const ranked = [...PRODUCT_COMMERCIALIZATION_READINESS]
+        .filter(item => item.state !== 'LIVE')
+        .sort((a, b) => priority[a.state] - priority[b.state] || a.productName.localeCompare(b.productName));
+      const lines = ranked.slice(0, 6).map((item, index) => `**${index + 1}. ${item.productName}** — ${item.state}\n   ${item.nextAction}`).join('\n\n');
       return {
-        reply: `**Fastest Revenue Opportunities (Immediate Commercial Distribution):**\n\n` +
-          `1. **Insurance Agent AI Playbook ($19.00)**\n` +
-          `   - Etsy: **LIVE & BUYER-VERIFIED** (listing 4568082033)\n` +
-          `   - Whop: **READY / UNVERIFIED** pending authenticated storefront audit\n` +
-          `   - Deliverables: certified playbook package, media, access guide, and fulfillment archive.\n\n` +
-          `2. **Real Estate Investor AI Playbook ($19.00 - $47.00)**\n` +
-          `   - Status: **RELEASE CERTIFIED**\n` +
-          `   - Deliverables: Interactive underwriting playbook with 70% rule calculator.\n\n` +
-          `3. **LeadFlow AI PRO ($197.00 - $497.00)**\n` +
-          `   - Status: **COMMERCIALIZATION**\n` +
-          `   - Deliverables: Full DIY & Assisted lead acquisition system.\n\n` +
-          `4. **4-in-1 Financial Calculator Suite ($67.00)**\n` +
-          `   - Status: **READY**\n` +
-          `   - BRRRR, Fix & Flip, Rental, and Wholesaler calculators.\n\n` +
-          `*Aiden Recommendation: Certify the Whop buyer journey next, then push the second-wave products through the reusable commercialization pipeline.*`,
+        reply: `### **Fastest Revenue Opportunities**\n\n${lines || 'All registered commercial products are already verified Live.'}\n\n*Aiden Recommendation: finish the nearest verified channel gate first; do not open a new channel ahead of a product already awaiting external verification.*`,
         category: 'LAUNCHES',
-        suggestedArea: 'storefronts'
+        suggestedArea: 'storefronts',
+        evidence: 'Derived from canonical readiness; no hard-coded product ranking or fabricated commerce metrics.'
       };
     }
 
@@ -284,6 +306,8 @@ export class AidenEngine {
         `• *"Aiden, prepare this product for Whop."*\n` +
           `• *"Aiden, commercialize this product across all approved channels."*\n` +
           `• *"Aiden, give me the commercialization status of the company."*\n` +
+          `• *"Aiden, what can I sell next?"*\n` +
+          `• *"Aiden, what's blocking Whop?"*\n` +
         `• *"What is blocking the Lab?"*\n` +
         `• *"What should OCG LAB work on right now?"*\n` +
         `• *"Which products can make money fastest?"*\n` +
