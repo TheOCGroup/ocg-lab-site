@@ -1,4 +1,22 @@
-@media(max-width:1050px){.stage{grid-template-columns:1fr}.sidebar{display:none}.mobile-chapters{display:block}.book{height:auto;min-height:0}.spread{position:relative;display:none;grid-template-columns:1fr}.spread.active{display:grid}.page{min-height:650px}.page.left,.page.right{border-radius:24px;margin-bottom:14px}.page.left:after,.page.right:before{display:none}.visual-system{grid-template-columns:1fr}.node:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-19px}.decision{grid-template-columns:1fr}.metric-row{grid-template-columns:1fr 1fr}.reader{padding-top:18px}.chapter-title{font-size:52px}}
+@media(max-width:1050px){
+  .stage{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .mobile-chapters{display:block}
+  .book{height:auto !important;min-height:0 !important;aspect-ratio:auto !important;filter:none !important}
+  .spread{position:relative;display:none;grid-template-columns:1fr;height:auto !important;min-height:0 !important}
+  .spread.active{display:grid}
+  .page{min-height:auto;padding:24px 20px 40px;margin-bottom:16px}
+  .page.left,.page.right{border-radius:20px}
+  .page.left:after,.page.right:before{display:none}
+  .visual-system{grid-template-columns:1fr}
+  .node:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-19px}
+  .decision{grid-template-columns:1fr}
+  .metric-row{grid-template-columns:1fr 1fr}
+  .reader{padding:16px 12px 60px}
+  .chapter-title{font-size:36px}
+  .controls{position:sticky;bottom:10px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(16px);padding:10px 14px;border-radius:18px;border:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:45;margin:16px auto 0}
+  .assistant-orb{width:52px;height:52px;right:14px;bottom:76px;z-index:60}
+}
 @media(max-width:620px){.topbar{padding:0 12px}.brand span{display:none}.top-actions .pill-btn:not(.primary){display:none}.reader{padding:14px 10px 34px}.page{padding:26px 20px;min-height:610px}.cards{grid-template-columns:1fr}.metric-row{grid-template-columns:1fr}.chapter-title{font-size:42px}.chapter-cover h2{font-size:48px}.controls{padding:0 5px}.controls .center{display:none}.cover-page{min-height:0;aspect-ratio:4/5}.assistant-orb{right:16px;bottom:16px}}
 /* legacy print styles superseded by V10 */
 
