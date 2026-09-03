@@ -9,6 +9,8 @@ import {
   ReleaseCertification,
   ObjectiveRecord,
   WorkOrder,
+  WorkOrderQaResult,
+  OperatingArtifact,
   AuditEvent
 } from '../types';
 import { PROJECTS_DATA } from './projects';
@@ -242,6 +244,81 @@ export class StorageEngine {
       evidence: 'Dispatch created from canonical product commercialization readiness; external Live state remains unverified until authenticated read-back and independent QA complete.'
     });
     return { objective, workOrder, created: true };
+  }
+
+  public static completeCommerceVerification(input: {
+    workOrderId: string;
+    externalEvidence: {
+      sourceUrl: string;
+      verifiedFields: string[];
+      checkedAt: string;
+    };
+    qaResult: WorkOrderQaResult;
+  }): { workOrder: WorkOrder; objective: ObjectiveRecord; storefrontItem: StorefrontItem } {
+    const state = this.loadState();
+    const workOrder = state.workOrders.find(item => item.id === input.workOrderId);
+    if (!workOrder || !workOrder.id.startsWith('wo-commerce-verify-')) {
+      throw new Error('Commerce verification work order not found.');
+    }
+    if (!input.externalEvidence.sourceUrl.trim() || input.externalEvidence.verifiedFields.length === 0 || !input.externalEvidence.checkedAt.trim()) {
+      throw new Error('Authenticated external evidence is required before commerce verification can complete.');
+    }
+    if (input.qaResult.verdict !== 'PASS' || input.qaResult.inspectorAgent === workOrder.assignedAgent || !input.qaResult.evidence.trim()) {
+      throw new Error('Independent QA PASS evidence from a non-builder inspector is required before commerce verification can complete.');
+    }
+
+    const channelKey = workOrder.id.split('-').at(-1);
+    const channel = channelKey === 'whop' ? 'Whop' : channelKey === 'etsy' ? 'Etsy' : channelKey === 'direct' ? 'Direct' : null;
+    if (!channel) throw new Error('Commerce verification channel is invalid.');
+    const productId = workOrder.id.slice('wo-commerce-verify-'.length, -(channelKey!.length + 1));
+    const objective = state.objectives.find(item => item.id === workOrder.objectiveId);
+    if (!objective) throw new Error('Commerce verification objective not found.');
+    const storefrontItem = state.storefrontItems.find(item => item.productId === productId && item.channel === channel);
+    if (!storefrontItem) throw new Error('Matching storefront record not found; Live state cannot be inferred.');
+    if (storefrontItem.status !== 'Ready' && storefrontItem.status !== 'Live') {
+      throw new Error(`Storefront must be Ready before authenticated verification can mark it Live; current state is ${storefrontItem.status}.`);
+    }
+
+    const now = new Date().toISOString();
+    const evidenceArtifact: OperatingArtifact = {
+      id: `art-commerce-verify-${productId}-${channelKey}`,
+      name: `${channel} authenticated external verification`,
+      type: 'URL',
+      pathOrUrl: input.externalEvidence.sourceUrl,
+      verificationStatus: 'VERIFIED',
+      summary: `Authenticated external read-back verified: ${input.externalEvidence.verifiedFields.join(', ')}. Checked ${input.externalEvidence.checkedAt}.`
+    };
+    const completedWorkOrder: WorkOrder = {
+      ...workOrder,
+      status: 'COMPLETED',
+      artifacts: [...workOrder.artifacts.filter(item => item.id !== evidenceArtifact.id), evidenceArtifact],
+      qaResult: input.qaResult,
+      updatedAt: now
+    };
+    const completedObjective: ObjectiveRecord = {
+      ...objective,
+      status: 'COMPLETED',
+      blockers: [],
+      completionEvidence: `${channel} authenticated external evidence and independent QA PASS recorded for ${objective.targetProduct}.`,
+      finalCommerceStatus: 'LIVE',
+      updatedAt: now
+    };
+    const liveStorefront: StorefrontItem = { ...storefrontItem, status: 'Live' };
+
+    this.saveState({
+      workOrders: state.workOrders.map(item => item.id === workOrder.id ? completedWorkOrder : item),
+      objectives: state.objectives.map(item => item.id === objective.id ? completedObjective : item),
+      storefrontItems: state.storefrontItems.map(item => item.id === storefrontItem.id ? liveStorefront : item)
+    });
+    this.addAuditEvent({
+      actor: input.qaResult.inspectorAgent,
+      role: 'Independent QA',
+      action: 'COMPLETE_COMMERCE_VERIFICATION',
+      target: `${objective.targetProduct} / ${channel}`,
+      result: `${storefrontItem.id} transitioned Ready → Live`,
+      evidence: `${input.externalEvidence.sourceUrl} | ${input.qaResult.evidence}`
+    });
+    return { workOrder: completedWorkOrder, objective: completedObjective, storefrontItem: liveStorefront };
   }
 
   public static addAuditEvent(event: Omit<AuditEvent, 'id' | 'timestamp'>): AuditEvent {

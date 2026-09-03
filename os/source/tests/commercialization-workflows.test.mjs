@@ -82,3 +82,18 @@ test('C10 Aiden can persist an idempotent authenticated commerce verification wo
   assert.match(aiden, /No external Live state inferred/);
 });
 
+test('C11 commerce verification completion fails closed until authenticated evidence and independent QA are present', () => {
+  const storage = fs.readFileSync(new URL('../src/data/storageEngine.ts', import.meta.url), 'utf8');
+  assert.match(storage, /completeCommerceVerification/);
+  assert.match(storage, /Authenticated external evidence is required/);
+  assert.match(storage, /Independent QA PASS evidence from a non-builder inspector is required/);
+  assert.match(storage, /input\.qaResult\.inspectorAgent === workOrder\.assignedAgent/);
+  assert.match(storage, /item\.productId === productId && item\.channel === channel/);
+  assert.match(storage, /Matching storefront record not found; Live state cannot be inferred/);
+  assert.match(storage, /storefrontItem\.status !== 'Ready' && storefrontItem\.status !== 'Live'/);
+  assert.match(storage, /status: 'Live'/);
+  assert.match(storage, /finalCommerceStatus: 'LIVE'/);
+  assert.match(storage, /COMPLETE_COMMERCE_VERIFICATION/);
+  assert.match(storage, /transitioned Ready → Live/);
+});
+
