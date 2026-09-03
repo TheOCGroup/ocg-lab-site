@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { STOREFRONT_ITEMS_DATA } from "../data/storefronts";
 import { COMMERCIALIZATION_LIFECYCLE, COMMERCIAL_WORKFLOWS } from "../data/commercializationWorkflows";
 import { PRODUCT_COMMERCIALIZATION_TEMPLATES } from "../data/productCommercializationTemplates";
+import { PRODUCT_COMMERCIALIZATION_READINESS } from "../data/productCommercializationReadiness";
 import { StorefrontItem } from "../types";
 import { CheckCircle2, CircleDot, ExternalLink, ShieldCheck } from "lucide-react";
 
@@ -14,6 +15,9 @@ export const StorefrontsPage: React.FC = () => {
 
   const liveItems = STOREFRONT_ITEMS_DATA.filter(i => i.status === 'Live').length;
   const readyItems = STOREFRONT_ITEMS_DATA.filter(i => i.status === 'Ready').length;
+  const readinessLive = PRODUCT_COMMERCIALIZATION_READINESS.filter(item => item.state === 'LIVE').length;
+  const readinessRegistration = PRODUCT_COMMERCIALIZATION_READINESS.filter(item => item.state === 'CHANNEL REGISTRATION').length;
+  const readinessVerification = PRODUCT_COMMERCIALIZATION_READINESS.filter(item => item.state === 'CHANNEL VERIFICATION').length;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -106,6 +110,42 @@ export const StorefrontsPage: React.FC = () => {
                 ))}
               </div>
               <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-500"><span className="font-semibold text-slate-400">Done when:</span> {template.completionGate}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <div className="flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h2 className="text-white font-bold text-lg">Product Commercialization Readiness</h2>
+            <p className="text-xs text-slate-400">Real portfolio products are assigned to their product-type template and checked against actual channel records. Missing registrations stay visible instead of being inferred.</p>
+          </div>
+          <div className="flex gap-2 text-[10px] font-mono flex-wrap">
+            <span className="px-2.5 py-1 rounded-full border border-emerald-500/30 text-emerald-300 bg-emerald-500/10">LIVE {readinessLive}</span>
+            <span className="px-2.5 py-1 rounded-full border border-cyan-500/30 text-cyan-300 bg-cyan-500/10">VERIFY {readinessVerification}</span>
+            <span className="px-2.5 py-1 rounded-full border border-amber-500/30 text-amber-300 bg-amber-500/10">REGISTER {readinessRegistration}</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {PRODUCT_COMMERCIALIZATION_READINESS.map(item => (
+            <div key={item.productId} className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-bold text-white">{item.productName}</h3>
+                  <p className="text-[10px] font-mono text-slate-400 mt-1">{item.productType} · Lead: {item.leadAgent}</p>
+                </div>
+                <span className={`text-[9px] px-2 py-1 rounded-full font-mono border ${item.state === 'LIVE' ? 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10' : item.state === 'FOUNDATION BLOCKED' ? 'text-rose-300 border-rose-500/30 bg-rose-500/10' : item.state === 'CHANNEL REGISTRATION' ? 'text-amber-300 border-amber-500/30 bg-amber-500/10' : 'text-cyan-300 border-cyan-500/30 bg-cyan-500/10'}`}>{item.state}</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {item.channels.map(channel => (
+                  <span key={`${item.productId}-${channel.channel}`} className="px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[9px] font-mono text-slate-300">{channel.channel}: {channel.state}</span>
+                ))}
+              </div>
+              {item.blockers.length > 0 && (
+                <div className="space-y-1">{item.blockers.map(blocker => <div key={blocker} className="text-[10px] text-rose-300">• {blocker}</div>)}</div>
+              )}
+              <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-400"><span className="font-semibold text-slate-300">Next action:</span> {item.nextAction}</div>
             </div>
           ))}
         </div>
