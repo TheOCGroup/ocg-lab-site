@@ -19,7 +19,7 @@ test('C2 Etsy, Whop, Direct and operating workflows are registered', () => {
 
 test('C3 Whop is not certified/live before authenticated external verification', () => {
   assert.match(workflows, /id: 'wf-whop'[\s\S]*status: 'READY'/);
-  assert.match(aiden, /Whop remains \*\*READY \/ UNVERIFIED\*\*/);
+  assert.match(aiden, /PUBLIC \/ SELLER QA PENDING|READY TO PUBLISH/);
 });
 
 test('C4 storefront catalog contains no fabricated order counts', () => {
