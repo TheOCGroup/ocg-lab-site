@@ -157,6 +157,93 @@ export class StorageEngine {
     return updated;
   }
 
+  public static ensureCommerceVerificationDispatch(input: {
+    productId: string;
+    productName: string;
+    channel: 'Whop' | 'Etsy' | 'Direct';
+    nextAction: string;
+    leadAgent: string;
+  }): { objective: ObjectiveRecord; workOrder: WorkOrder; created: boolean } {
+    const state = this.loadState();
+    const channelKey = input.channel.toLowerCase();
+    const objectiveId = `obj-commerce-verify-${input.productId}-${channelKey}`;
+    const workOrderId = `wo-commerce-verify-${input.productId}-${channelKey}`;
+    const now = new Date().toISOString();
+    const existingObjective = state.objectives.find(objective => objective.id === objectiveId);
+    const existingWorkOrder = state.workOrders.find(workOrder => workOrder.id === workOrderId);
+
+    if (existingObjective && existingWorkOrder) {
+      if (existingWorkOrder.status !== 'COMPLETED') {
+        const objective: ObjectiveRecord = { ...existingObjective, status: 'EXECUTING', updatedAt: now };
+        const workOrder: WorkOrder = { ...existingWorkOrder, status: 'EXECUTING', updatedAt: now };
+        this.saveState({
+          objectives: state.objectives.map(item => item.id === objectiveId ? objective : item),
+          workOrders: state.workOrders.map(item => item.id === workOrderId ? workOrder : item)
+        });
+        return { objective, workOrder, created: false };
+      }
+      return { objective: existingObjective, workOrder: existingWorkOrder, created: false };
+    }
+
+    const objective: ObjectiveRecord = {
+      id: objectiveId,
+      title: `Verify ${input.productName} on ${input.channel}`,
+      description: `Run authenticated external verification for ${input.productName} on ${input.channel} without inferring publication or sales state from local records.`,
+      founderInstruction: `Aiden, dispatch the nearest revenue gate for ${input.productName} on ${input.channel}.`,
+      targetProduct: input.productName,
+      status: 'EXECUTING',
+      owner: 'Aiden',
+      participatingDepartments: ['commercialization-storefronts', 'qa-testing-release'],
+      workOrderIds: [workOrderId],
+      blockers: [],
+      approvalRequired: false,
+      approvedBy: null,
+      approvedAt: null,
+      completionEvidence: null,
+      finalCommerceStatus: 'IN PROGRESS',
+      createdAt: now,
+      updatedAt: now
+    };
+
+    const workOrder: WorkOrder = {
+      id: workOrderId,
+      objectiveId,
+      departmentId: 'commercialization-storefronts',
+      departmentName: 'Commercialization & Storefronts',
+      director: 'Mark',
+      assignedAgent: input.leadAgent || 'Mira',
+      title: `${input.channel} Authenticated Commerce Verification — ${input.productName}`,
+      description: `${input.nextAction} Verify seller-side product identity, price, checkout availability, fulfillment/entitlement path, and buyer-visible access. This is a read-back/QA dispatch only; it does not authorize publication or fabricate live state.`,
+      dependencies: [],
+      status: 'EXECUTING',
+      toolsUsed: ['Authenticated Storefront Read-Back', 'Buyer Journey QA'],
+      completionCriteria: [
+        'Authenticate to the actual seller-side channel account',
+        'Read back exact product identity and price from the external channel',
+        'Verify buyer checkout/entitlement or delivery path end to end',
+        'Record independent QA evidence before any Live state transition'
+      ],
+      artifacts: [],
+      qaResult: null,
+      createdAt: now,
+      updatedAt: now
+    };
+
+    this.saveState({
+      objectives: [objective, ...state.objectives],
+      workOrders: [workOrder, ...state.workOrders]
+    });
+    this.addAuditEvent({
+      actor: 'Aiden',
+      role: 'Executive Orchestrator',
+      action: 'DISPATCH_COMMERCE_VERIFICATION',
+      target: `${input.productName} / ${input.channel}`,
+      result: `Created ${workOrderId} in EXECUTING state`,
+      evidence: 'Dispatch created from canonical product commercialization readiness; external Live state remains unverified until authenticated read-back and independent QA complete.'
+    });
+    return { objective, workOrder, created: true };
+  }
+
   public static addAuditEvent(event: Omit<AuditEvent, 'id' | 'timestamp'>): AuditEvent {
     const state = this.loadState();
     const newEvent: AuditEvent = {
