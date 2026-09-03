@@ -74,9 +74,9 @@ body.dark .chapter-index {
   box-shadow:0 0 0 8px rgba(255,255,255,.08),0 16px 38px rgba(0,0,0,.22);
 }
 .avery-identity small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#bcefff;font-weight:900}
-.avery-identity h3{font-size:30px;line-height:1;margin:5px 0 7px;color:#fff}
+.avery-identity h3{font-size:22px;line-height:1;margin:2px 0 4px;color:#fff}
 .avery-identity p{margin:0;color:#d9f3ff;font-size:13px;line-height:1.5}
-.avery-mission{position:relative;z-index:1;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.18);font-size:14px;line-height:1.55;color:#effcff}
+.avery-mission{position:relative;z-index:1;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.18);font-size:12px;line-height:1.4;color:#effcff}
 .avery-capabilities{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
 .avery-cap{
   border:1px solid var(--line);border-radius:16px;background:var(--paper);padding:14px;
