@@ -159,6 +159,79 @@ export class StorageEngine {
     return updated;
   }
 
+  public static ensureCommercePublicationDispatch(input: {
+    productId: string;
+    productName: string;
+    channel: 'Whop' | 'Etsy' | 'Direct';
+    nextAction: string;
+    leadAgent: string;
+  }): { objective: ObjectiveRecord; workOrder: WorkOrder; created: boolean } {
+    const state = this.loadState();
+    const channelKey = input.channel.toLowerCase();
+    const objectiveId = `obj-commerce-publish-${input.productId}-${channelKey}`;
+    const workOrderId = `wo-commerce-publish-${input.productId}-${channelKey}`;
+    const now = new Date().toISOString();
+    const existingObjective = state.objectives.find(objective => objective.id === objectiveId);
+    const existingWorkOrder = state.workOrders.find(workOrder => workOrder.id === workOrderId);
+
+    if (existingObjective && existingWorkOrder) return { objective: existingObjective, workOrder: existingWorkOrder, created: false };
+
+    const objective: ObjectiveRecord = {
+      id: objectiveId,
+      title: `Publish ${input.productName} on ${input.channel}`,
+      description: `Create or recover the public ${input.channel} listing from the certified commercial package. Publication is not verification; the channel remains unverified until seller-side read-back and independent QA complete.`,
+      founderInstruction: `Aiden, prepare ${input.productName} for ${input.channel} publication.`,
+      targetProduct: input.productName,
+      status: 'WAITING',
+      owner: 'Aiden',
+      participatingDepartments: ['commercialization-storefronts', 'qa-testing-release'],
+      workOrderIds: [workOrderId],
+      blockers: ['External authenticated publishing action required.'],
+      approvalRequired: true,
+      approvedBy: null,
+      approvedAt: null,
+      completionEvidence: null,
+      finalCommerceStatus: 'NEEDS FOUNDER APPROVAL',
+      createdAt: now,
+      updatedAt: now
+    };
+
+    const workOrder: WorkOrder = {
+      id: workOrderId,
+      objectiveId,
+      departmentId: 'commercialization-storefronts',
+      departmentName: 'Commercialization & Storefronts',
+      director: 'Mark',
+      assignedAgent: input.leadAgent || 'Mira',
+      title: `${input.channel} Publication — ${input.productName}`,
+      description: `${input.nextAction} Use only the certified product package and existing storefront. Do not mark Live until public URL capture, authenticated seller read-back, buyer-journey QA, and independent QA pass.`,
+      dependencies: [],
+      status: 'WAITING',
+      toolsUsed: ['Certified Channel Package', 'Authenticated Storefront Publisher'],
+      completionCriteria: [
+        'Recover existing matching draft/listing before creating anything new',
+        'Publish using certified title, pricing, media, copy, and fulfillment configuration',
+        'Capture exact public product URL after publication',
+        'Route the public listing into authenticated seller-side verification and independent QA'
+      ],
+      artifacts: [],
+      qaResult: null,
+      createdAt: now,
+      updatedAt: now
+    };
+
+    this.saveState({ objectives: [objective, ...state.objectives], workOrders: [workOrder, ...state.workOrders] });
+    this.addAuditEvent({
+      actor: 'Aiden',
+      role: 'Executive Orchestrator',
+      action: 'DISPATCH_COMMERCE_PUBLICATION',
+      target: `${input.productName} / ${input.channel}`,
+      result: `Created ${workOrderId} in WAITING state`,
+      evidence: 'Canonical readiness classified this channel READY TO PUBLISH; no public listing or Live state was inferred.'
+    });
+    return { objective, workOrder, created: true };
+  }
+
   public static ensureCommerceVerificationDispatch(input: {
     productId: string;
     productName: string;
