@@ -35,3 +35,11 @@ test('C6 external live-state anti-fabrication rule is explicit', () => {
   assert.match(aiden, /Only externally verified channels may be represented as live/);
   assert.match(aiden, /never LIVE by inference/);
 });
+
+test('C7 product-type commercialization templates cover the complete OCG LAB product ladder', () => {
+  const productTemplates = fs.readFileSync(new URL('../src/data/productCommercializationTemplates.ts', import.meta.url), 'utf8');
+  for (const type of ['PLAYBOOK','AI PRO','AI SUPER PRO','CALCULATOR / TOOL']) assert.match(productTemplates, new RegExp(type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  for (const gate of ['Master parity','Authentication / credentials','Persistent agent behavior','Calculation correctness']) assert.match(productTemplates, new RegExp(gate.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(page, /Product-Type Playbooks/);
+});
+

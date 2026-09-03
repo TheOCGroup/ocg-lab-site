@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { STOREFRONT_ITEMS_DATA } from "../data/storefronts";
 import { COMMERCIALIZATION_LIFECYCLE, COMMERCIAL_WORKFLOWS } from "../data/commercializationWorkflows";
+import { PRODUCT_COMMERCIALIZATION_TEMPLATES } from "../data/productCommercializationTemplates";
 import { StorefrontItem } from "../types";
 import { CheckCircle2, CircleDot, ExternalLink, ShieldCheck } from "lucide-react";
 
@@ -81,6 +82,30 @@ export const StorefrontsPage: React.FC = () => {
                 ))}
               </div>
               <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-500"><span className="text-slate-400 font-semibold">Done when:</span> {workflow.completionGate}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-white font-bold text-lg">Product-Type Playbooks</h2>
+          <p className="text-xs text-slate-400">The fulfillment and QA path changes by product class; channels reuse these templates instead of inventing a new process.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {PRODUCT_COMMERCIALIZATION_TEMPLATES.map(template => (
+            <div key={template.id} className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+              <div>
+                <h3 className="text-sm font-bold text-white">{template.productType}</h3>
+                <p className="text-[10px] font-mono text-slate-400 mt-1">Owner: {template.owner} · QA: {template.qaOwner}</p>
+              </div>
+              <div className="space-y-1.5">
+                {template.stages.map(stage => (
+                  <div key={stage} className="flex items-center gap-2 text-[10px] text-slate-300"><CircleDot className="w-3 h-3 text-slate-600" />{stage}</div>
+                ))}
+              </div>
+              <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-500"><span className="font-semibold text-slate-400">Done when:</span> {template.completionGate}</div>
             </div>
           ))}
         </div>
