@@ -1,20 +1,22 @@
 # Lender AI SUPER PRO — Whole-Product Final QA Gate
 
-## Release rule
-This product does not pass because one page loads, one agent answers, one deployment succeeds, or one workflow works in isolation.
+> **GOVERNING RELEASE RULE:** This product is subject to `/PLAYBOOK_MASTER_RELEASE_RULE.md`. The Insurance Agent AI Digital Playbook is the canonical rendered master. No READY/FINAL/RELEASED/COMMERCIAL/SELLABLE status is permitted without rendered master-parity evidence, independent QA, purchaser QA, and Final Approval.
 
-**FINAL PASS means the complete Brandy customer experience works as one product:**
+## Release rule
+This product does not pass because one page loads, one agent answers, one deployment succeeds, one workflow works in isolation, or because it shares CSS/components with the Insurance master.
+
+**FINAL PASS means the complete Brandy customer experience works as one product AND the Digital Playbook has passed rendered parity comparison against the Insurance Agent AI Digital Playbook master.**
 
 Playbook + Harper + Lender AI SUPER PRO + research + content recommendation + verified script + approval gates + self-record path + consented-avatar path + production + independent QA + publishing package + memory + permissions + simple automations + mobile/desktop + persistence/recovery + failure states.
 
-If any required production capability is simulated, disconnected, misleading, inaccessible, or fails its acceptance test, the whole product remains NOT READY for Brandy final delivery.
+If any required production capability is simulated, disconnected, misleading, inaccessible, fails its acceptance test, or the Playbook visually/functionally drifts from the Insurance master without explicit founder approval, the whole product remains NOT READY for Brandy final delivery.
 
 ## Mandatory commercial release sequence
-BUILD → FUNCTIONAL QA → VISUAL/RESPONSIVE QA → SECURITY/INTEGRATION QA → INDEPENDENT PURCHASER ACCEPTANCE QA → ADVERSARIAL/FAILURE QA → FINAL APPROVAL → PRODUCTION VERIFY → COMMERCIAL/SELLABLE.
+SOURCE OF TRUTH → BUILD → MASTER PARITY QA → FUNCTIONAL QA → VISUAL/RESPONSIVE QA → SECURITY/INTEGRATION QA → INDEPENDENT PURCHASER ACCEPTANCE QA → ADVERSARIAL/FAILURE QA → FINAL APPROVAL → PRODUCTION VERIFY → COMMERCIAL/SELLABLE.
 
-**No purchaser PASS = no sale. No evidence = no PASS.**
+**No master-parity PASS = no release. No purchaser PASS = no sale. No evidence = no PASS.**
 
-The agent that built or fixed the release may not perform Independent Purchaser Acceptance QA for that release. Purchaser QA must be performed cold by another agent that did not implement requirements, code, design, prompts, integrations, or fixes for the release. The purchaser receives only what a paying customer receives and may not use hidden builder knowledge, developer access, undocumented setup, preconfigured browser state, or builder assistance.
+The agent that built or fixed the release may not perform final Master Parity approval or Independent Purchaser Acceptance QA for that release. Purchaser QA must be performed cold by another agent that did not implement requirements, code, design, prompts, integrations, or fixes for the release. The purchaser receives only what a paying customer receives and may not use hidden builder knowledge, developer access, undocumented setup, preconfigured browser state, or builder assistance.
 
 ---
 
@@ -38,17 +40,28 @@ The AI SUPER PRO is the working system Brandy trains/configures. It must researc
 
 Evidence: desktop + mobile screenshots/video and first-use transcript.
 
-## B. Digital Playbook test
-- [x] Insurance-master-style book reader architecture implemented.
-- [x] Book cover, chapter navigation, Previous/Next and reading progress implemented.
-- [x] Harper embedded with Guide / Example / Role-play / Find Prompt modes.
-- [x] Workbook implemented with local persistence.
-- [x] Daily Routine and 30-Day assignments implemented.
-- [x] Print/PDF control implemented.
+## B. Digital Playbook — mandatory Insurance master parity test
+- [x] Insurance-master-style reader architecture implemented.
+- [ ] Rendered candidate compared directly against rendered Insurance master.
+- [ ] OCG LAB logo/brand treatment matches master family.
+- [ ] Cover/book presentation matches master family.
+- [ ] Desktop two-page spread experience matches master family.
+- [ ] Mobile reading experience matches master family.
+- [ ] Typography, spacing, hierarchy and visual polish pass comparison.
+- [ ] Chapter/sidebar navigation matches master behavior.
+- [ ] Previous/Next/spread counter match master behavior.
+- [ ] Reading progress and assignments match master behavior.
+- [ ] Harper matches Avery's specialist interaction pattern with lender-specific identity/content only.
+- [ ] Prompt Vault matches master product pattern.
+- [ ] Daily Routine and 30-Day implementation match master product pattern.
+- [ ] Workbook/worksheets are additive without redesigning the master shell.
+- [ ] Reading Mode matches master behavior.
 - [ ] Every spread visually inspected desktop/mobile.
 - [ ] Keyboard and screen-reader order audited.
 - [ ] Print/PDF visually inspected page-by-page.
 - [ ] Refresh/reopen restores reading/workbook state.
+
+**Shared CSS/components or HTTP 200 do not satisfy this gate. Rendered evidence is mandatory.**
 
 ## C. Harper acceptance test — teacher, not worker
 - [ ] Explain Morning Lender Brief purpose, inputs, output and example.
@@ -61,7 +74,7 @@ Evidence: desktop + mobile screenshots/video and first-use transcript.
 - [ ] Remain context-aware across chapters.
 
 ## D. AI Content Scout — production proof
-- [ ] Run live authoritative research.
+- [ ] Run live authoritative research using purchaser-owned chosen AI provider.
 - [ ] Return at least 3 ranked opportunities.
 - [ ] Every time-sensitive opportunity includes source evidence + freshness timestamp.
 - [ ] Distinguish evergreen ideas when live evidence is unavailable.
@@ -118,9 +131,13 @@ QA is separate from script generation.
 - [ ] Harper learning context and production memory remain separated.
 - [ ] Unauthorized user cannot access Brandy memory.
 
-## K. Permissions / connections
-- [x] Consent UI exists before connection action.
-- [ ] Real secure provider authorization and exact scopes.
+## K. Purchaser-owned AI / permissions / connections
+- [x] Provider-agnostic BYO-AI connection UI exists.
+- [x] OCG LAB runtime customer key is not used.
+- [x] Purchaser credential is kept out of page JavaScript after connection.
+- [ ] Real purchaser-owned credential completes live research and script generation.
+- [ ] Customer/account isolation proven.
+- [ ] Real secure provider authorization and exact scopes for additional connections.
 - [ ] Denial leaves product usable; revocation removes future access.
 - [ ] Draft-only behavior enforced until explicit action permission.
 - [ ] No provider secrets exposed client-side.
@@ -142,7 +159,7 @@ End-to-end proof required for Morning Brief, New Lead, No Reply, Preapproval Che
 - [ ] Duplicate-click/idempotency, keyboard-only, focus visibility/modal focus.
 
 ## O. Independent Purchaser Acceptance QA — mandatory commercial gate
-This gate occurs after functional, visual/responsive, and security/integration QA. It is not performed by the builder.
+This gate occurs after master parity, functional, visual/responsive, and security/integration QA. It is not performed by the builder.
 
 Required purchaser evidence:
 - [ ] QA agent identity recorded.
@@ -151,11 +168,11 @@ Required purchaser evidence:
 - [ ] Purchaser receives only customer delivery package/link.
 - [ ] No hidden instructions, developer access, preloaded state or builder assistance.
 - [ ] First-open purpose and next action understood without coaching.
-- [ ] Purchaser configures required profile/workbook/permissions.
+- [ ] Purchaser configures required profile/workbook/permissions and own AI provider.
 - [ ] Purchaser independently achieves advertised primary outcome.
 - [ ] Purchaser closes/reopens and recovers expected state.
 - [ ] Permission denial and provider/network failure states are understandable/recoverable.
-- [ ] Confusing instructions, simulated production capability presented as real, inaccessible features, unsupported AI claims, failed persistence, or inability to achieve the primary outcome causes FAIL.
+- [ ] Confusing instructions, master-family drift, simulated production capability presented as real, inaccessible features, unsupported AI claims, failed persistence, or inability to achieve the primary outcome causes FAIL.
 - [ ] Screenshots/video, transcript, logs and evidence references retained.
 
 A FAIL automatically returns the release to the responsible builder/workforce stage. After fixes, a new clean purchaser retest is required. Builder may not coach the retest.
@@ -169,52 +186,54 @@ A FAIL automatically returns the release to the responsible builder/workforce st
 
 ## Q. Final Brandy scenario — mandatory release proof
 1. First-time purchaser opens final delivery link.
-2. Harper explains playbook and demonstrates one prompt.
-3. Purchaser personalizes profile/workbook.
-4. Opens AI SUPER PRO and asks what to post today.
-5. Scout performs live research and returns ranked, sourced recommendations.
-6. Select one; system creates verified 60-second lender script.
-7. Harper may teach/practice without pretending to be production worker.
-8. Purchaser approves script.
-9. Chooses self-record or consented private avatar.
-10. System produces video.
-11. Independent functional/content QA checks output.
-12. Independent purchaser QA completes cold customer journey.
-13. Adversarial defect is caught; corrected release retested.
-14. Platform publish package created.
-15. Close/reopen persistence works and recent topic is not unnecessarily repeated.
-16. Final Approval Agent reviews evidence and alone authorizes COMMERCIAL/SELLABLE.
+2. Digital Playbook has already passed rendered Insurance-master parity QA.
+3. Harper explains playbook and demonstrates one prompt.
+4. Purchaser personalizes profile/workbook.
+5. Purchaser securely connects their own chosen AI provider.
+6. Opens AI SUPER PRO and asks what to post today.
+7. Scout performs live research and returns ranked, sourced recommendations.
+8. Select one; system creates verified 60-second lender script.
+9. Harper may teach/practice without pretending to be production worker.
+10. Purchaser approves script.
+11. Chooses self-record or consented private avatar.
+12. System produces video.
+13. Independent functional/content QA checks output.
+14. Independent purchaser QA completes cold customer journey.
+15. Adversarial defect is caught; corrected release retested.
+16. Platform publish package created.
+17. Close/reopen persistence works and recent topic is not unnecessarily repeated.
+18. Final Approval Agent reviews evidence and alone authorizes COMMERCIAL/SELLABLE.
 
-Required proof: screenshots/video, sources, script, approval state, production output, QA reports, purchaser identity/independence evidence, publish package, persistence result and PASS/FAIL per step.
+Required proof: master/candidate rendered comparisons, screenshots/video, sources, script, approval state, production output, QA reports, purchaser identity/independence evidence, publish package, persistence result and PASS/FAIL per step.
 
 ---
 
 ## Current verified state
 ### Verified now
 - [x] Product shell exists.
-- [x] Digital Playbook reader exists in Insurance Agent Playbook family structure.
+- [x] Digital Playbook reader uses Insurance Agent Playbook family code/structure.
 - [x] Harper embedded as playbook specialist UI.
 - [x] Workbook/persistence and assignment tracking exist.
-- [x] Prompt/automation/permission/product-comparison pilot UI exists.
-- [x] Guardrail language does not represent disconnected integrations as live.
-- [x] Independent Purchaser Acceptance QA is now an explicit mandatory release gate in this product QA contract.
+- [x] Provider-agnostic purchaser-owned AI connection path is deployed.
+- [x] Independent Purchaser Acceptance QA is an explicit mandatory release gate.
+- [x] Insurance-master rendered parity is now an explicit mandatory release gate.
 
 ### Not yet proven production-ready
-- [ ] Live research.
-- [ ] Live model-generated script workflow.
+- [ ] Rendered Insurance-master parity PASS.
+- [ ] Full live purchaser-owned AI research/script run.
 - [ ] Real OAuth connections.
 - [ ] Real browser recording/media processing.
 - [ ] Real consented avatar rendering.
-- [ ] Independent production QA agent.
-- [ ] Independent purchaser acceptance run by non-builder agent.
-- [ ] Server-side authenticated client memory.
+- [ ] Independent production QA agent PASS.
+- [ ] Independent purchaser acceptance run by non-builder agent PASS.
+- [ ] Server-side authenticated client memory/isolation.
 - [ ] Brandy/company-specific compliance configuration.
 - [ ] Full visual/functional browser QA.
 - [ ] Whole-product final Brandy scenario.
 
 ## Release classification
-**CURRENT: PRODUCT/DESIGN PILOT — PASS**
+**CURRENT: BUILD / QA REQUIRED — NOT READY**
 
-**FINAL BRANDY DELIVERY — NOT YET PASS**
+**FINAL BRANDY DELIVERY — NOT PASS**
 
-Final delivery may be labeled PASS only after the actual deployed customer product clears all required gates with retained evidence. COMMERCIAL/SELLABLE remains locked until independent purchaser acceptance and Final Approval PASS.
+Final delivery may be labeled PASS only after the actual deployed customer product clears all required gates with retained evidence. COMMERCIAL/SELLABLE remains locked until master parity, independent purchaser acceptance, and Final Approval PASS.
