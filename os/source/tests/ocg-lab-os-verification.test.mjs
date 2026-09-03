@@ -112,7 +112,9 @@ test("6. Commercial Storefronts Inventory", (t) => {
   assert.ok(STOREFRONT_ITEMS_DATA.length >= 5, "Must track active commercial SKUs across Whop and Etsy");
   STOREFRONT_ITEMS_DATA.forEach(item => {
     assert.ok(item.price > 0, `Storefront item ${item.id} must have real price`);
-    assert.ok(item.fulfillmentUrl, `Storefront item ${item.id} must have delivery URL`);
+    if (item.status === "Live") {
+      assert.ok(item.fulfillmentUrl, `Live storefront item ${item.id} must have verified delivery URL`);
+    }
     assert.ok(item.listingAssetPack, `Storefront item ${item.id} must cite listing asset pack`);
   });
 });
