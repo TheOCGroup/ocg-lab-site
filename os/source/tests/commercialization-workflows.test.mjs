@@ -43,3 +43,15 @@ test('C7 product-type commercialization templates cover the complete OCG LAB pro
   assert.match(page, /Product-Type Playbooks/);
 });
 
+test('C8 real portfolio products are deterministically assigned to commercialization readiness without fuzzy matching', () => {
+  const readiness = fs.readFileSync(new URL('../src/data/productCommercializationReadiness.ts', import.meta.url), 'utf8');
+  assert.match(readiness, /PORTFOLIO_DATA\.flatMap/);
+  assert.match(readiness, /storefront\.productId === item\.id/);
+  for (const mapping of ["ladder === 'PLAYBOOK'", "ladder === 'AI PRO'", "ladder === 'AI SUPER PRO'", "ladder === 'CALCULATOR'"]) assert.match(readiness, new RegExp(mapping.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(readiness, /CHANNEL REGISTRATION/);
+  assert.match(readiness, /READY \/ EXTERNAL VERIFICATION/);
+  assert.match(readiness, /only then may it be marked Live/);
+  assert.match(page, /Product Commercialization Readiness/);
+  assert.match(page, /Next action:/);
+});
+
