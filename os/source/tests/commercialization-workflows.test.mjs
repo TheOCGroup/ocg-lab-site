@@ -140,7 +140,7 @@ test('C14 Insurance Whop package locks price, one-time billing, fulfillment and 
 });
 
 
-test('C13 storefront verification is evidence-based, not inferred from URL presence', () => {
+test('C15 storefront verification is evidence-based, not inferred from URL presence', () => {
   const types = fs.readFileSync(new URL('../src/types.ts', import.meta.url), 'utf8');
   const readiness = fs.readFileSync(new URL('../src/data/productCommercializationReadiness.ts', import.meta.url), 'utf8');
   assert.match(types, /buyerQaStatus: StorefrontVerificationStatus/);
@@ -154,7 +154,7 @@ test('C13 storefront verification is evidence-based, not inferred from URL prese
   assert.match(page, /Seller QA:/);
 });
 
-test('C14 current public Whop catalog is reconciled without seller-side overclaim', () => {
+test('C16 current public Whop catalog is reconciled without seller-side overclaim', () => {
   for (const tuple of [
     ['Real Estate Investor AI Playbook', '19.99', 'real-estate-investor-ai-playbook'],
     ['Real Estate Investor AI PRO', '29', 'real-estate-investor-ai-pro'],
@@ -167,4 +167,16 @@ test('C14 current public Whop catalog is reconciled without seller-side overclai
   assert.match(storefronts, /buyerQaStatus: 'VERIFIED'/);
   assert.match(storefronts, /sellerQaStatus: 'PENDING'/);
   assert.match(storefronts, /Insurance Agent AI Playbook[\s\S]*buyerQaStatus: 'PENDING'/);
+});
+
+
+test('C17 storefront verification freshness expires evidence and prioritizes seller QA debt', () => {
+  const freshness = fs.readFileSync(new URL('../src/data/storefrontVerification.ts', import.meta.url), 'utf8');
+  assert.match(freshness, /STOREFRONT_QA_MAX_AGE_DAYS = 7/);
+  assert.match(freshness, /VerificationFreshness = 'CURRENT' \| 'STALE' \| 'PENDING' \| 'NOT_APPLICABLE'/);
+  assert.match(freshness, /sellerQaStatus === 'PENDING' && item\.buyerQaStatus === 'VERIFIED'/);
+  assert.match(freshness, /priority: 0/);
+  assert.match(aiden, /Storefront Verification Debt/);
+  assert.match(aiden, /verification freshness/i);
+  assert.match(page, /getVerificationFreshness/);
 });

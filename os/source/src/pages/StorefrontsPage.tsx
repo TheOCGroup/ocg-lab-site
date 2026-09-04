@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { STOREFRONT_ITEMS_DATA } from "../data/storefronts";
+import { getVerificationFreshness } from "../data/storefrontVerification";
 import { COMMERCIALIZATION_LIFECYCLE, COMMERCIAL_WORKFLOWS } from "../data/commercializationWorkflows";
 import { PRODUCT_COMMERCIALIZATION_TEMPLATES } from "../data/productCommercializationTemplates";
 import { PRODUCT_COMMERCIALIZATION_READINESS } from "../data/productCommercializationReadiness";
@@ -180,8 +181,8 @@ export const StorefrontsPage: React.FC = () => {
                 <div className="flex items-center justify-between text-slate-400"><span>Status:</span><span className={item.status === 'Live' ? 'text-emerald-400 font-bold' : 'text-cyan-300 font-bold'}>{item.status}</span></div>
                 <div className="flex items-center justify-between text-slate-400 gap-3"><span>Asset Pack:</span><span className="text-slate-200 truncate max-w-[180px]">{item.listingAssetPack}</span></div>
                 <div className="flex items-center justify-between text-slate-400 gap-3"><span>Format:</span><span className="text-slate-200 truncate max-w-[180px]">{item.deliveryFormat}</span></div>
-                <div className="flex items-center justify-between text-slate-400"><span>Buyer QA:</span><span className={item.buyerQaStatus === 'VERIFIED' ? 'text-emerald-400 font-bold' : item.buyerQaStatus === 'PENDING' ? 'text-amber-300 font-bold' : 'text-slate-400 font-bold'}>{item.buyerQaStatus}</span></div>
-                <div className="flex items-center justify-between text-slate-400"><span>Seller QA:</span><span className={item.sellerQaStatus === 'VERIFIED' ? 'text-emerald-400 font-bold' : item.sellerQaStatus === 'PENDING' ? 'text-amber-300 font-bold' : 'text-slate-400 font-bold'}>{item.sellerQaStatus}</span></div>
+                <div className="flex items-center justify-between text-slate-400"><span>Buyer QA:</span><span className={item.buyerQaStatus === 'VERIFIED' ? 'text-emerald-400 font-bold' : item.buyerQaStatus === 'PENDING' ? 'text-amber-300 font-bold' : 'text-slate-400 font-bold'}>{item.buyerQaStatus} / {getVerificationFreshness(item.buyerQaStatus, item.buyerQaVerifiedAt)}</span></div>
+                <div className="flex items-center justify-between text-slate-400"><span>Seller QA:</span><span className={item.sellerQaStatus === 'VERIFIED' ? 'text-emerald-400 font-bold' : item.sellerQaStatus === 'PENDING' ? 'text-amber-300 font-bold' : 'text-slate-400 font-bold'}>{item.sellerQaStatus} / {getVerificationFreshness(item.sellerQaStatus, item.sellerQaVerifiedAt)}</span></div>
                 <div className="text-[10px] leading-relaxed text-slate-500 border border-slate-800 rounded-xl p-2 bg-slate-950/60">
                   <div><span className="text-slate-400">Buyer evidence:</span> {item.buyerQaEvidence}</div>
                   <div className="mt-1"><span className="text-slate-400">Seller evidence:</span> {item.sellerQaEvidence}</div>
