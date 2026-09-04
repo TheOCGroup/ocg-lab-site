@@ -2,12 +2,6 @@ name: OCG LAB OS Promote Canonical Build
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - fix/os-production-parity-security
-    paths:
-      - 'os/source/**'
-      - '.github/workflows/ocg-lab-os-promote.yml'
 
 permissions:
   contents: write
