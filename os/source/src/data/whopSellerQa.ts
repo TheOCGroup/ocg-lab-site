@@ -7,6 +7,7 @@ export interface WhopSellerQaTarget {
   publicUrl: string;
   expectedPrice: number;
   requiredReadback: string[];
+  sellerEvidence: string;
 }
 
 const REQUIRED_WHOP_SELLER_READBACK = [
@@ -30,7 +31,8 @@ export const WHOP_SELLER_QA_TARGETS: WhopSellerQaTarget[] = STOREFRONT_ITEMS_DAT
     productName: item.productName,
     publicUrl: item.fulfillmentUrl,
     expectedPrice: item.price,
-    requiredReadback: REQUIRED_WHOP_SELLER_READBACK
+    requiredReadback: REQUIRED_WHOP_SELLER_READBACK,
+    sellerEvidence: item.sellerQaEvidence
   }));
 
 export const WHOP_SELLER_QA_PREAUTH_READY = WHOP_SELLER_QA_TARGETS.length > 0;

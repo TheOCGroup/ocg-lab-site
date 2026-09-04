@@ -193,11 +193,21 @@ test('C18 saved storefront state reconciles canonical commerce metadata without 
   assert.match(storage, /this\.reconcileStorefrontItems\(parsed\.storefrontItems, defaults\.storefrontItems\)/);
 });
 
-test('C19 Whop seller-QA queue is deterministic and remains fail-closed before authentication', () => {
+test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fulfillment verification', () => {
   const qa = fs.readFileSync(new URL('../src/data/whopSellerQa.ts', import.meta.url), 'utf8');
   assert.match(qa, /buyerQaStatus === 'VERIFIED'/);
   assert.match(qa, /sellerQaStatus === 'PENDING'/);
   for (const field of ['Company\/store identity','Active plan identity','Initial price and currency','Entitlement\/access configuration','Duplicate active plan check']) assert.match(qa, new RegExp(field));
-  assert.match(aiden, /Whop Seller-QA Queue — Pre-Auth Ready/);
-  assert.match(aiden, /Authenticated Whop read-back must occur before seller QA can be marked VERIFIED/);
+  assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Fulfillment Blocked/);
+  assert.match(aiden, /zero attached Whop experiences/);
+  assert.match(aiden, /independent QA before any storefront becomes Live/);
+});
+
+
+test('C20 authenticated Whop seller read-back records exact product/plan evidence and remains blocked on zero experiences', () => {
+  for (const id of ['prod_rjqgwvr66ZSkX','prod_EEmswqofRNOpM','prod_Kma1MiZdJXFBv','plan_FoJYDwiCXxEd9','plan_ep13hdJeMHRfW','plan_PhwwSWqwyRCQq']) assert.match(storefronts, new RegExp(id));
+  assert.match(storefronts, /account biz_1s3AzoabzwjpqM \(The OCG LAB\)/);
+  assert.match(storefronts, /Fulfillment BLOCKED: GET \/experiences returned zero attached experiences/);
+  assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]{0,900}sellerQaStatus: 'VERIFIED'/);
+  assert.match(aiden, /Authenticated \/ Fulfillment Blocked/);
 });
