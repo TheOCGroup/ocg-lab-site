@@ -199,15 +199,26 @@ test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fu
   assert.match(qa, /sellerQaStatus === 'PENDING'/);
   for (const field of ['Company\/store identity','Active plan identity','Initial price and currency','Entitlement\/access configuration','Duplicate active plan check']) assert.match(qa, new RegExp(field));
   assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Fulfillment Blocked/);
-  assert.match(aiden, /zero attached Whop experiences/);
-  assert.match(aiden, /independent QA before any storefront becomes Live/);
+  assert.match(aiden, /purchaser entitlement QA is still pending/);
+  assert.match(aiden, /REI Playbook still has zero attached Whop experiences/);
+  assert.match(aiden, /Independent QA is required before any storefront becomes Live/);
 });
 
 
-test('C20 authenticated Whop seller read-back records exact product/plan evidence and remains blocked on zero experiences', () => {
+test('C20 authenticated Whop seller read-back records exact product/plan evidence and remains fail-closed through fulfillment QA', () => {
   for (const id of ['prod_rjqgwvr66ZSkX','prod_EEmswqofRNOpM','prod_Kma1MiZdJXFBv','plan_FoJYDwiCXxEd9','plan_ep13hdJeMHRfW','plan_PhwwSWqwyRCQq']) assert.match(storefronts, new RegExp(id));
   assert.match(storefronts, /account biz_1s3AzoabzwjpqM \(The OCG LAB\)/);
   assert.match(storefronts, /Fulfillment BLOCKED: GET \/experiences returned zero attached experiences/);
+  assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_cGOclvtvus6YrC/);
+  assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_jd9jmW0lZv3AxY/);
+  assert.match(storefronts, /Purchaser entitlement QA remains pending/);
   assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]{0,900}sellerQaStatus: 'VERIFIED'/);
   assert.match(aiden, /Authenticated \/ Fulfillment Blocked/);
+});
+
+
+test('C21 AI PRO production URLs use the verified Vercel delivery surface', () => {
+  const portfolio = fs.readFileSync(new URL('../src/data/portfolio.ts', import.meta.url), 'utf8');
+  assert.match(portfolio, /id: 'aipro-rei'[\s\S]{0,1200}productionUrl: 'https:\/\/ocg-lab-products\.vercel\.app\/real-estate-investor-ai-pro\/'/);
+  assert.match(portfolio, /id: 'aipro-leadflow'[\s\S]{0,1200}productionUrl: 'https:\/\/ocg-lab-products\.vercel\.app\/leadflow-ai-pro\/'/);
 });
