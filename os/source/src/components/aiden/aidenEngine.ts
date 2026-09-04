@@ -2,6 +2,8 @@ import { StorageEngine } from '../../data/storageEngine';
 import { OperatingArea } from '../../types';
 import { COMMERCIAL_WORKFLOWS, COMMERCIALIZATION_LIFECYCLE } from '../../data/commercializationWorkflows';
 import { PRODUCT_COMMERCIALIZATION_READINESS } from '../../data/productCommercializationReadiness';
+import { STOREFRONT_ITEMS_DATA } from '../../data/storefronts';
+import { getStorefrontVerificationDebt } from '../../data/storefrontVerification';
 
 export interface AidenResolution {
   reply: string;
@@ -169,6 +171,17 @@ export class AidenEngine {
         suggestedArea: 'command',
         actionTaken: 'Aiden orchestrated multi-department Etsy commercialization workflow',
         evidence: obj.completionEvidence || 'All 8 work orders verified with independent QA certification'
+      };
+    }
+
+    if (q.includes('stale storefront') || q.includes('verification freshness') || q.includes('seller qa') || q.includes('qa debt') || q.includes('storefront verification debt')) {
+      const debt = getStorefrontVerificationDebt(STOREFRONT_ITEMS_DATA);
+      const lines = debt.map((entry, index) => `**${index + 1}. ${entry.item.productName} — ${entry.item.channel}**\n   Buyer QA: ${entry.item.buyerQaStatus} / ${entry.buyerFreshness}\n   Seller QA: ${entry.item.sellerQaStatus} / ${entry.sellerFreshness}\n   Next: ${entry.reason}`).join('\n\n');
+      return {
+        reply: `### **Storefront Verification Debt**\n\n${lines || 'No storefront verification debt is currently detected.'}\n\nVerification evidence expires operationally after ${7} days unless refreshed. Pending seller QA outranks stale evidence because it is the nearest gate to a fully verified live channel.`,
+        category: 'BLOCKERS',
+        suggestedArea: 'storefronts',
+        evidence: 'Derived from explicit buyer/seller QA status and verification timestamps; no URL-based inference.'
       };
     }
 
