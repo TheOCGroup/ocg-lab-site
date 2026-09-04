@@ -16,9 +16,11 @@ import {
   Zap,
   Menu,
   X,
-  Target
+  Target,
+  Cloud
 } from "lucide-react";
 import { motion } from "motion/react";
+import { StorageEngine } from "../data/storageEngine";
 
 interface NavbarProps {
   activePage: Page;
@@ -42,6 +44,20 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleFocus
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cloudStatus, setCloudStatus] = useState<'SYNCED' | 'OFFLINE_CACHED' | 'AUTH_REQUIRED'>('AUTH_REQUIRED');
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleCloudSync = async () => {
+    if (!StorageEngine.getFounderKey()) {
+      const entered = window.prompt('Enter the Founder cloud-sync key for this session. It is kept in sessionStorage only and is never bundled into OCG LAB OS.');
+      if (!entered) { setCloudStatus('AUTH_REQUIRED'); return; }
+      StorageEngine.setFounderKey(entered);
+    }
+    setIsSyncing(true);
+    const result = await StorageEngine.syncWithCloud();
+    setIsSyncing(false);
+    setCloudStatus(result.status === 'OFFLINE_CACHED' ? 'OFFLINE_CACHED' : result.status === 'AUTH_REQUIRED' ? 'AUTH_REQUIRED' : 'SYNCED');
+  };
 
   const isOsMode = [
     "command", "portfolio", "projects", "operations", "qa", "engineering", "storefronts", "knowledge", "agents", "releases"
@@ -132,6 +148,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           <div className="hidden lg:flex items-center gap-2 shrink-0">
+            {isOsMode && (
+              <button
+                data-cloud-sync-btn="true"
+                onClick={handleCloudSync}
+                title="Canonical cloud persistence; Founder key is session-only"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-mono transition"
+              >
+                <Cloud className={"w-3.5 h-3.5 " + (isSyncing ? "animate-pulse" : "")} />
+                <span>{isSyncing ? "SYNCING..." : cloudStatus === 'OFFLINE_CACHED' ? 'OFFLINE CACHED' : cloudStatus === 'AUTH_REQUIRED' ? 'SYNC AUTH' : 'CLOUD SYNCED'}</span>
+              </button>
+            )}
             <button
               data-aiden-btn="desktop"
               onClick={onOpenAiden}

@@ -22,6 +22,8 @@ import { CLIENT_SOLUTIONS_DATA } from './clientSolutions';
 import { CANONICAL_OBJECTIVES, CANONICAL_WORK_ORDERS, CANONICAL_AUDIT_EVENTS } from './objectives';
 
 const STORAGE_KEY = 'ocg_lab_os_state_v2';
+const FOUNDER_SESSION_KEY = 'ocg_founder_key_session';
+const SYNC_ENDPOINT = '/api/os/sync';
 
 export interface OcgLabOsState {
   projects: ProjectRecord[];
@@ -37,6 +39,8 @@ export interface OcgLabOsState {
   auditEvents: AuditEvent[];
   focusMode: boolean;
   activeBenchIds: string[];
+  lastSyncedAt?: string;
+  cloudStatus?: 'SYNCED' | 'OFFLINE_CACHED' | 'AUTH_REQUIRED';
 }
 
 export class StorageEngine {
@@ -107,7 +111,9 @@ export class StorageEngine {
         workOrders: parsed.workOrders && parsed.workOrders.length ? parsed.workOrders : defaults.workOrders,
         auditEvents: parsed.auditEvents && parsed.auditEvents.length ? parsed.auditEvents : defaults.auditEvents,
         focusMode: !!parsed.focusMode,
-        activeBenchIds: parsed.activeBenchIds || defaults.activeBenchIds
+        activeBenchIds: parsed.activeBenchIds || defaults.activeBenchIds,
+        lastSyncedAt: parsed.lastSyncedAt,
+        cloudStatus: parsed.cloudStatus
       };
     } catch (e) {
       console.warn('[StorageEngine] Error loading state from localStorage, falling back to defaults:', e);
@@ -118,8 +124,9 @@ export class StorageEngine {
   public static saveState(state: Partial<OcgLabOsState>): void {
     try {
       const current = this.loadState();
-      const updated = { ...current, ...state };
+      const updated = { ...current, ...state, lastSyncedAt: new Date().toISOString() };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      if (this.getFounderKey()) this.queueCloudSync();
     } catch (e) {
       console.error('[StorageEngine] Failed to save state to localStorage:', e);
     }
@@ -378,6 +385,9 @@ export class StorageEngine {
     if (!objective) throw new Error('Commerce verification objective not found.');
     const storefrontItem = state.storefrontItems.find(item => item.productId === productId && item.channel === channel);
     if (!storefrontItem) throw new Error('Matching storefront record not found; Live state cannot be inferred.');
+    if (storefrontItem.buyerQaStatus !== 'VERIFIED' || !storefrontItem.buyerQaVerifiedAt || !storefrontItem.buyerQaEvidence.trim()) {
+      throw new Error('Buyer/public QA must be VERIFIED with timestamped evidence before seller verification can mark a storefront Live.');
+    }
     if (storefrontItem.status !== 'Ready' && storefrontItem.status !== 'Live') {
       throw new Error(`Storefront must be Ready before authenticated verification can mark it Live; current state is ${storefrontItem.status}.`);
     }
@@ -406,7 +416,13 @@ export class StorageEngine {
       finalCommerceStatus: 'LIVE',
       updatedAt: now
     };
-    const liveStorefront: StorefrontItem = { ...storefrontItem, status: 'Live' };
+    const liveStorefront: StorefrontItem = {
+      ...storefrontItem,
+      status: 'Live',
+      sellerQaStatus: 'VERIFIED',
+      sellerQaVerifiedAt: input.externalEvidence.checkedAt || now,
+      sellerQaEvidence: `Authenticated seller-side read-back verified: ${input.externalEvidence.verifiedFields.join(', ')}. Independent QA: ${input.qaResult.evidence}`
+    };
 
     this.saveState({
       workOrders: state.workOrders.map(item => item.id === workOrder.id ? completedWorkOrder : item),
@@ -605,6 +621,89 @@ export class StorageEngine {
 
     this.saveState({ certifications: updatedCerts, projects: updatedProjects });
     return isFullyCertified;
+  }
+
+  public static getFounderKey(): string {
+    try {
+      return typeof sessionStorage !== 'undefined' ? (sessionStorage.getItem(FOUNDER_SESSION_KEY) || '').trim() : '';
+    } catch {
+      return '';
+    }
+  }
+
+  public static setFounderKey(key: string): void {
+    try {
+      if (typeof sessionStorage === 'undefined') return;
+      const normalized = key.trim();
+      if (normalized) sessionStorage.setItem(FOUNDER_SESSION_KEY, normalized);
+      else sessionStorage.removeItem(FOUNDER_SESSION_KEY);
+    } catch {}
+  }
+
+  public static async syncWithCloud(forcePush: boolean = false): Promise<{ success: boolean; status: 'SYNCED' | 'LOCAL_DOMINANT' | 'CLOUD_DOMINANT' | 'OFFLINE_CACHED' | 'AUTH_REQUIRED'; lastSyncedAt?: string; error?: string }> {
+    const founderKey = this.getFounderKey();
+    const localState = this.loadState();
+    if (!founderKey) return { success: false, status: 'AUTH_REQUIRED', lastSyncedAt: localState.lastSyncedAt };
+    if (typeof fetch === 'undefined') return { success: false, status: 'OFFLINE_CACHED', lastSyncedAt: localState.lastSyncedAt };
+
+    try {
+      if (forcePush) {
+        const push = await fetch(SYNC_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-founder-key': founderKey },
+          body: JSON.stringify(localState)
+        });
+        if (!push.ok) throw new Error(`Cloud sync POST failed: HTTP ${push.status}`);
+        const ack = await push.json();
+        const synced = { ...localState, lastSyncedAt: ack.lastSyncedAt, cloudStatus: 'SYNCED' as const };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(synced));
+        return { success: true, status: 'LOCAL_DOMINANT', lastSyncedAt: ack.lastSyncedAt };
+      }
+
+      const pull = await fetch(SYNC_ENDPOINT, { headers: { 'x-founder-key': founderKey } });
+      if (!pull.ok) {
+        if (pull.status === 401) return { success: false, status: 'AUTH_REQUIRED', lastSyncedAt: localState.lastSyncedAt, error: 'Founder authentication rejected.' };
+        // Authenticated and online, but no canonical cloud object exists yet.
+        // Seed cloud from local state rather than misclassifying this as offline.
+        if (pull.status === 404) return this.syncWithCloud(true);
+        throw new Error(`Cloud sync GET failed: HTTP ${pull.status}`);
+      }
+      const envelope = await pull.json();
+      // An authenticated empty envelope is also a fresh cloud: seed it from local.
+      if (!envelope.state) return this.syncWithCloud(true);
+
+      const cloudState = envelope.state as Partial<OcgLabOsState>;
+      const cloudMs = Date.parse(cloudState.lastSyncedAt || '') || 0;
+      const localMs = Date.parse(localState.lastSyncedAt || '') || 0;
+      if (cloudMs > localMs && cloudState.objectives) {
+        const merged: OcgLabOsState = {
+          ...localState,
+          ...cloudState,
+          storefrontItems: this.reconcileStorefrontItems(cloudState.storefrontItems, STOREFRONT_ITEMS_DATA),
+          lastSyncedAt: cloudState.lastSyncedAt,
+          cloudStatus: 'SYNCED'
+        } as OcgLabOsState;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        return { success: true, status: 'CLOUD_DOMINANT', lastSyncedAt: cloudState.lastSyncedAt };
+      }
+
+      if (localMs > cloudMs) return this.syncWithCloud(true);
+      return { success: true, status: 'SYNCED', lastSyncedAt: localState.lastSyncedAt };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn('[StorageEngine] Cloud sync offline fallback:', message);
+      return { success: false, status: 'OFFLINE_CACHED', error: message, lastSyncedAt: localState.lastSyncedAt };
+    }
+  }
+
+  private static syncTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  public static queueCloudSync(): void {
+    if (typeof window === 'undefined' || !this.getFounderKey()) return;
+    if (this.syncTimeout) clearTimeout(this.syncTimeout);
+    this.syncTimeout = setTimeout(() => {
+      this.syncWithCloud(true).catch(error => console.warn('[StorageEngine] Auto-sync notice:', error));
+    }, 1500);
   }
 
   public static resetToCanonical(): OcgLabOsState {

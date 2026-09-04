@@ -59,18 +59,24 @@ async function getGoogleAccessToken(creds) {
 }
 
 export default async function handler(req, res) {
-  // CORS Headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // Same-origin only: cloud operational state is not a public cross-origin API.
+  const origin = String(req.headers["origin"] || "");
+  const host = String(req.headers["host"] || "");
+  const proto = String(req.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
+  const sameOrigin = host ? `${proto}://${host}` : "";
+  if (origin && sameOrigin && origin !== sameOrigin) {
+    return res.status(403).json({ error: "CROSS_ORIGIN_DENIED" });
+  }
+  if (origin && sameOrigin) res.setHeader("Access-Control-Allow-Origin", sameOrigin);
+  res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-founder-key");
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+  if (req.method === "OPTIONS") return res.status(200).end();
 
   // Phase 6 Security Gate: Founder Authentication Required
-  const authHeader = req.headers["authorization"] || req.headers["x-founder-key"] || req.query?.key || "";
+  const authHeader = req.headers["authorization"] || req.headers["x-founder-key"] || "";
   const founderKey = String(authHeader).replace(/^Bearer\s+/i, "").trim();
 
   const creds = decryptCredentials(founderKey);
