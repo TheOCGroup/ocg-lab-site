@@ -86,7 +86,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
               Technology Department Operating System
             </h1>
             <p className="text-sm text-slate-400 mt-1 max-w-2xl">
-              FOUNDER → AIDEN → DEPARTMENT DIRECTORS → LEAD AGENTS → SPECIALIST WORKFORCE → TOOLS → QA → COMPLETED BUSINESS OUTCOME
+              FOUNDER → AIDEN → OCG LAB TECHNOLOGY DIRECTOR → SPECIALIST WORKFORCE → GOVERNED TOOLS → INDEPENDENT QA → VERIFIED BUSINESS OUTCOME
             </p>
           </div>
 
