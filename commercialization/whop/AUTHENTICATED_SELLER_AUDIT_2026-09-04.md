@@ -10,13 +10,13 @@ Owner: Genaro Ocasio / `the-ocg-lab`
 - Real Estate Investor AI PRO — product `prod_EEmswqofRNOpM`; plan `plan_ep13hdJeMHRfW`; visible; one-time; buy-now; USD $29.00.
 - LEADFLOW AI PRO — product `prod_Kma1MiZdJXFBv`; plan `plan_PhwwSWqwyRCQq`; visible; one-time; buy-now; USD $99.99.
 
-## Initial fulfillment result
+## Historical initial fulfillment result
 
 Authenticated `GET /experiences` filtered to each product initially returned zero attached experiences for all three products. Seller QA therefore remained **PENDING / FULFILLMENT BLOCKED**. No storefront may be promoted to `VERIFIED LIVE` until the intended post-purchase Whop experience is attached, access is verified, and independent non-builder QA passes.
 
-## Insurance Agent AI Playbook
+## Historical Insurance Agent AI Playbook pre-publication state
 
-No authenticated Whop product exists for Insurance Agent AI Playbook as of this audit. Its correct state remains **READY TO PUBLISH**, with the certified $19 one-time publication package prepared separately.
+At the first authenticated audit, no Whop product yet existed for Insurance Agent AI Playbook, so its state at that moment was **READY TO PUBLISH**. This was later superseded by the public release and fulfillment reconciliation recorded below.
 
 ## Integrity rule
 
@@ -57,4 +57,6 @@ Authenticated seller read-back on 2026-09-04 confirms all four visible OCG LAB W
 
 All four plans remain visible one-time buy-now offers at their authenticated prices. No product is promoted to final purchaser-entitlement certification until a real or supported complimentary buyer entitlement is exercised.
 
-- Final commerce closeout canonical promotion run `33882431532` completed SUCCESS from source head `b1dbd5c586e5d041a810f3109470cdbd351d6d58` and committed rebuilt `/os/` production assets as `73d2fc821667e82a6965d8b20a16ce459909dafe`. Standard owner-controlled PR CI/review is required on the promoted tree before merge.
+- Final commerce closeout canonical promotion run `33882431532` completed SUCCESS from source head `b1dbd5c586e5d041a810f3109470cdbd351d6d58` and committed rebuilt `/os/` production assets as `73d2fc821667e82a6965d8b20a16ce459909dafe`. PR #33 subsequently passed owner-controlled CI and Vercel review and merged to canonical `main` at `370d6e721a20406a5e397f73477e6be867484163`; post-merge `test-build` and Vercel production both passed. Current shared Whop certification debt is purchaser entitlement QA only.
+
+- Whop entitlement-QA terminology cleanup canonical promotion run `33901417944` completed SUCCESS and committed rebuilt `/os/` assets as `bcd1935b996959f62acd0a980074a9815d6a22e8`. Standard owner-controlled PR CI/review must pass on this promoted tree before merge.

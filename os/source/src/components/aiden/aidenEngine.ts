@@ -25,14 +25,14 @@ export class AidenEngine {
       const targets = WHOP_SELLER_QA_TARGETS;
       const lines = targets.map((target, index) => `**${index + 1}. ${target.productName}** — $${target.expectedPrice}\n${target.publicUrl}\nSeller evidence: ${target.sellerEvidence}\nRequired completion: ${target.requiredReadback.join(' • ')}`).join('\n\n');
       return {
-        reply: `### **Whop Seller-QA Queue — Authenticated / Entitlement QA Pending**
+        reply: `### **Whop Entitlement-QA Queue — Authenticated / Entitlement QA Pending**
 
 ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
 
 **Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING. All four public Whop products now have private product-gated Courses experiences with verified launch targets. The remaining shared blocker is purchaser entitlement QA: a real or supported complimentary customer entitlement must prove post-purchase access before seller QA may be marked VERIFIED. Independent QA is required before any storefront may be promoted to VERIFIED LIVE.`,
         category: 'STATUS',
         suggestedArea: 'storefronts',
-        actionTaken: 'Reported authenticated Whop purchaser-entitlement QA debt from canonical storefront evidence',
+        actionTaken: 'Reported authenticated Whop entitlement-QA debt from canonical storefront evidence',
         evidence: 'WHOP_SELLER_QA_TARGETS derives only from buyer-verified, seller-pending Whop storefront records.'
       };
     }
