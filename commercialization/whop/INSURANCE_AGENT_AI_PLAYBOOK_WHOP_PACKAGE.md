@@ -208,3 +208,25 @@ The Insurance Agent AI Playbook Whop release is complete only when:
 6. Independent QA passes.
 7. OCG LAB OS records the exact public URL and evidence.
 8. The channel state is promoted to `VERIFIED LIVE` only after those gates pass.
+
+
+## Pre-auth seller-QA handoff manifest
+
+Before Whop authentication is available, OCG LAB OS may prepare—but must not complete—the seller-side verification queue.
+
+For every already-public Whop product, the authenticated read-back must capture these exact evidence fields:
+
+1. Whop company/store identity.
+2. Product ID/name and publication visibility.
+3. Active plan ID/title.
+4. Initial price and currency.
+5. Billing behavior: one-time or recurring.
+6. Renewal price/period if any; for this Playbook these must remain absent.
+7. Trial configuration.
+8. Stock/unlimited availability.
+9. Entitlement/access configuration.
+10. Fulfillment destination or access app.
+11. Duplicate active-plan check.
+12. Timestamped seller-side evidence suitable for independent QA.
+
+The authenticated connector result must be stored as evidence, not summarized from memory. Public buyer-page evidence cannot substitute for this seller-side read-back.
