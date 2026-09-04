@@ -12,7 +12,9 @@ export default async function handler(req,res){
     supported_provider_routes:['openai','anthropic','gemini','xai','groq','deepseek','mistral','openai-compatible'],
     ocg_runtime_ai_key_used:false,
     credential_transport:'encrypted_http_only_browser_isolated',
-    secure_credential_store_configured:true,
+    credential_storage_mode:'encrypted_http_only_browser_isolated',
+    secure_browser_credential_transport_configured:true,
+    durable_server_side_credential_store_configured:false,
     configured:true,
     secrets_exposed:false,
     checked_at:new Date().toISOString()
