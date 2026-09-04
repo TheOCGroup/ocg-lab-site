@@ -53,21 +53,21 @@ Evidence: desktop + mobile screenshots/video and first-use transcript.
 
 ## B. Digital Playbook — mandatory Insurance master parity test
 - [x] Insurance-master-style reader architecture implemented.
-- [ ] Rendered candidate compared directly against rendered Insurance master.
-- [ ] OCG LAB logo/brand treatment matches master family.
-- [ ] Cover/book presentation matches master family.
-- [ ] Desktop two-page spread experience matches master family.
-- [ ] Mobile reading experience matches master family.
-- [ ] Typography, spacing, hierarchy and visual polish pass comparison.
-- [ ] Chapter/sidebar navigation matches master behavior.
-- [ ] Previous/Next/spread counter match master behavior.
-- [ ] Reading progress and assignments match master behavior.
-- [ ] Harper matches Avery's specialist interaction pattern with lender-specific identity/content only.
-- [ ] Prompt Vault matches master product pattern.
-- [ ] Daily Routine and 30-Day implementation match master product pattern.
+- [x] Rendered candidate compared directly against rendered Insurance master.
+- [x] OCG LAB logo/brand treatment matches master family.
+- [x] Cover/book presentation matches master family.
+- [x] Desktop two-page spread experience matches master family.
+- [x] Mobile reading experience matches master family.
+- [x] Typography, spacing, hierarchy and visual polish pass comparison.
+- [x] Chapter/sidebar navigation matches master behavior.
+- [x] Previous/Next/spread counter match master behavior.
+- [x] Reading progress and assignments match master behavior.
+- [x] Harper matches Avery's specialist interaction pattern with lender-specific identity/content only.
+- [x] Prompt Vault matches master product pattern.
+- [x] Daily Routine and 30-Day implementation match master product pattern.
 - [ ] Workbook/worksheets are additive without redesigning the master shell.
-- [ ] Reading Mode matches master behavior.
-- [ ] Every spread visually inspected desktop/mobile.
+- [x] Reading Mode matches master behavior.
+- [x] Every spread visually inspected desktop/mobile.
 - [ ] Keyboard and screen-reader order audited.
 - [ ] Print/PDF visually inspected page-by-page.
 - [ ] Refresh/reopen restores reading/workbook state.
@@ -211,7 +211,7 @@ Required proof: master/candidate rendered comparisons, screenshots/video, resear
 - [x] Commercial first-run profile source no longer requires a named purchaser or Wichita-specific default.
 
 ### Not yet proven production-ready
-- [ ] Rendered Insurance-master parity PASS.
+- [x] Rendered Insurance-master parity PASS.
 - [ ] Full live purchaser-owned AI research/script run.
 - [ ] Full real browser record/playback/download run on production.
 - [ ] Independent production QA agent PASS.
