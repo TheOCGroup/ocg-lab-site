@@ -16,6 +16,10 @@ on:
       - ".github/workflows/lender-product-qa.yml"
   workflow_dispatch:
 
+concurrency:
+  group: lender-product-qa-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lender-product-qa:
     runs-on: ubuntu-latest
