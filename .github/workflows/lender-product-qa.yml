@@ -9,6 +9,7 @@ on:
       - "tests/lender-recorder-contract.test.mjs"
       - "tests/lender-api-truth.test.mjs"
       - "tests/lender-memory-truth.test.mjs"
+      - "tests/lender-failure-recovery.test.mjs"
       - "api/lender-ai-super-pro/**"
       - ".github/workflows/lender-product-qa.yml"
   push:
@@ -20,6 +21,7 @@ on:
       - "tests/lender-recorder-contract.test.mjs"
       - "tests/lender-api-truth.test.mjs"
       - "tests/lender-memory-truth.test.mjs"
+      - "tests/lender-failure-recovery.test.mjs"
       - "api/lender-ai-super-pro/**"
       - ".github/workflows/lender-product-qa.yml"
   workflow_dispatch:
@@ -38,5 +40,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Verify Lender commercial, recorder, API and memory truth invariants
-        run: node --test tests/lender-commercial-parity.test.mjs tests/lender-recorder-contract.test.mjs tests/lender-api-truth.test.mjs tests/lender-memory-truth.test.mjs
+      - name: Verify Lender commercial, recorder, API, memory and failure-recovery truth invariants
+        run: node --test tests/lender-commercial-parity.test.mjs tests/lender-recorder-contract.test.mjs tests/lender-api-truth.test.mjs tests/lender-memory-truth.test.mjs tests/lender-failure-recovery.test.mjs
