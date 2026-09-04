@@ -40,3 +40,7 @@ Before publication:
 ## Evidence
 
 Recovered product-family assets and access guides establish the bundle as Fix & Flip + Rental Property + BRRRR. The individual public calculator routes were independently checked before this release package was prepared.
+
+## OS promotion evidence
+
+Canonical OCG LAB OS promotion workflow run `33906345463` completed **SUCCESS** from source commit `db3b3119b1e0273a5c3f826a0e6f38ac67ce4c6d` and committed regenerated `/os/` assets at `b0fbc8cbf70c0f06b58deb1d60b9b719931730f4`. Standard owner-controlled PR CI/review remains required before merge.
