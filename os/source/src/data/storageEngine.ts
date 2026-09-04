@@ -663,10 +663,14 @@ export class StorageEngine {
       const pull = await fetch(SYNC_ENDPOINT, { headers: { 'x-founder-key': founderKey } });
       if (!pull.ok) {
         if (pull.status === 401) return { success: false, status: 'AUTH_REQUIRED', lastSyncedAt: localState.lastSyncedAt, error: 'Founder authentication rejected.' };
+        // Authenticated and online, but no canonical cloud object exists yet.
+        // Seed cloud from local state rather than misclassifying this as offline.
+        if (pull.status === 404) return this.syncWithCloud(true);
         throw new Error(`Cloud sync GET failed: HTTP ${pull.status}`);
       }
       const envelope = await pull.json();
-      if (!envelope.state) return { success: true, status: 'SYNCED', lastSyncedAt: localState.lastSyncedAt };
+      // An authenticated empty envelope is also a fresh cloud: seed it from local.
+      if (!envelope.state) return this.syncWithCloud(true);
 
       const cloudState = envelope.state as Partial<OcgLabOsState>;
       const cloudMs = Date.parse(cloudState.lastSyncedAt || '') || 0;

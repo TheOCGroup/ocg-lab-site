@@ -25,3 +25,10 @@ test('P3 commerce verification cannot mark Live before buyer QA and records sell
   assert.match(storage, /sellerQaVerifiedAt:/);
   assert.match(storage, /sellerQaEvidence:/);
 });
+
+
+test('P4 authenticated fresh cloud seeds from local instead of reporting offline', () => {
+  assert.match(storage, /if \(pull\.status === 404\) return this\.syncWithCloud\(true\)/);
+  assert.match(storage, /if \(!envelope\.state\) return this\.syncWithCloud\(true\)/);
+  assert.doesNotMatch(storage, /if \(!envelope\.state\) return \{ success: true, status: 'SYNCED'/);
+});
