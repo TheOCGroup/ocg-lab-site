@@ -23,16 +23,16 @@ export class AidenEngine {
 
     if ((q.includes('whop') && q.includes('seller qa')) || q.includes('prepare whop verification') || q.includes('whop auth later')) {
       const targets = WHOP_SELLER_QA_TARGETS;
-      const lines = targets.map((target, index) => `**${index + 1}. ${target.productName}** — $${target.expectedPrice}\n${target.publicUrl}\nRead-back: ${target.requiredReadback.join(' • ')}`).join('\n\n');
+      const lines = targets.map((target, index) => `**${index + 1}. ${target.productName}** — $${target.expectedPrice}\n${target.publicUrl}\nSeller evidence: ${target.sellerEvidence}\nRequired completion: ${target.requiredReadback.join(' • ')}`).join('\n\n');
       return {
-        reply: `### **Whop Seller-QA Queue — Pre-Auth Ready**
+        reply: `### **Whop Seller-QA Queue — Authenticated / Fulfillment Blocked**
 
 ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
 
-**Execution rule:** this queue is preparation only. Authenticated Whop read-back must occur before seller QA can be marked VERIFIED, and independent QA must still pass before any storefront becomes Live.`,
+**Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING because all three currently have zero attached Whop experiences. Attach and verify the intended post-purchase access/fulfillment experience, then run independent QA before any storefront becomes Live.`,
         category: 'STATUS',
         suggestedArea: 'storefronts',
-        actionTaken: 'Prepared deterministic Whop seller-QA queue from canonical storefront evidence',
+        actionTaken: 'Reported authenticated Whop seller-QA blockers from canonical storefront evidence',
         evidence: 'WHOP_SELLER_QA_TARGETS derives only from buyer-verified, seller-pending Whop storefront records.'
       };
     }
