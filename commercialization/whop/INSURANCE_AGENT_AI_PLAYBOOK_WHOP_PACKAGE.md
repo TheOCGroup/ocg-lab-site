@@ -5,7 +5,7 @@
 - Channel: Whop
 - Product: Insurance Agent AI Playbook
 - Product ID: `playbook-insurance`
-- Commercial state before publication: `READY TO PUBLISH`
+- Historical commercial state before publication: `READY TO PUBLISH`
 - Price: `$19.00` one-time
 - Canonical buyer product: `https://ocg-lab-products.vercel.app/playbooks/insurance-agent/`
 - Existing Etsy reference listing: `https://www.etsy.com/listing/4568082033/insurance-agent-ai-playbook-chatgpt`
@@ -210,9 +210,9 @@ The Insurance Agent AI Playbook Whop release is complete only when:
 8. The channel state is promoted to `VERIFIED LIVE` only after those gates pass.
 
 
-## Pre-auth seller-QA handoff manifest
+## Seller-QA evidence manifest
 
-Before Whop authentication is available, OCG LAB OS may prepare—but must not complete—the seller-side verification queue.
+This manifest defines the seller-side evidence required for authenticated Whop verification. Authentication is now established for The OCG LAB; the remaining certification gate is purchaser entitlement QA.
 
 For every already-public Whop product, the authenticated read-back must capture these exact evidence fields:
 

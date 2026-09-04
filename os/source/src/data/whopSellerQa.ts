@@ -35,4 +35,4 @@ export const WHOP_SELLER_QA_TARGETS: WhopSellerQaTarget[] = STOREFRONT_ITEMS_DAT
     sellerEvidence: item.sellerQaEvidence
   }));
 
-export const WHOP_SELLER_QA_PREAUTH_READY = WHOP_SELLER_QA_TARGETS.length > 0;
+export const WHOP_ENTITLEMENT_QA_PENDING = WHOP_SELLER_QA_TARGETS.length > 0;

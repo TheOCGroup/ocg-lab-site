@@ -196,10 +196,12 @@ test('C18 saved storefront state reconciles canonical commerce metadata without 
 
 test('C19 Whop seller-QA queue is deterministic and remains fail-closed until purchaser entitlement verification', () => {
   const qa = fs.readFileSync(new URL('../src/data/whopSellerQa.ts', import.meta.url), 'utf8');
+  assert.match(qa, /WHOP_ENTITLEMENT_QA_PENDING/);
+  assert.doesNotMatch(qa, /PREAUTH|PRE_AUTH|preauth/i);
   assert.match(qa, /buyerQaStatus === 'VERIFIED'/);
   assert.match(qa, /sellerQaStatus === 'PENDING'/);
   for (const field of ['Company\/store identity','Active plan identity','Initial price and currency','Entitlement\/access configuration','Duplicate active plan check']) assert.match(qa, new RegExp(field));
-  assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Entitlement QA Pending/);
+  assert.match(aiden, /Whop Entitlement-QA Queue — Authenticated \/ Entitlement QA Pending/);
   assert.match(aiden, /remaining shared blocker is purchaser entitlement QA/);
   assert.match(aiden, /All four public Whop products now have private product-gated Courses experiences/);
   assert.match(aiden, /Independent QA is required before any storefront may be promoted to VERIFIED LIVE/);
