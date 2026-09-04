@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'leadflow-ai-pro/**'
+      - 'playbooks/leadflow/**'
       - '.github/workflows/leadflow-product-qa.yml'
   workflow_dispatch:
 
@@ -30,6 +31,21 @@ jobs:
         run: |
           set -o pipefail
           node leadflow-ai-pro/qa-product.mjs | tee leadflow-ai-pro/qa-result.json
+      - name: Run proactive training coach QA
+        shell: bash
+        run: |
+          set -o pipefail
+          node leadflow-ai-pro/qa-guided-training.mjs | tee leadflow-ai-pro/qa-training-result.json
+      - name: Run full render and flow QA
+        shell: bash
+        run: |
+          set -o pipefail
+          node leadflow-ai-pro/qa-render-flow.mjs | tee leadflow-ai-pro/qa-flow-result.json
+      - name: Run LeadFlow playbook QA
+        shell: bash
+        run: |
+          set -o pipefail
+          node leadflow-ai-pro/qa-playbook.mjs | tee leadflow-ai-pro/qa-playbook-result.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -39,4 +55,15 @@ jobs:
             leadflow-ai-pro/qa-result.json
             leadflow-ai-pro/qa-desktop.png
             leadflow-ai-pro/qa-mobile.png
+            leadflow-ai-pro/qa-training-result.json
+            leadflow-ai-pro/qa-training-desktop.png
+            leadflow-ai-pro/qa-training-mobile.png
+            leadflow-ai-pro/qa-flow-result.json
+            leadflow-ai-pro/qa-flow-desktop.png
+            leadflow-ai-pro/qa-flow-mobile.png
+            leadflow-ai-pro/qa-playbook-result.json
+            leadflow-ai-pro/qa-playbook-desktop.png
+            leadflow-ai-pro/qa-playbook-mobile.png
+            leadflow-ai-pro/qa-playbook-desktop-spread-*.png
+            leadflow-ai-pro/qa-playbook-mobile-spread-*.png
           if-no-files-found: warn
