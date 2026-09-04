@@ -1,0 +1,30 @@
+name: Lender Product QA
+
+on:
+  pull_request:
+    paths:
+      - "playbooks/lender-ai-super-pro/**"
+      - "lender-ai-super-pro/**"
+      - "tests/lender-commercial-parity.test.mjs"
+      - ".github/workflows/lender-product-qa.yml"
+  push:
+    branches: [main]
+    paths:
+      - "playbooks/lender-ai-super-pro/**"
+      - "lender-ai-super-pro/**"
+      - "tests/lender-commercial-parity.test.mjs"
+      - ".github/workflows/lender-product-qa.yml"
+  workflow_dispatch:
+
+jobs:
+  lender-product-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify Lender commercial parity invariants
+        run: node --test tests/lender-commercial-parity.test.mjs
