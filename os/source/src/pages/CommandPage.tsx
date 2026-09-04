@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StorageEngine, OcgLabOsState } from '../data/storageEngine';
 import { DEPARTMENTS_DATA } from '../data/departments';
+import { PUBLIC_SITE_INTEGRATION_BOUNDARY } from '../data/publicSiteBoundary';
 import { OperatingArea, ProjectRecord } from '../types';
 import { ObjectiveDetailModal } from '../components/ObjectiveDetailModal';
 import { 
@@ -52,6 +53,9 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
   const releasedProjects = state.projects.filter(p => p.status === 'RELEASED');
   const activeAgents = state.agents.filter(a => a.status === 'ACTIVE');
   const primaryObjective = state.objectives[0];
+  const publicBoundary = PUBLIC_SITE_INTEGRATION_BOUNDARY;
+  const publicCapabilityCount = publicBoundary.publicSurface.mayRequest.length;
+  const forbiddenScopeCount = publicBoundary.forbiddenPublicScopes.length;
 
   const handleAuthorizePublish = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -88,6 +92,12 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
             <p className="text-sm text-slate-400 mt-1 max-w-2xl">
               FOUNDER → AIDEN → OCG LAB TECHNOLOGY DIRECTOR → SPECIALIST WORKFORCE → GOVERNED TOOLS → INDEPENDENT QA → VERIFIED BUSINESS OUTCOME
             </p>
+            <div data-public-boundary="active" className="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-wider">
+              <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">Public Surface: Request Only</span>
+              <span className="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-300">{publicCapabilityCount} Scoped Capabilities</span>
+              <span className="px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300">{forbiddenScopeCount} Forbidden Internal Scopes</span>
+              <span className="sr-only">{publicBoundary.forbiddenPublicScopes.join(' | ')}</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3 w-full lg:w-auto">
