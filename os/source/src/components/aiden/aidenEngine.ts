@@ -29,7 +29,7 @@ export class AidenEngine {
 
 ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
 
-**Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING because all three currently have zero attached Whop experiences. Attach and verify the intended post-purchase access/fulfillment experience, then run independent QA before any storefront becomes Live.`,
+**Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING. REI AI PRO and LEADFLOW AI PRO now have private product-gated Courses experiences with verified launch targets, but purchaser entitlement QA is still pending. REI Playbook still has zero attached Whop experiences and remains fulfillment-blocked. Independent QA is required before any storefront becomes Live.`,
         category: 'STATUS',
         suggestedArea: 'storefronts',
         actionTaken: 'Reported authenticated Whop seller-QA blockers from canonical storefront evidence',

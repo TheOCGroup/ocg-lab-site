@@ -145,7 +145,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
     pricing: { tier: 'MID', amount: 147, billing: 'one-time' },
     channels: ['Whop', 'Direct'],
     deliveryAsset: 'OCG_LAB_AI_PRO_FAMILY_PREDEPLOYMENT.zip',
-    productionUrl: 'https://theocgroup.github.io/ocg-lab-site/real-estate-investor-ai-pro/',
+    productionUrl: 'https://ocg-lab-products.vercel.app/real-estate-investor-ai-pro/',
     leadAgent: 'Victor',
     featured: true
   },
@@ -161,7 +161,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
     pricing: { tier: 'MID', amount: 197, billing: 'one-time' },
     channels: ['Whop', 'Direct'],
     deliveryAsset: 'LeadFlow_DIY_OCG_LAB_REVISED_V4.html',
-    productionUrl: 'https://theocgroup.github.io/ocg-lab-site/leadflow-ai-pro/',
+    productionUrl: 'https://ocg-lab-products.vercel.app/leadflow-ai-pro/',
     leadAgent: 'Aiden',
     featured: true
   },

@@ -21,3 +21,10 @@ No authenticated Whop product exists for Insurance Agent AI Playbook as of this 
 ## Integrity rule
 
 Product visibility, valid checkout, and correct pricing do not constitute fulfillment certification. A paid product must have a verified post-purchase access path before seller QA can pass.
+
+
+## Fulfillment remediation — 2026-09-04
+
+- Real Estate Investor AI PRO: private Courses experience `exp_cGOclvtvus6YrC` attached only to `prod_EEmswqofRNOpM`; course `cors_zZYNylj5nJqBy`; one visible launch lesson to `https://ocg-lab-products.vercel.app/real-estate-investor-ai-pro/`. Configuration read-back passed. Purchaser entitlement QA remains pending.
+- LEADFLOW AI PRO: private Courses experience `exp_jd9jmW0lZv3AxY` attached only to `prod_Kma1MiZdJXFBv`; course `cors_pG8yONGEUWb3N`; one visible launch lesson to `https://ocg-lab-products.vercel.app/leadflow-ai-pro/`. Configuration read-back passed. Purchaser entitlement QA remains pending.
+- Real Estate Investor AI Playbook: still has zero attached experiences. The repository currently has no separate Playbook delivery path; its portfolio URL points at the AI PRO path and must not be used as Playbook fulfillment without source recovery/correction.
