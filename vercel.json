@@ -4,5 +4,6 @@
       "main": true,
       "*": false
     }
-  }
+  },
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude).github/**'"
 }
