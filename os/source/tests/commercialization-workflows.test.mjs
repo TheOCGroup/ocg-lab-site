@@ -199,7 +199,7 @@ test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fu
   assert.match(qa, /buyerQaStatus === 'VERIFIED'/);
   assert.match(qa, /sellerQaStatus === 'PENDING'/);
   for (const field of ['Company\/store identity','Active plan identity','Initial price and currency','Entitlement\/access configuration','Duplicate active plan check']) assert.match(qa, new RegExp(field));
-  assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Fulfillment Blocked/);
+  assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Entitlement QA Pending/);
   assert.match(aiden, /purchaser entitlement QA is still pending/);
   assert.match(aiden, /REI Playbook still has zero attached Whop experiences/);
   assert.match(aiden, /Independent QA is required before any storefront may be promoted to VERIFIED LIVE/);
