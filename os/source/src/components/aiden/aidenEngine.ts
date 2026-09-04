@@ -25,14 +25,14 @@ export class AidenEngine {
       const targets = WHOP_SELLER_QA_TARGETS;
       const lines = targets.map((target, index) => `**${index + 1}. ${target.productName}** — $${target.expectedPrice}\n${target.publicUrl}\nSeller evidence: ${target.sellerEvidence}\nRequired completion: ${target.requiredReadback.join(' • ')}`).join('\n\n');
       return {
-        reply: `### **Whop Seller-QA Queue — Authenticated / Fulfillment Blocked**
+        reply: `### **Whop Seller-QA Queue — Authenticated / Entitlement QA Pending**
 
 ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
 
-**Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING. Insurance Playbook, REI AI PRO, and LEADFLOW AI PRO now have private product-gated Courses experiences with verified launch targets, but purchaser entitlement QA is still pending. REI Playbook still has zero attached Whop experiences and remains fulfillment-blocked. Independent QA is required before any storefront may be promoted to VERIFIED LIVE.`,
+**Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING. All four public Whop products now have private product-gated Courses experiences with verified launch targets. The remaining shared blocker is purchaser entitlement QA: a real or supported complimentary customer entitlement must prove post-purchase access before seller QA may be marked VERIFIED. Independent QA is required before any storefront may be promoted to VERIFIED LIVE.`,
         category: 'STATUS',
         suggestedArea: 'storefronts',
-        actionTaken: 'Reported authenticated Whop seller-QA blockers from canonical storefront evidence',
+        actionTaken: 'Reported authenticated Whop purchaser-entitlement QA debt from canonical storefront evidence',
         evidence: 'WHOP_SELLER_QA_TARGETS derives only from buyer-verified, seller-pending Whop storefront records.'
       };
     }
@@ -69,7 +69,7 @@ ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
           leadAgent: candidate.leadAgent
         });
         return {
-          reply: `### **Whop Revenue Verification Dispatched**\n\n**Product:** ${candidate.productName}\n**Channel state:** ${candidateWhop.state}\n**Work order:** \`${dispatch.workOrder.id}\` — **${dispatch.workOrder.status}**\n**Owner:** ${dispatch.workOrder.assignedAgent} / ${dispatch.workOrder.departmentName}\n**Independent QA gate:** qa-testing-release\n\n**Next action:** ${candidate.nextAction}\n\n${dispatch.created ? 'A durable objective and work order were created and written to the audit ledger.' : 'The existing durable work order was reused; no duplicate was created.'} Whop remains **PUBLIC / SELLER QA PENDING** until authenticated seller-side read-back and independent QA complete.`,
+          reply: `### **Whop Revenue Verification Dispatched**\n\n**Product:** ${candidate.productName}\n**Channel state:** ${candidateWhop.state}\n**Work order:** \`${dispatch.workOrder.id}\` — **${dispatch.workOrder.status}**\n**Owner:** ${dispatch.workOrder.assignedAgent} / ${dispatch.workOrder.departmentName}\n**Independent QA gate:** qa-testing-release\n\n**Next action:** ${candidate.nextAction}\n\n${dispatch.created ? 'A durable objective and work order were created and written to the audit ledger.' : 'The existing durable work order was reused; no duplicate was created.'} Whop remains **PUBLIC / SELLER QA PENDING** until purchaser entitlement QA and independent QA complete.`,
           category: 'TASK_DISPATCH',
           suggestedArea: 'storefronts',
           actionTaken: `${dispatch.created ? 'Created' : 'Reused'} durable Whop verification work order ${dispatch.workOrder.id}`,

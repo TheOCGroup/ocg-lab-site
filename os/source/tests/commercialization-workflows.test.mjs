@@ -215,7 +215,7 @@ test('C20 authenticated Whop seller read-back records exact product/plan evidenc
   assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_jd9jmW0lZv3AxY/);
   assert.match(storefronts, /Purchaser entitlement QA remains pending/);
   assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]{0,900}sellerQaStatus: 'VERIFIED'/);
-  assert.match(aiden, /Authenticated \/ Fulfillment Blocked/);
+  assert.match(aiden, /Authenticated \/ Entitlement QA Pending/);
 });
 
 
@@ -233,4 +233,12 @@ test('C25 live commercial portfolio values match verified channel state', () => 
   assert.match(portfolio, /id: 'aipro-rei'[\s\S]*amount: 29/);
   assert.match(portfolio, /id: 'aipro-leadflow'[\s\S]*amount: 99\.99/);
   assert.match(storefronts, /productId: 'playbook-rei'[\s\S]*exp_cGgH7TuG35pn1K[\s\S]*cors_vP4HkHqbziimp/);
+});
+
+
+test('C26 Aiden reports entitlement QA as the only shared Whop seller blocker', () => {
+  assert.match(aiden, /Authenticated \/ Entitlement QA Pending/);
+  assert.match(aiden, /All four public Whop products now have private product-gated Courses experiences/);
+  assert.doesNotMatch(aiden, /REI Playbook still has zero attached Whop experiences/);
+  assert.match(aiden, /purchaser entitlement QA and independent QA complete/);
 });
