@@ -5,7 +5,7 @@ async function open(viewport,label){
   const page=await browser.newPage({viewport});
   page.on('pageerror',e=>result.errors.push(`${label}: pageerror ${e.message}`));
   page.on('console',m=>{if(m.type()==='error')result.errors.push(`${label}: console ${m.text()}`)});
-  await page.goto('http://127.0.0.1:4173/leadflow-ai-pro/',{waitUntil:'networkidle'});
+  await page.goto('http://127.0.0.1:4173/leadflow-ai-pro/?no-live-ai',{waitUntil:'networkidle'});
   await page.waitForTimeout(1500);
   return page;
 }

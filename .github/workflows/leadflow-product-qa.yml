@@ -46,6 +46,16 @@ jobs:
         run: |
           set -o pipefail
           node leadflow-ai-pro/qa-playbook.mjs | tee leadflow-ai-pro/qa-playbook-result.json
+      - name: Run Live AI boundary contract QA
+        shell: bash
+        run: |
+          set -o pipefail
+          node leadflow-ai-pro/qa-live-ai-contract.mjs | tee leadflow-ai-pro/qa-live-ai-result.json
+      - name: Run Live AI fail-closed browser QA
+        shell: bash
+        run: |
+          set -o pipefail
+          node leadflow-ai-pro/qa-live-ai-browser.mjs | tee leadflow-ai-pro/qa-live-ai-browser-result.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -62,6 +72,8 @@ jobs:
             leadflow-ai-pro/qa-flow-desktop.png
             leadflow-ai-pro/qa-flow-mobile.png
             leadflow-ai-pro/qa-playbook-result.json
+            leadflow-ai-pro/qa-live-ai-result.json
+            leadflow-ai-pro/qa-live-ai-browser-result.json
             leadflow-ai-pro/qa-playbook-desktop.png
             leadflow-ai-pro/qa-playbook-mobile.png
             leadflow-ai-pro/qa-playbook-desktop-spread-*.png

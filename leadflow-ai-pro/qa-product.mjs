@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 
-const base = process.env.LEADFLOW_BASE_URL || 'http://127.0.0.1:4173/leadflow-ai-pro/';
+const base = process.env.LEADFLOW_BASE_URL || 'http://127.0.0.1:4173/leadflow-ai-pro/?no-live-ai';
 const browser = await chromium.launch({headless:true});
 const page = await browser.newPage({viewport:{width:1440,height:900}});
 const errors=[];
