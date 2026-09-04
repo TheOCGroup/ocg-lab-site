@@ -1,170 +1,101 @@
-# OCG LAB — Lender AI SUPER PRO — Etsy Listing Package
+# OCG LAB — Lender AI SUPER PRO — Etsy Commercial Package
 
-## Release classification
+## Product
+**Lender AI SUPER PRO + Lender AI Digital Playbook**
 
 - Channel: Etsy
-- Product: Lender AI SUPER PRO + Lender AI Digital Playbook
-- Commercial state before publication: READY TO LIST — EXTERNAL PUBLISH NOT YET AUTHORIZED
-- Proposed launch price: $19.00 one-time
-- Canonical buyer playbook: https://ocg-lab-products.vercel.app/playbooks/lender-ai-super-pro/
-- Canonical production workspace: https://ocg-lab-products.vercel.app/lender-ai-super-pro/
-- Product family master: Insurance Agent AI Digital Playbook
-- Delivery model: Etsy digital delivery -> Buyer Access Guide -> live OCG LAB product links
+- Canonical product master: Insurance Agent AI Digital Playbook
+- Buyer playbook: https://ocg-lab-products.vercel.app/playbooks/lender-ai-super-pro/
+- Production workspace: https://ocg-lab-products.vercel.app/lender-ai-super-pro/
+- Delivery: Etsy digital delivery → Buyer Access Guide → live OCG LAB product
+- Price: SET AT PUBLISH — no unapproved price is hard-coded in the commercial package
+- External Etsy publication: requires seller-account publication/verification
 
-This package intentionally mirrors the Insurance Agent AI Playbook Etsy delivery pattern: premium listing visuals, simple buyer access file, instant delivery, and a live browser-based product experience.
-
-## Etsy listing title
-
+## Etsy title
 **Lender AI SUPER PRO Playbook | AI Prompts, Mortgage Content Scripts & Workflow Guide for Loan Officers**
 
-## Short storefront hook
+## Storefront hook
+**A guided AI operating playbook for mortgage professionals — prompts, borrower and Realtor workflows, content planning, scripts, video production, and step-by-step setup.**
 
-**Your AI-powered lender operating playbook — research, follow-up, content, scripts, video, and guided setup in one premium interactive system.**
-
-## Primary description
-
+## Listing description
 Stop using AI one random question at a time.
 
-Lender AI SUPER PRO gives mortgage professionals a guided system for using AI across real lender workflows — content research, borrower education, follow-up, partner communication, scripts, video preparation, daily priorities, and implementation planning.
+**Lender AI SUPER PRO** gives mortgage professionals a structured way to use AI across practical lender workflows. Your purchase includes the premium **Lender AI Digital Playbook** plus access to the **Lender AI SUPER PRO production workspace**.
 
-The purchase includes the premium **Lender AI Digital Playbook** plus access to the **Lender AI SUPER PRO production workspace**.
+Inside the Digital Playbook, **Harper**, your Lender Playbook Specialist, helps explain lessons, find prompts, show examples, and practice borrower and Realtor conversations. The playbook also includes a Prompt Vault, workbook, Daily AI Routine, 30-Day Implementation Plan, progress tracking, responsive reading, and Setup & Connections guidance.
 
-Inside the interactive playbook, Harper — the built-in Lender Playbook Specialist — helps explain lessons, find the right prompt, show examples, and practice realistic borrower or Realtor conversations. The Prompt Vault gives you ready-to-use lender workflows instead of forcing you to start from a blank chat.
+When you are ready to create content, open Lender AI SUPER PRO and follow the primary workflow:
 
-The Setup & Connections guide explains in plain English how to prepare your lender profile, connect the AI provider you choose, understand optional email/calendar/CRM/social connections, grant camera and microphone permission, and complete your first workflow.
+**CONNECT YOUR AI → CONTENT SCOUT → CHOOSE TOPIC → GENERATE SCRIPT → REVIEW → APPROVE → RECORD → REVIEW VIDEO → DOWNLOAD**
 
-The production workspace then guides you through a practical content flow:
+You connect your own supported AI provider. Your AI account and provider usage remain yours. OCG LAB does not distribute a shared customer AI key.
 
-**CONTENT SCOUT -> CHOOSE TOPIC -> GENERATE SCRIPT -> REVIEW -> APPROVE -> RECORD -> REVIEW VIDEO -> DOWNLOAD**
+Current provider routes include OpenAI, Anthropic, Gemini, xAI, Groq, DeepSeek, Mistral, and supported OpenAI-compatible providers. Provider availability and third-party charges can change.
 
-You stay in control. AI does not approve loans, determine eligibility, promise rates, replace compliance review, or publish without the required human/provider permissions.
+Email, calendar, CRM, social, avatar, and other third-party services are **not represented as live integrations unless the specific connector is actually available in the product**. The Playbook may explain how those services fit into a workflow without claiming they are connected.
+
+Lender AI SUPER PRO does not approve loans, determine borrower eligibility, guarantee rates or savings, replace company/compliance review, or guarantee business results.
 
 **BUILD • TRAIN • OPERATE**
 
-## Who this is for
-
+## Who it is for
 - Mortgage loan officers
 - Mortgage brokers
-- Branch managers
-- Loan-originator teams
+- Branch managers and lender teams
 - Lender marketing professionals
 - Mortgage professionals building Realtor relationships
-- Mortgage professionals who want a structured way to use ChatGPT, Claude, Gemini, or other supported AI providers
+- Mortgage professionals who want a repeatable AI workflow instead of scattered chats
 
-## What the buyer gets
+## Buyer receives
+1. **Interactive Lender AI Digital Playbook** — Insurance-master product-family reader with chapter navigation, desktop book reading, responsive mobile access, progress tracking and implementation guidance.
+2. **Harper Playbook Specialist** — explanations, examples, prompt finding and role-play practice.
+3. **Lender Prompt Vault** — reusable lender workflows for content, follow-up, borrower education, partner communication, objection handling and related tasks.
+4. **Lender AI SUPER PRO workspace** — purchaser-owned AI connection, Content Scout, topic selection, script generation, approval gate, browser self-recording, playback and download.
+5. **Setup & Connections guidance** — plain-English AI setup and guidance for optional applications and browser permissions.
+6. **Workbook + Daily AI Routine + 30-Day Implementation Plan**.
+7. **Buyer Access Guide** with direct product links and first-use instructions.
 
-1. **Interactive Lender AI Digital Playbook** — premium browser-based book experience with chapter navigation, two-page desktop reading, responsive mobile access, progress tracking, and guided implementation.
-2. **Harper Playbook Specialist** — built-in guide for explanations, examples, prompt finding, and practice.
-3. **Lender Prompt Vault** — reusable prompts for follow-up, borrower education, partner communication, objection handling, content planning, compliance-safe rewrites, and more.
-4. **Lender AI SUPER PRO production workspace** — content research, topic selection, evidence-aware script generation, approval gate, self-recording workflow, playback, and download.
-5. **Setup & Connections Guide** — plain-English guidance for profile setup, AI connection, optional email/calendar/CRM/social connections, camera/microphone, and avatar requirements.
-6. **30-Day Implementation Plan** — structured way to put the system into daily use.
-7. **Buyer Access Guide** — simple instant-delivery file that points directly to the live product.
-8. **One-time purchase** — no OCG LAB recurring subscription is included with this Etsy Playbook purchase.
+## First-use instructions
+1. Open the Lender AI Digital Playbook.
+2. Complete your lender profile/workbook.
+3. Use Setup & Connections if you need help obtaining or connecting your chosen AI provider credential.
+4. Open Lender AI SUPER PRO.
+5. Connect your own supported AI provider.
+6. Run Content Scout.
+7. Choose a topic and generate a script.
+8. Review and approve the script.
+9. Choose **Record Myself**.
+10. Allow camera and microphone access.
+11. Record, review and download the video.
 
-## Important AI connection note
+Never send an API credential or account password to OCG LAB support or paste it into a chat.
 
-The purchaser uses their own supported AI provider account and their own API credential. OCG LAB does not provide or share a common customer API key.
+## Buyer FAQ
+### What exactly do I receive?
+A digital Buyer Access Guide with direct access to the live Lender AI Digital Playbook and Lender AI SUPER PRO workspace. No physical product is shipped.
 
-Supported provider routes in the current Lender AI SUPER PRO product include OpenAI, Anthropic, Gemini, xAI, Groq, DeepSeek, Mistral, and compatible OpenAI-style providers where supported by the product.
+### Is ChatGPT or another AI subscription included?
+No. You use your own supported AI provider account and are responsible for that provider's subscriptions or usage charges.
 
-Third-party AI subscriptions, usage charges, CRM/email/calendar accounts, avatar services, or provider fees are not included in the Etsy purchase.
+### Which AI providers can I use?
+Current routes include OpenAI, Anthropic, Gemini, xAI, Groq, DeepSeek, Mistral, and supported OpenAI-compatible providers. Availability can change as third-party APIs change.
 
-## Buyer delivery
+### Do I need coding experience?
+No. The product provides plain-English setup guidance. Some AI providers require you to create an API credential in your own provider account.
 
-Primary instant-delivery file:
+### Does it connect to email, calendar, CRM, or social media?
+The Playbook explains how these applications can fit into lender workflows. A specific service is only considered connected when an actual connector and authorization flow exist in the live product.
 
-**OCG_LAB_Lender_AI_SUPER_PRO_ACCESS.pdf**
+### Can I record video?
+The production workspace includes browser self-recording after script approval, subject to the camera/microphone capabilities and permissions of the purchaser's browser/device.
 
-The Access Guide should contain:
+### Does this replace lending compliance or professional judgment?
+No. Purchasers remain responsible for licensing, employer/company rules, disclosures, advertising requirements, privacy, fair-lending obligations, current mortgage facts, borrower-specific analysis and final human review.
 
-- Product name and OCG LAB branding
-- "Start Here" instructions
-- Clickable Lender AI Digital Playbook link
-- Clickable Lender AI SUPER PRO workspace link
-- Simple first-use checklist
-- AI connection explanation
-- Security reminder: never send API keys/passwords to OCG LAB support or paste them into a chat
-- Note explaining that third-party accounts/fees are separate
-- Support / troubleshooting language without promising unavailable integrations
-
-Canonical links:
-
-- Digital Playbook: https://ocg-lab-products.vercel.app/playbooks/lender-ai-super-pro/
-- Production Workspace: https://ocg-lab-products.vercel.app/lender-ai-super-pro/
-
-## Etsy gallery — match the Insurance listing family
-
-Create six primary square listing images using the approved OCG LAB product family visual language. Minimum target: 2000 x 2000 px.
-
-### Image 1 — Hero / Cover
-- Lender AI SUPER PRO
-- OCG LAB logo
-- Premium book/product mockup
-- "AI Playbook + Production Workspace"
-- Mortgage/lender context without generic contractor imagery
-
-### Image 2 — Product Mockup
-- Desktop + phone presentation
-- Show the actual premium interactive playbook look
-- Include Harper and the two-page reader
-- Small visual reference to the production workspace
-
-### Image 3 — How It Works
-Use a simple flow:
-**Connect Your AI -> Research -> Script -> Approve -> Record -> Download**
-
-### Image 4 — What’s Inside
-Feature cards:
-- Harper Playbook Specialist
-- Prompt Vault
-- Daily AI Routine
-- Borrower + Realtor workflows
-- Content Scout
-- Script Studio
-- Video Recording
-- Setup & Connections
-
-### Image 5 — Setup Made Simple
-Headline:
-**No coding. No guessing.**
-Show:
-- Choose your AI
-- Follow the setup guide
-- Connect only what you want
-- Start with one guided workflow
-
-### Image 6 — Comparison / Value
-Left: "Random AI Chats"
-Right: "Lender AI SUPER PRO"
-Contrast:
-- blank chat vs guided system
-- generic prompts vs lender workflows
-- scattered notes vs saved playbook
-- random content vs research -> approval -> recording workflow
-
-## Etsy listing video
-
-Preferred 15-second silent/low-audio listing video:
-
-1. OCG LAB + Lender AI SUPER PRO title
-2. Flip through premium playbook
-3. Show Harper
-4. Show Prompt Vault
-5. Show Setup & Connections
-6. Show Content Scout -> Script -> Approve -> Record
-7. End frame: "Build • Train • Operate"
-
-Optional 30-45 second voiced promo can be produced separately.
-
-## Proposed price
-
-**$19.00 one-time**
-
-This intentionally matches the established Insurance Agent AI Playbook launch position unless the founder changes the product ladder before publication.
+### Can I use it on mobile?
+The Digital Playbook is responsive for modern mobile browsers. Production features such as recording depend on the browser/device.
 
 ## 13 Etsy tags
-
 1. lender ai
 2. mortgage ai
 3. loan officer ai
@@ -179,68 +110,46 @@ This intentionally matches the established Insurance Agent AI Playbook launch po
 12. ai workflow guide
 13. mortgage business
 
-## Buyer FAQ
+## Buyer delivery file
+**OCG_LAB_Lender_AI_SUPER_PRO_ACCESS.pdf**
 
-### What exactly do I receive?
-You receive an instant Buyer Access Guide with direct access to the live Lender AI Digital Playbook and Lender AI SUPER PRO production workspace.
+Required content:
+- OCG LAB branding
+- Start Here
+- clickable Digital Playbook link
+- clickable Lender AI SUPER PRO link
+- first-use workflow
+- AI credential setup explanation
+- security reminder
+- third-party account/fee note
+- troubleshooting language that does not promise unavailable integrations
 
-### Is ChatGPT included?
-No. The OCG LAB product is the playbook and production workflow. Third-party AI accounts, subscriptions, API usage, or provider fees are separate.
+## Etsy storefront visual standard
+Storefront visuals are separate from the underlying product and must follow the approved Insurance Etsy storefront master literally. The required gallery is **7 individual images**, never a collage:
 
-### Which AI can I use?
-The current product supports multiple provider routes including OpenAI, Anthropic, Gemini, xAI, Groq, DeepSeek, Mistral, and supported OpenAI-compatible providers. Availability can change as providers change their APIs.
+1. Main Cover / Product Hero
+2. What’s Inside / Benefits
+3. Key Features
+4. Who It’s For
+5. What You Get / Delivery
+6. FAQ / Objections
+7. CTA / Start Today
 
-### Do I need coding or technical experience?
-No. The Setup & Connections guide is written for a normal business user and explains the process step by step.
+Do not invent guarantees, testimonials, prices, lifetime access/updates, live integrations, income/lead/closing claims, or other unsupported benefits. Image 7 uses a truthful CTA such as **START TODAY • INSTANT DIGITAL ACCESS • BUILD • TRAIN • OPERATE** unless the founder explicitly approves another offer.
 
-### Does this connect to my email, calendar, CRM, or social accounts?
-The playbook explains how those connections work and how to authorize them safely. A connection should only be treated as available when that specific connector is actually present in the live product. The listing must not promise unsupported integrations.
-
-### Can I record videos in the product?
-The current production workspace includes a browser self-recording workflow after script approval, subject to browser camera and microphone permissions.
-
-### Does this replace lending compliance or professional judgment?
-No. The buyer remains responsible for licensing, company policy, disclosures, compliance, verified mortgage facts, borrower-specific analysis, and final human review.
-
-### Can I use it on my phone?
-The Digital Playbook is responsive for modern mobile browsers. Some production features, such as browser recording, depend on browser/device permissions and capabilities.
-
-### Is this a subscription?
-No. The proposed Etsy launch is a $19 one-time purchase for the OCG LAB product. Third-party services may have their own charges.
+## Listing video
+Optional storefront asset. It must show the real product family and real product capabilities only. It is not required for the underlying Lender product to function.
 
 ## Listing disclaimer
-
 Digital product. No physical item will be shipped. This product is an educational and workflow tool for mortgage professionals. It does not provide legal, financial, underwriting, licensing, compliance, or lending advice and does not guarantee loan approval, rates, eligibility, savings, closings, leads, referrals, revenue, or business results. Buyers are responsible for verifying current mortgage information and complying with employer, lender, investor, regulatory, licensing, advertising, privacy, fair-lending, and disclosure requirements. Third-party AI and software accounts are separate and subject to their own terms and fees.
 
-## Delivery package target
-
-Final Etsy package should mirror the Insurance product structure:
-
-- OCG_LAB_Lender_AI_SUPER_PRO_ACCESS.pdf
-- Lender_AI_SUPER_PRO_Cover.png
-- Lender_AI_SUPER_PRO_Mockup.png
-- Lender_AI_SUPER_PRO_How_It_Works.png
-- Lender_AI_SUPER_PRO_Whats_Inside.png
-- Lender_AI_SUPER_PRO_Setup_Made_Simple.png
-- Lender_AI_SUPER_PRO_Comparison.png
-- Lender_AI_SUPER_PRO_Etsy_Listing_Video.mp4
-- ETSY_COMPLETE_LISTING_PACKAGE.md
-- optional voiced promo
-
-Recommended archive name:
-
+## Commercial package
+Canonical delivery package name:
 **OCG_LAB_Lender_AI_SUPER_PRO_ETSY_COMPLETE_PACKAGE_FINAL.zip**
 
-## Publication gate
+Package should contain the Buyer Access Guide and any approved storefront assets used for Etsy. The actual product remains the live Lender AI Digital Playbook + Lender AI SUPER PRO workspace; the archive must not replace or fork the canonical live product.
 
-Do not call this listing VERIFIED LIVE until:
+## Publication boundary
+The product and listing package may be prepared internally, but **VERIFIED LIVE ON ETSY** requires the authenticated Etsy seller account to publish and a seller-side read-back to confirm title, description, price, digital delivery, files and buyer-visible state.
 
-1. Buyer Access Guide exists and links are tested.
-2. Six listing images are visually reviewed against the Insurance Etsy family.
-3. Listing video is reviewed.
-4. Listing title/description/tags are entered in Etsy.
-5. Buyer-visible price and digital-delivery configuration are verified.
-6. Independent buyer QA successfully purchases/accesses the product or completes the approved test equivalent.
-7. Seller-side read-back confirms the intended listing and fulfillment configuration.
-
-Publication is not verification.
+Do not call the Etsy listing live until that external publication is verified.
