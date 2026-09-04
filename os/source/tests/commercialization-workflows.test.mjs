@@ -244,3 +244,13 @@ test('C26 Aiden reports entitlement QA as the only shared Whop seller blocker', 
   assert.doesNotMatch(aiden, /REI Playbook still has zero attached Whop experiences/);
   assert.match(aiden, /purchaser entitlement QA and independent QA complete/);
 });
+
+test('C27 calculator bundle identity and delivery remain locked to the verified three-tool product family', () => {
+  assert.match(storefronts, /productId: 'calc-bundle'[\s\S]{0,1200}Real Estate Investor Calculator Bundle \(3-in-1\)/);
+  assert.match(storefronts, /productId: 'calc-bundle'[\s\S]{0,1200}price: 67/);
+  assert.match(storefronts, /productId: 'calc-bundle'[\s\S]{0,1600}real-estate-investor-calculator-bundle/);
+  assert.match(storefronts, /Fix & Flip \+ Rental Property \+ BRRRR/);
+  assert.doesNotMatch(storefronts, /productId: 'calc-bundle'[\s\S]{0,1400}4-in-1/);
+  assert.doesNotMatch(storefronts, /productId: 'calc-bundle'[\s\S]{0,1400}fulfillmentUrl: 'https:\/\/ocg-lab-products\.vercel\.app\/brrrr-calculator\//);
+});
+
