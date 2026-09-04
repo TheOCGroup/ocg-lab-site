@@ -180,3 +180,24 @@ test('C17 storefront verification freshness expires evidence and prioritizes sel
   assert.match(aiden, /verification freshness/i);
   assert.match(page, /getVerificationFreshness/);
 });
+
+
+test('C18 saved storefront state reconciles canonical commerce metadata without preserving fabricated counts', () => {
+  const storage = fs.readFileSync(new URL('../src/data/storageEngine.ts', import.meta.url), 'utf8');
+  assert.match(storage, /reconcileStorefrontItems/);
+  assert.match(storage, /\.\.\.persisted,[\s\S]*\.\.\.canonical/);
+  assert.match(storage, /orderCount: 0/);
+  assert.match(storage, /preserveRuntimeLive/);
+  assert.match(storage, /runtimeBuyerVerified/);
+  assert.match(storage, /runtimeSellerVerified/);
+  assert.match(storage, /this\.reconcileStorefrontItems\(parsed\.storefrontItems, defaults\.storefrontItems\)/);
+});
+
+test('C19 Whop seller-QA queue is deterministic and remains fail-closed before authentication', () => {
+  const qa = fs.readFileSync(new URL('../src/data/whopSellerQa.ts', import.meta.url), 'utf8');
+  assert.match(qa, /buyerQaStatus === 'VERIFIED'/);
+  assert.match(qa, /sellerQaStatus === 'PENDING'/);
+  for (const field of ['Company\/store identity','Active plan identity','Initial price and currency','Entitlement\/access configuration','Duplicate active plan check']) assert.match(qa, new RegExp(field));
+  assert.match(aiden, /Whop Seller-QA Queue — Pre-Auth Ready/);
+  assert.match(aiden, /Authenticated Whop read-back must occur before seller QA can be marked VERIFIED/);
+});

@@ -4,6 +4,7 @@ import { COMMERCIAL_WORKFLOWS, COMMERCIALIZATION_LIFECYCLE } from '../../data/co
 import { PRODUCT_COMMERCIALIZATION_READINESS } from '../../data/productCommercializationReadiness';
 import { STOREFRONT_ITEMS_DATA } from '../../data/storefronts';
 import { getStorefrontVerificationDebt } from '../../data/storefrontVerification';
+import { WHOP_SELLER_QA_TARGETS } from '../../data/whopSellerQa';
 
 export interface AidenResolution {
   reply: string;
@@ -19,6 +20,27 @@ export class AidenEngine {
     const state = StorageEngine.loadState();
 
     // COMMERCE CONTROL PLANE — generalized channel/workflow commands.
+
+    if ((q.includes('whop') && q.includes('seller qa')) || q.includes('prepare whop verification') || q.includes('whop auth later')) {
+      const targets = WHOP_SELLER_QA_TARGETS;
+      const lines = targets.map((target, index) => `**${index + 1}. ${target.productName}** — $${target.expectedPrice}
+${target.publicUrl}
+Read-back: ${target.requiredReadback.join(' • ')}`).join('
+
+');
+      return {
+        reply: `### **Whop Seller-QA Queue — Pre-Auth Ready**
+
+${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
+
+**Execution rule:** this queue is preparation only. Authenticated Whop read-back must occur before seller QA can be marked VERIFIED, and independent QA must still pass before any storefront becomes Live.`,
+        category: 'STATUS',
+        suggestedArea: 'storefronts',
+        actionTaken: 'Prepared deterministic Whop seller-QA queue from canonical storefront evidence',
+        evidence: 'WHOP_SELLER_QA_TARGETS derives only from buyer-verified, seller-pending Whop storefront records.'
+      };
+    }
+
     if (q.includes('commercialization status') || q.includes('storefront status') || q.includes('commerce status')) {
       const lines = COMMERCIAL_WORKFLOWS.map(w => `• **${w.name}** — ${w.status}: ${w.completionGate}`).join('\n');
       return { reply: `### **OCG LAB Commercialization Control Plane**\n\n${lines}\n\n**Lifecycle**: ${COMMERCIALIZATION_LIFECYCLE.join(' → ')}\n\nOnly externally verified channels may be represented as live.`, category: 'EXECUTIVE_BRIEFING', suggestedArea: 'storefronts', evidence: 'Commercial workflow registry; live state requires external verification.' };

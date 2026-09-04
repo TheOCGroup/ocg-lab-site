@@ -58,6 +58,36 @@ export class StorageEngine {
     };
   }
 
+
+  private static reconcileStorefrontItems(persistedItems: StorefrontItem[] | undefined, canonicalItems: StorefrontItem[]): StorefrontItem[] {
+    if (!persistedItems || !persistedItems.length) return canonicalItems;
+    const persistedById = new Map(persistedItems.map(item => [item.id, item]));
+    const canonicalIds = new Set(canonicalItems.map(item => item.id));
+    const reconciled = canonicalItems.map(canonical => {
+      const persisted = persistedById.get(canonical.id);
+      if (!persisted) return canonical;
+      const runtimeBuyerVerified = persisted.buyerQaStatus === 'VERIFIED' && !!persisted.buyerQaVerifiedAt && !!persisted.buyerQaEvidence;
+      const runtimeSellerVerified = persisted.sellerQaStatus === 'VERIFIED' && !!persisted.sellerQaVerifiedAt && !!persisted.sellerQaEvidence;
+      const preserveRuntimeLive = persisted.status === 'Live' && runtimeBuyerVerified && runtimeSellerVerified;
+      const buyerIsNewer = runtimeBuyerVerified && (!canonical.buyerQaVerifiedAt || Date.parse(persisted.buyerQaVerifiedAt!) > Date.parse(canonical.buyerQaVerifiedAt));
+      const sellerIsNewer = runtimeSellerVerified && (!canonical.sellerQaVerifiedAt || Date.parse(persisted.sellerQaVerifiedAt!) > Date.parse(canonical.sellerQaVerifiedAt));
+      return {
+        ...persisted,
+        ...canonical,
+        status: preserveRuntimeLive ? 'Live' : canonical.status,
+        orderCount: 0,
+        buyerQaStatus: buyerIsNewer ? persisted.buyerQaStatus : canonical.buyerQaStatus,
+        buyerQaVerifiedAt: buyerIsNewer ? persisted.buyerQaVerifiedAt : canonical.buyerQaVerifiedAt,
+        buyerQaEvidence: buyerIsNewer ? persisted.buyerQaEvidence : canonical.buyerQaEvidence,
+        sellerQaStatus: sellerIsNewer ? persisted.sellerQaStatus : canonical.sellerQaStatus,
+        sellerQaVerifiedAt: sellerIsNewer ? persisted.sellerQaVerifiedAt : canonical.sellerQaVerifiedAt,
+        sellerQaEvidence: sellerIsNewer ? persisted.sellerQaEvidence : canonical.sellerQaEvidence
+      };
+    });
+    const runtimeOnly = persistedItems.filter(item => !canonicalIds.has(item.id));
+    return [...reconciled, ...runtimeOnly];
+  }
+
   public static loadState(): OcgLabOsState {
     const defaults = this.getDefaults();
     try {
@@ -70,7 +100,7 @@ export class StorageEngine {
         taskRuns: parsed.taskRuns && parsed.taskRuns.length ? parsed.taskRuns : defaults.taskRuns,
         decisions: parsed.decisions && parsed.decisions.length ? parsed.decisions : defaults.decisions,
         experiments: parsed.experiments && parsed.experiments.length ? parsed.experiments : defaults.experiments,
-        storefrontItems: parsed.storefrontItems && parsed.storefrontItems.length ? parsed.storefrontItems : defaults.storefrontItems,
+        storefrontItems: this.reconcileStorefrontItems(parsed.storefrontItems, defaults.storefrontItems),
         clientSolutions: parsed.clientSolutions && parsed.clientSolutions.length ? parsed.clientSolutions : defaults.clientSolutions,
         certifications: parsed.certifications || [],
         objectives: parsed.objectives && parsed.objectives.length ? parsed.objectives : defaults.objectives,
