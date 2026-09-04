@@ -10,7 +10,14 @@ const walk = p => {
     else if (/\.(js|html)$/i.test(entry.name)) files.push(full);
   }
 };
-walk(target);
+const assetsDir = path.join(target, 'assets');
+const indexFile = path.join(target, 'index.html');
+if (fs.existsSync(assetsDir)) {
+  if (fs.existsSync(indexFile)) files.push(indexFile);
+  walk(assetsDir);
+} else {
+  walk(target);
+}
 const failures = [];
 for (const file of files) {
   const text = fs.readFileSync(file, 'utf8');
