@@ -6,6 +6,7 @@ import { STOREFRONT_ITEMS_DATA } from '../../data/storefronts';
 import { getStorefrontVerificationDebt } from '../../data/storefrontVerification';
 import { WHOP_SELLER_QA_TARGETS } from '../../data/whopSellerQa';
 import { resolveAgentOperationsIntent } from '../../data/agentOperationsSkills';
+import { ARCHER_FRESH_SOURCE_REQUIREMENT, ARCHER_INTELLIGENCE_WATCH } from '../../data/aiIntelligenceWatch';
 
 export interface AidenResolution {
   reply: string;
@@ -29,6 +30,30 @@ export class AidenEngine {
     if (agentOps) {
       const skillNames = agentOps.skills.map(skill => skill.name);
       const contextLine = agentOps.contextualizedFrom ? `\n\n**Recovered context:** ${agentOps.contextualizedFrom}` : '';
+
+
+      if (skillNames.includes('AI INTELLIGENCE WATCH')) {
+        return {
+          reply: `### **ARCHER — AI Intelligence Watch**
+
+**Owner:** ${ARCHER_INTELLIGENCE_WATCH.owner}
+**Routed by:** ${ARCHER_INTELLIGENCE_WATCH.routedBy}
+**Workflow:** ${ARCHER_INTELLIGENCE_WATCH.workflow.join(' → ')}
+
+**Brief format:** ${ARCHER_INTELLIGENCE_WATCH.founderBriefFields.join(' • ')}
+
+**Source rule:** Primary sources first; reporting is secondary; speculation stays labeled.
+**Duplicate rule:** ${ARCHER_INTELLIGENCE_WATCH.duplicatePolicy}
+**No-noise rule:** ${ARCHER_INTELLIGENCE_WATCH.noSignalRule}${contextLine}
+
+**Current gate:** ${ARCHER_FRESH_SOURCE_REQUIREMENT}`,
+          category: 'TASK_DISPATCH',
+          suggestedArea: 'rd',
+          actionTaken: 'Routed founder language to Archer AI Intelligence Watch without inventing a current brief',
+          evidence: 'Canonical Archer intelligence contract; fresh-source execution remains required for current claims.',
+          skillsUsed: skillNames,
+        };
+      }
 
       if (skillNames.includes('MONEY FIRST')) {
         const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL PUBLISH': 1, 'CHANNEL REGISTRATION': 2, 'FOUNDATION BLOCKED': 3, 'LIVE': 4 } as const;

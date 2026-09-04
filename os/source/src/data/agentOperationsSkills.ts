@@ -18,7 +18,8 @@ export type AgentOperationSkillId =
   | 'CONTENT_FACTORY'
   | 'REPURPOSE'
   | 'DECISION_MEMO'
-  | 'BUILD_DIRECTIVE';
+  | 'BUILD_DIRECTIVE'
+  | 'AI_INTELLIGENCE_WATCH';
 
 export interface AgentOperationSkill {
   id: AgentOperationSkillId;
@@ -55,12 +56,14 @@ export const AGENT_OPERATION_SKILLS: AgentOperationSkill[] = [
   { id: 'CONTENT_FACTORY', name: 'CONTENT FACTORY', purpose: 'Route an approved content objective through creation, QA, and distribution preparation.', operatingArea: 'operations', approvalPolicy: 'INTERNAL_AUTONOMOUS', examples: ["Make today's video."], cues: ["make today's video", 'make the video', 'content factory'] },
   { id: 'REPURPOSE', name: 'REPURPOSE', purpose: 'Adapt an existing approved asset into channel-specific derivatives without changing source truth.', operatingArea: 'operations', approvalPolicy: 'INTERNAL_AUTONOMOUS', examples: ['Repurpose this.'], cues: ['repurpose this', 'reuse this content'] },
   { id: 'DECISION_MEMO', name: 'DECISION MEMO', purpose: 'Produce an evidence-backed decision with options, tradeoffs, risks, and recommendation.', operatingArea: 'command', approvalPolicy: 'INTERNAL_AUTONOMOUS', examples: ['Should we do this?'], cues: ['decision memo', 'decide whether', 'should we do this'] },
+  { id: 'AI_INTELLIGENCE_WATCH', name: 'AI INTELLIGENCE WATCH', purpose: 'Route high-signal AI developments through Archer for fresh-source verification, OCG gap analysis, recommendation, ownership, and provenance.', operatingArea: 'rd', approvalPolicy: 'INTERNAL_AUTONOMOUS', examples: ['Archer, anything important in AI today?', 'What changed that affects us?', 'Anything we should be using?', 'Watch this and tell me what matters.'], cues: ['archer', 'important in ai', 'what did i miss this week', 'anything we should be using', 'what changed that affects us', 'watch this and tell me what matters', 'should we change anything because of this', 'ai intelligence'] },
   { id: 'BUILD_DIRECTIVE', name: 'BUILD DIRECTIVE', purpose: 'Translate the verified objective into a constrained implementation directive for the build workforce.', operatingArea: 'engineering', approvalPolicy: 'INTERNAL_AUTONOMOUS', examples: ['Send this to Codex.'], cues: ['send this to codex', 'build directive', 'hand this to codex'] }
 ];
 
 const byId = (id: AgentOperationSkillId) => AGENT_OPERATION_SKILLS.find(skill => skill.id === id)!;
 
 const compositions: Array<{ cues: string[]; ids: AgentOperationSkillId[] }> = [
+  { cues: ['what changed that affects us', 'should we change anything because of this'], ids: ['AI_INTELLIGENCE_WATCH', 'SOURCE_OF_TRUTH', 'CHALLENGE'] },
   { cues: ['where are we'], ids: ['SOURCE_OF_TRUTH', 'EXECUTIVE_BRIEF', 'VISUALIZE'] },
   { cues: ['finish it', 'finish this', 'get it done'], ids: ['RECOVER_CONTINUE', 'ACT_VERIFY', 'VERIFY'] },
   { cues: ['show me the deal'], ids: ['DEAL_UNDERWRITE', 'PROPERTY_VISUALIZER', 'VISUALIZE'] },

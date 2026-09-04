@@ -138,9 +138,12 @@ export const AGENTS_DATA: AgentRecord[] = [
       'Tailwind CSS & Glassmorphism Design',
       'Micro-Interactions & Motion Transitions',
       'Mobile Touch Target Ergonomics',
-      'Two-Page Book Chassis Layout'
+      'Two-Page Book Chassis Layout',
+      'AI Intelligence Watch & Strategic Gap Analysis',
+      'Primary-Source Ranking & Provenance',
+      'OCG Architecture Gap Analysis'
     ],
-    tools: ['ODL Token Library', 'Figma Exporter', 'Tailwind Compiler', 'CSS Audit Tool'],
+    tools: ['ODL Token Library', 'Figma Exporter', 'Tailwind Compiler', 'CSS Audit Tool', 'Public Research / YouTube Intelligence Gateway'],
     assignedProjects: ['proj-ocg-lab-os', 'playbook-roofing'],
     currentTask: 'Refining OCG LAB OS Quiet Room dark glass navigation and operational telemetry cards',
     executionStats: {
