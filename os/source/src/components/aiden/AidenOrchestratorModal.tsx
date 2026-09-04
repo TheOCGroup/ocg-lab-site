@@ -65,7 +65,8 @@ export const AidenOrchestratorModal: React.FC<AidenOrchestratorModalProps> = ({
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    const resolution = AidenEngine.processQuery(q);
+    const recentFounderQueries = messages.filter(message => message.sender === 'founder').slice(-4).map(message => message.text);
+    const resolution = AidenEngine.processQuery(q, { recentFounderQueries });
 
     const aidenMsg: ChatMessage = {
       id: `aiden-${Date.now() + 1}`,
@@ -84,13 +85,13 @@ export const AidenOrchestratorModal: React.FC<AidenOrchestratorModalProps> = ({
   };
 
   const quickPrompts = [
-    'Aiden, get this OCG LAB Digital Playbook commercially ready for Etsy.',
-    'What is blocking the Lab?',
-    'Which products can make money fastest?',
-    'Have QA test this.',
-    'Send failed work back to the right department.',
-    'What are the agents doing?',
-    'Show me what still needs my approval.'
+    'Where are we?',
+    'What makes us money fastest?',
+    'Find the real one.',
+    'Check this.',
+    'Get this listed.',
+    'Build the next product.',
+    'Show me.'
   ];
 
   return (
@@ -160,6 +161,14 @@ export const AidenOrchestratorModal: React.FC<AidenOrchestratorModalProps> = ({
                 }`}
               >
                 {m.text}
+
+                {m.resolution?.skillsUsed && m.resolution.skillsUsed.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5" data-agent-ops-skills="true">
+                    {m.resolution.skillsUsed.map(skill => (
+                      <span key={skill} className="px-2 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-mono text-cyan-300">{skill}</span>
+                    ))}
+                  </div>
+                )}
 
                 {/* Evidence Card if task was executed */}
                 {m.resolution?.evidence && (
