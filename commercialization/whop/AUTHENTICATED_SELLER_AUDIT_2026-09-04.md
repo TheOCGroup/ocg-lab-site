@@ -58,3 +58,5 @@ Authenticated seller read-back on 2026-09-04 confirms all four visible OCG LAB W
 All four plans remain visible one-time buy-now offers at their authenticated prices. No product is promoted to final purchaser-entitlement certification until a real or supported complimentary buyer entitlement is exercised.
 
 - Final commerce closeout canonical promotion run `33882431532` completed SUCCESS from source head `b1dbd5c586e5d041a810f3109470cdbd351d6d58` and committed rebuilt `/os/` production assets as `73d2fc821667e82a6965d8b20a16ce459909dafe`. PR #33 subsequently passed owner-controlled CI and Vercel review and merged to canonical `main` at `370d6e721a20406a5e397f73477e6be867484163`; post-merge `test-build` and Vercel production both passed. Current shared Whop certification debt is purchaser entitlement QA only.
+
+- Whop entitlement-QA terminology cleanup canonical promotion run `33901417944` completed SUCCESS and committed rebuilt `/os/` assets as `bcd1935b996959f62acd0a980074a9815d6a22e8`. Standard owner-controlled PR CI/review must pass on this promoted tree before merge.
