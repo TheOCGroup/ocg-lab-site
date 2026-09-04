@@ -22,6 +22,10 @@ on:
       - '.github/workflows/ocg-lab-os-ci.yml'
       - '.github/workflows/ocg-lab-os-promote.yml'
 
+concurrency:
+  group: ocg-lab-os-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-build:
     runs-on: ubuntu-latest
