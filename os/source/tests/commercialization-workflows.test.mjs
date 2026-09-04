@@ -114,3 +114,12 @@ test('C12 Whop distinguishes ready-to-publish from public seller-QA verification
   assert.match(aiden, /READY TO PUBLISH/);
   assert.match(aiden, /This does not mark Whop Live/);
 });
+
+
+test('C13 publicly verified Whop products are reconciled without claiming seller-side verification', () => {
+  assert.match(storefronts, /productId: 'playbook-rei'[\s\S]*price: 19\.99[\s\S]*status: 'Ready'[\s\S]*real-estate-investor-ai-playbook/);
+  assert.match(storefronts, /productId: 'aipro-rei'[\s\S]*price: 29[\s\S]*status: 'Ready'[\s\S]*real-estate-investor-ai-pro/);
+  assert.match(storefronts, /productId: 'aipro-leadflow'[\s\S]*price: 99\.99[\s\S]*status: 'Ready'[\s\S]*leadflow-ai-pro-e8/);
+  assert.match(storefronts, /seller-side entitlement\/configuration QA pending|seller-side fulfillment\/configuration QA still pending authenticated read-back/);
+  assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]*status: 'Live'/);
+});
