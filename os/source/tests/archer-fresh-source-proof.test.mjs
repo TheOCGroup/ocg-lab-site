@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const proof = readFileSync(resolve(here, '../../evidence/ARCHER_FRESH_SOURCE_PROOF_2026-09-04.md'), 'utf8');
+const proof = readFileSync(resolve(here, '../../../evidence/ARCHER_FRESH_SOURCE_PROOF_2026-09-04.md'), 'utf8');
 
 test('Archer fresh-source proof preserves the required founder brief contract', () => {
   for (const field of ['WHAT HAPPENED', 'WHY WE CARE', 'WE ALREADY HAVE IT?', 'OPPORTUNITY / GAP', 'ACTION', 'OWNER', 'URGENCY', 'CONFIDENCE', 'SOURCE / PROVENANCE']) {
