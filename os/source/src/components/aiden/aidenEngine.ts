@@ -23,11 +23,7 @@ export class AidenEngine {
 
     if ((q.includes('whop') && q.includes('seller qa')) || q.includes('prepare whop verification') || q.includes('whop auth later')) {
       const targets = WHOP_SELLER_QA_TARGETS;
-      const lines = targets.map((target, index) => `**${index + 1}. ${target.productName}** — $${target.expectedPrice}
-${target.publicUrl}
-Read-back: ${target.requiredReadback.join(' • ')}`).join('
-
-');
+      const lines = targets.map((target, index) => `**${index + 1}. ${target.productName}** — $${target.expectedPrice}\n${target.publicUrl}\nRead-back: ${target.requiredReadback.join(' • ')}`).join('\n\n');
       return {
         reply: `### **Whop Seller-QA Queue — Pre-Auth Ready**
 
