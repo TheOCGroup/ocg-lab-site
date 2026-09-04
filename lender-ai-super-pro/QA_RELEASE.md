@@ -30,6 +30,17 @@ The AI SUPER PRO is the working system each purchaser trains/configures. It must
 
 ---
 
+
+## 2026-09-04 recovery update — internal parity/identity fixes
+
+The current canonical reader already had the Insurance-master topbar/logo composition and Harper was already labeled **Lender AI Digital Playbook Specialist**. This recovery pass additionally:
+- aligns the Lender cover markup/style to the Insurance master-family `cover-art` pattern;
+- labels the customer-facing reader as **Lender AI Digital Playbook** so Harper's teaching role remains separate from the **Lender AI SUPER PRO** production worker;
+- removes purchaser-specific `Brandy` / `Wichita, Kansas` defaults and examples from the commercial reader;
+- preserves the existing workbook, local persistence, Prompt Vault and production-worker links without promoting external-provider gates.
+
+These source fixes do **not** constitute rendered master-parity approval, independent purchaser QA, live provider proof, or a commercial PASS. The gates below remain fail-closed until independently evidenced.
+
 ## A. First-open / zero-instruction test
 - [ ] Public purchaser delivery link opens without owner/developer help.
 - [ ] Product clearly tells the purchaser what it is and what to do first.
