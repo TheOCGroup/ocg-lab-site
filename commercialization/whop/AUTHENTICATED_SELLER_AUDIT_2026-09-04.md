@@ -26,7 +26,7 @@ Product visibility, valid checkout, and correct pricing do not constitute fulfil
 
 - Real Estate Investor AI PRO: private Courses experience `exp_cGOclvtvus6YrC` attached only to `prod_EEmswqofRNOpM`; course `cors_zZYNylj5nJqBy`; one visible launch lesson to `https://ocg-lab-products.vercel.app/real-estate-investor-ai-pro/`. Configuration read-back passed. Purchaser entitlement QA remains pending.
 - LEADFLOW AI PRO: private Courses experience `exp_jd9jmW0lZv3AxY` attached only to `prod_Kma1MiZdJXFBv`; course `cors_pG8yONGEUWb3N`; one visible launch lesson to `https://ocg-lab-products.vercel.app/leadflow-ai-pro/`. Configuration read-back passed. Purchaser entitlement QA remains pending.
-- Real Estate Investor AI Playbook: still has zero attached experiences. The repository had no separate Playbook delivery path; the prior portfolio URL incorrectly pointed at the AI PRO path and must not be used as Playbook fulfillment.
+- Real Estate Investor AI Playbook: dedicated standalone route restored at `https://ocg-lab-products.vercel.app/playbooks/real-estate-investor/` and returned HTTP 200 after merge `5c51e0e4f9e14fafb6840ee34018d29150cf7a2c`. Private Courses experience `exp_cGgH7TuG35pn1K` is attached only to `prod_rjqgwvr66ZSkX`; course `cors_vP4HkHqbziimp` contains one `Access Your Purchase` chapter and one launch lesson to the dedicated Playbook. Purchaser entitlement QA remains pending.
 
 ## OS asset promotion
 
@@ -45,3 +45,16 @@ The canonical OS promotion workflow passed after the fulfillment-state test corr
 - Marketplace status returned `not_available`; this release is a Whop company/store product and must not be represented as Whop Marketplace-listed unless that status changes and is externally verified.
 
 - OCG LAB OS canonical promotion workflow run `33833181312` completed SUCCESS after regression correction; generated `/os/` assets and parity checks were promoted before final PR CI.
+
+## Final four-product fulfillment inventory
+
+Authenticated seller read-back on 2026-09-04 confirms all four visible OCG LAB Whop products now have exactly one private product-gated Courses experience attached:
+
+- Insurance Agent AI Playbook — `prod_R5E61gns17el5` / `plan_J0CgGcDHZl59l` / `exp_ZZyLbvtTb11enK`.
+- Real Estate Investor AI Playbook — `prod_rjqgwvr66ZSkX` / `plan_FoJYDwiCXxEd9` / `exp_cGgH7TuG35pn1K`.
+- Real Estate Investor AI PRO — `prod_EEmswqofRNOpM` / `plan_ep13hdJeMHRfW` / `exp_cGOclvtvus6YrC`.
+- LEADFLOW AI PRO — `prod_Kma1MiZdJXFBv` / `plan_PhwwSWqwyRCQq` / `exp_jd9jmW0lZv3AxY`.
+
+All four plans remain visible one-time buy-now offers at their authenticated prices. No product is promoted to final purchaser-entitlement certification until a real or supported complimentary buyer entitlement is exercised.
+
+- Final commerce closeout canonical promotion run `33882431532` completed SUCCESS from source head `b1dbd5c586e5d041a810f3109470cdbd351d6d58` and committed rebuilt `/os/` production assets as `73d2fc821667e82a6965d8b20a16ce459909dafe`. Standard owner-controlled PR CI/review is required on the promoted tree before merge.

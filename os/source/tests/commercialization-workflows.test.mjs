@@ -120,7 +120,7 @@ test('C13 publicly verified Whop products are reconciled without claiming seller
   assert.match(storefronts, /productId: 'playbook-rei'[\s\S]*price: 19\.99[\s\S]*status: 'Ready'[\s\S]*real-estate-investor-ai-playbook/);
   assert.match(storefronts, /productId: 'aipro-rei'[\s\S]*price: 29[\s\S]*status: 'Ready'[\s\S]*real-estate-investor-ai-pro/);
   assert.match(storefronts, /productId: 'aipro-leadflow'[\s\S]*price: 99\.99[\s\S]*status: 'Ready'[\s\S]*leadflow-ai-pro-e8/);
-  assert.match(storefronts, /authenticated seller plan read-back passed; fulfillment blocked because no Whop experience is attached/);
+  assert.match(storefronts, /dedicated standalone Playbook route restored; private Whop fulfillment experience configured/);
   assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]*status: 'Live'/);
 });
 
@@ -194,14 +194,14 @@ test('C18 saved storefront state reconciles canonical commerce metadata without 
   assert.match(storage, /this\.reconcileStorefrontItems\(parsed\.storefrontItems, defaults\.storefrontItems\)/);
 });
 
-test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fulfillment verification', () => {
+test('C19 Whop seller-QA queue is deterministic and remains fail-closed until purchaser entitlement verification', () => {
   const qa = fs.readFileSync(new URL('../src/data/whopSellerQa.ts', import.meta.url), 'utf8');
   assert.match(qa, /buyerQaStatus === 'VERIFIED'/);
   assert.match(qa, /sellerQaStatus === 'PENDING'/);
   for (const field of ['Company\/store identity','Active plan identity','Initial price and currency','Entitlement\/access configuration','Duplicate active plan check']) assert.match(qa, new RegExp(field));
-  assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Fulfillment Blocked/);
-  assert.match(aiden, /purchaser entitlement QA is still pending/);
-  assert.match(aiden, /REI Playbook still has zero attached Whop experiences/);
+  assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Entitlement QA Pending/);
+  assert.match(aiden, /remaining shared blocker is purchaser entitlement QA/);
+  assert.match(aiden, /All four public Whop products now have private product-gated Courses experiences/);
   assert.match(aiden, /Independent QA is required before any storefront may be promoted to VERIFIED LIVE/);
 });
 
@@ -209,12 +209,13 @@ test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fu
 test('C20 authenticated Whop seller read-back records exact product/plan evidence and remains fail-closed through fulfillment QA', () => {
   for (const id of ['prod_rjqgwvr66ZSkX','prod_EEmswqofRNOpM','prod_Kma1MiZdJXFBv','plan_FoJYDwiCXxEd9','plan_ep13hdJeMHRfW','plan_PhwwSWqwyRCQq','prod_R5E61gns17el5','plan_J0CgGcDHZl59l','exp_ZZyLbvtTb11enK','cors_r0pU0GE9FN4wP']) assert.match(storefronts, new RegExp(id));
   assert.match(storefronts, /account biz_1s3AzoabzwjpqM \(The OCG LAB\)/);
-  assert.match(storefronts, /Fulfillment BLOCKED: GET \/experiences returned zero attached experiences/);
+  assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_cGgH7TuG35pn1K/);
+  assert.match(storefronts, /Purchaser entitlement QA remains pending/);
   assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_cGOclvtvus6YrC/);
   assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_jd9jmW0lZv3AxY/);
   assert.match(storefronts, /Purchaser entitlement QA remains pending/);
   assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]{0,900}sellerQaStatus: 'VERIFIED'/);
-  assert.match(aiden, /Authenticated \/ Fulfillment Blocked/);
+  assert.match(aiden, /Authenticated \/ Entitlement QA Pending/);
 });
 
 
@@ -222,4 +223,22 @@ test('C21 AI PRO production URLs use the verified Vercel delivery surface', () =
   const portfolio = fs.readFileSync(new URL('../src/data/portfolio.ts', import.meta.url), 'utf8');
   assert.match(portfolio, /id: 'aipro-rei'[\s\S]{0,1200}productionUrl: 'https:\/\/ocg-lab-products\.vercel\.app\/real-estate-investor-ai-pro\/'/);
   assert.match(portfolio, /id: 'aipro-leadflow'[\s\S]{0,1200}productionUrl: 'https:\/\/ocg-lab-products\.vercel\.app\/leadflow-ai-pro\/'/);
+});
+
+
+test('C25 live commercial portfolio values match verified channel state', () => {
+  const portfolio = fs.readFileSync(new URL('../src/data/portfolio.ts', import.meta.url), 'utf8');
+  assert.match(portfolio, /id: 'playbook-insurance'[\s\S]*amount: 19[\s\S]*https:\/\/ocg-lab-products\.vercel\.app\/playbooks\/insurance-agent\//);
+  assert.match(portfolio, /id: 'playbook-rei'[\s\S]*amount: 19\.99[\s\S]*real-estate-investor-ai-playbook-FINAL\.html[\s\S]*https:\/\/ocg-lab-products\.vercel\.app\/playbooks\/real-estate-investor\//);
+  assert.match(portfolio, /id: 'aipro-rei'[\s\S]*amount: 29/);
+  assert.match(portfolio, /id: 'aipro-leadflow'[\s\S]*amount: 99\.99/);
+  assert.match(storefronts, /productId: 'playbook-rei'[\s\S]*exp_cGgH7TuG35pn1K[\s\S]*cors_vP4HkHqbziimp/);
+});
+
+
+test('C26 Aiden reports entitlement QA as the only shared Whop seller blocker', () => {
+  assert.match(aiden, /Authenticated \/ Entitlement QA Pending/);
+  assert.match(aiden, /All four public Whop products now have private product-gated Courses experiences/);
+  assert.doesNotMatch(aiden, /REI Playbook still has zero attached Whop experiences/);
+  assert.match(aiden, /purchaser entitlement QA and independent QA complete/);
 });
