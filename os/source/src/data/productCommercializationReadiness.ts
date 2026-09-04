@@ -44,9 +44,10 @@ export const PRODUCT_COMMERCIALIZATION_READINESS: ProductCommercializationReadin
   const channels: ProductChannelReadiness[] = targetChannels.map(channel => {
     const record = STOREFRONT_ITEMS_DATA.find(storefront => storefront.productId === item.id && storefront.channel === channel);
     if (!record) return { channel, state: 'NOT REGISTERED' };
-    if (record.status === 'Live') return { channel, state: 'VERIFIED LIVE' };
-    if (record.status === 'Ready' && record.fulfillmentUrl.includes('whop.com/')) return { channel, state: 'PUBLIC / SELLER QA PENDING' };
-    if (record.status === 'Ready') return { channel, state: 'READY TO PUBLISH' };
+    if (record.status === 'Live' && record.buyerQaStatus === 'VERIFIED' && (record.sellerQaStatus === 'VERIFIED' || record.sellerQaStatus === 'NOT_APPLICABLE')) return { channel, state: 'VERIFIED LIVE' };
+    if (record.buyerQaStatus === 'VERIFIED' && record.sellerQaStatus === 'PENDING') return { channel, state: 'PUBLIC / SELLER QA PENDING' };
+    if (record.status === 'Ready' && record.buyerQaStatus === 'PENDING') return { channel, state: 'READY TO PUBLISH' };
+    if (record.status === 'Live') return { channel, state: 'PUBLIC / SELLER QA PENDING' };
     return { channel, state: 'DRAFT' };
   });
 
