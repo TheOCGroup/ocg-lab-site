@@ -29,7 +29,7 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     price: 19,
     status: 'Live',
     fulfillmentUrl: 'https://whop.com/the-ocg-lab/insurance-agent-ai-playbook/',
-    listingAssetPack: 'Public Whop product prod_R5E61gns17el5 + $19 plan plan_J0CgGcDHZl59l + canonical gallery file file_7ZzwOCQLblxO8 + private Courses experience exp_ZZyLbvtTb11enK + course cors_r0pU0GE9FN4wP',
+    listingAssetPack: 'commercialization/whop/INSURANCE_AGENT_AI_PLAYBOOK_WHOP_PACKAGE.md + public Whop product prod_R5E61gns17el5 + $19 plan plan_J0CgGcDHZl59l + canonical gallery file file_7ZzwOCQLblxO8 + private Courses experience exp_ZZyLbvtTb11enK + course cors_r0pU0GE9FN4wP',
     orderCount: 0,
     deliveryFormat: 'Public Whop product and hosted checkout with private product-gated Courses access to the canonical Insurance Playbook; purchaser entitlement test remains pending',
     buyerQaStatus: 'VERIFIED',
