@@ -106,7 +106,7 @@ test('C12 Whop distinguishes ready-to-publish from public seller-QA verification
   const storage = fs.readFileSync(new URL('../src/data/storageEngine.ts', import.meta.url), 'utf8');
   assert.match(readiness, /READY TO PUBLISH/);
   assert.match(readiness, /PUBLIC \/ SELLER QA PENDING/);
-  assert.match(readiness, /record\.status === 'Ready' && record\.fulfillmentUrl\.includes\('whop\.com\/'\)/);
+  assert.match(readiness, /record\.buyerQaStatus === 'VERIFIED' && record\.sellerQaStatus === 'PENDING'/);
   assert.match(storage, /ensureCommercePublicationDispatch/);
   assert.match(storage, /DISPATCH_COMMERCE_PUBLICATION/);
   assert.match(storage, /no public listing or Live state was inferred/);
