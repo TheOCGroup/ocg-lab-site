@@ -138,3 +138,33 @@ test('C14 Insurance Whop package locks price, one-time billing, fulfillment and 
   assert.match(packageText, /VERIFIED LIVE/);
   assert.match(storefronts, /commercialization\/whop\/INSURANCE_AGENT_AI_PLAYBOOK_WHOP_PACKAGE\.md/);
 });
+
+
+test('C13 storefront verification is evidence-based, not inferred from URL presence', () => {
+  const types = fs.readFileSync(new URL('../src/types.ts', import.meta.url), 'utf8');
+  const readiness = fs.readFileSync(new URL('../src/data/productCommercializationReadiness.ts', import.meta.url), 'utf8');
+  assert.match(types, /buyerQaStatus: StorefrontVerificationStatus/);
+  assert.match(types, /sellerQaStatus: StorefrontVerificationStatus/);
+  assert.match(storefronts, /buyerQaEvidence:/);
+  assert.match(storefronts, /sellerQaEvidence:/);
+  assert.match(readiness, /record\.buyerQaStatus === 'VERIFIED'/);
+  assert.match(readiness, /record\.sellerQaStatus === 'PENDING'/);
+  assert.doesNotMatch(readiness, /fulfillmentUrl\.includes\('whop\.com\/'\)/);
+  assert.match(page, /Buyer QA:/);
+  assert.match(page, /Seller QA:/);
+});
+
+test('C14 current public Whop catalog is reconciled without seller-side overclaim', () => {
+  for (const tuple of [
+    ['Real Estate Investor AI Playbook', '19.99', 'real-estate-investor-ai-playbook'],
+    ['Real Estate Investor AI PRO', '29', 'real-estate-investor-ai-pro'],
+    ['LeadFlow AI PRO', '99.99', 'leadflow-ai-pro-e8']
+  ]) {
+    assert.match(storefronts, new RegExp(tuple[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(storefronts, new RegExp(`price: ${tuple[1].replace('.', '\\.')}`));
+    assert.match(storefronts, new RegExp(tuple[2]));
+  }
+  assert.match(storefronts, /buyerQaStatus: 'VERIFIED'/);
+  assert.match(storefronts, /sellerQaStatus: 'PENDING'/);
+  assert.match(storefronts, /Insurance Agent AI Playbook[\s\S]*buyerQaStatus: 'PENDING'/);
+});

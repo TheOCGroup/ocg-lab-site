@@ -12,7 +12,13 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     fulfillmentUrl: 'https://www.etsy.com/listing/4568082033/insurance-agent-ai-playbook-chatgpt',
     listingAssetPack: 'OCG_LAB_Insurance_Agent_ETSY_COMPLETE_PACKAGE_FINAL.zip + buyer Access Guide',
     orderCount: 0,
-    deliveryFormat: 'Verified Etsy digital delivery: Access Guide PDF + complete archive'
+    deliveryFormat: 'Verified Etsy digital delivery: Access Guide PDF + complete archive',
+    buyerQaStatus: 'VERIFIED',
+    buyerQaVerifiedAt: '2026-09-03T00:00:00Z',
+    buyerQaEvidence: 'Buyer-facing Etsy listing, price, media, digital fulfillment, and purchase surface were certified in the Etsy release.',
+    sellerQaStatus: 'VERIFIED',
+    sellerQaVerifiedAt: '2026-09-03T00:00:00Z',
+    sellerQaEvidence: 'Seller-side Etsy listing configuration and digital fulfillment were independently certified.',
   },
   {
     id: 'store-ins-playbook-whop',
@@ -25,7 +31,11 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     fulfillmentUrl: 'https://ocg-lab-products.vercel.app/playbooks/insurance-agent/',
     listingAssetPack: 'commercialization/whop/INSURANCE_AGENT_AI_PLAYBOOK_WHOP_PACKAGE.md + certified Insurance commercial assets',
     orderCount: 0,
-    deliveryFormat: 'Whop $19 one-time publication package prepared; public listing not yet present; entitlement/access QA follows publication'
+    deliveryFormat: 'Whop $19 one-time publication package prepared; public listing not yet present; entitlement/access QA follows publication',
+    buyerQaStatus: 'PENDING',
+    buyerQaEvidence: 'Insurance Agent AI Playbook is not present on the public OCG LAB Whop product catalog yet.',
+    sellerQaStatus: 'PENDING',
+    sellerQaEvidence: 'Authenticated Whop seller-side product/plan read-back has not been completed.',
   },
   {
     id: 'store-rei-playbook-whop',
@@ -38,7 +48,12 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     fulfillmentUrl: 'https://whop.com/the-ocg-lab/products/real-estate-investor-ai-playbook/',
     listingAssetPack: 'Public Whop buyer page verified; seller-side fulfillment/configuration QA still pending authenticated read-back',
     orderCount: 0,
-    deliveryFormat: 'Public purchase path verified via Whop Order now; entitlement/fulfillment requires seller-side QA'
+    deliveryFormat: 'Public purchase path verified via Whop Order now; entitlement/fulfillment requires seller-side QA',
+    buyerQaStatus: 'VERIFIED',
+    buyerQaVerifiedAt: '2026-09-04T00:13:00Z',
+    buyerQaEvidence: 'Public Whop page verified: product name, $19.99 buyer price, FAQ content, and active Order now control.',
+    sellerQaStatus: 'PENDING',
+    sellerQaEvidence: 'Authenticated Whop seller-side entitlement, plan, and fulfillment configuration still require read-back.',
   },
   {
     id: 'store-rei-aipro-whop',
@@ -51,7 +66,12 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     fulfillmentUrl: 'https://whop.com/the-ocg-lab/products/real-estate-investor-ai-pro/',
     listingAssetPack: 'Public Whop buyer page verified with product gallery and FAQs; seller-side entitlement/configuration QA pending',
     orderCount: 0,
-    deliveryFormat: 'Public purchase path verified via Whop Order now; entitlement/fulfillment requires seller-side QA'
+    deliveryFormat: 'Public purchase path verified via Whop Order now; entitlement/fulfillment requires seller-side QA',
+    buyerQaStatus: 'VERIFIED',
+    buyerQaVerifiedAt: '2026-09-04T00:13:00Z',
+    buyerQaEvidence: 'Public Whop page verified: product name, $29 buyer price, multi-image gallery, FAQs, and active Order now control.',
+    sellerQaStatus: 'PENDING',
+    sellerQaEvidence: 'Authenticated Whop seller-side entitlement, plan, and fulfillment configuration still require read-back.',
   },
   {
     id: 'store-leadflow-whop',
@@ -64,7 +84,12 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     fulfillmentUrl: 'https://whop.com/the-ocg-lab/products/leadflow-ai-pro-e8/',
     listingAssetPack: 'Public Whop buyer page verified with FAQs; seller-side entitlement/configuration QA pending',
     orderCount: 0,
-    deliveryFormat: 'Public purchase path verified via Whop Order now; entitlement/fulfillment requires seller-side QA'
+    deliveryFormat: 'Public purchase path verified via Whop Order now; entitlement/fulfillment requires seller-side QA',
+    buyerQaStatus: 'VERIFIED',
+    buyerQaVerifiedAt: '2026-09-04T00:13:00Z',
+    buyerQaEvidence: 'Public Whop page verified: LEADFLOW AI PRO, $99.99 buyer price, FAQs, and active Order now control.',
+    sellerQaStatus: 'PENDING',
+    sellerQaEvidence: 'Authenticated Whop seller-side entitlement, plan, and fulfillment configuration still require read-back.',
   },
   {
     id: 'store-wedding-allie-direct',
@@ -77,7 +102,12 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     fulfillmentUrl: 'https://jade-horse-34f528.netlify.app/',
     listingAssetPack: 'Existing client deployment; commercial storefront status separate from client delivery status',
     orderCount: 0,
-    deliveryFormat: 'Direct client deployment'
+    deliveryFormat: 'Direct client deployment',
+    buyerQaStatus: 'VERIFIED',
+    buyerQaVerifiedAt: '2026-09-03T00:00:00Z',
+    buyerQaEvidence: 'Existing client deployment URL is publicly reachable; commercial checkout is separate from this direct client delivery.',
+    sellerQaStatus: 'NOT_APPLICABLE',
+    sellerQaEvidence: 'No external marketplace seller configuration applies to this direct client deployment.',
   },
   {
     id: 'store-calcs-bundle-etsy',
@@ -90,6 +120,10 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     fulfillmentUrl: 'https://ocg-lab-products.vercel.app/brrrr-calculator/',
     listingAssetPack: 'Calculator commercialization package requires channel QA',
     orderCount: 0,
-    deliveryFormat: 'Digital calculator bundle'
+    deliveryFormat: 'Digital calculator bundle',
+    buyerQaStatus: 'PENDING',
+    buyerQaEvidence: 'Etsy buyer-facing listing has not been independently verified live.',
+    sellerQaStatus: 'PENDING',
+    sellerQaEvidence: 'Etsy seller-side listing/fulfillment has not been independently verified.',
   }
 ];

@@ -180,10 +180,16 @@ export const StorefrontsPage: React.FC = () => {
                 <div className="flex items-center justify-between text-slate-400"><span>Status:</span><span className={item.status === 'Live' ? 'text-emerald-400 font-bold' : 'text-cyan-300 font-bold'}>{item.status}</span></div>
                 <div className="flex items-center justify-between text-slate-400 gap-3"><span>Asset Pack:</span><span className="text-slate-200 truncate max-w-[180px]">{item.listingAssetPack}</span></div>
                 <div className="flex items-center justify-between text-slate-400 gap-3"><span>Format:</span><span className="text-slate-200 truncate max-w-[180px]">{item.deliveryFormat}</span></div>
+                <div className="flex items-center justify-between text-slate-400"><span>Buyer QA:</span><span className={item.buyerQaStatus === 'VERIFIED' ? 'text-emerald-400 font-bold' : item.buyerQaStatus === 'PENDING' ? 'text-amber-300 font-bold' : 'text-slate-400 font-bold'}>{item.buyerQaStatus}</span></div>
+                <div className="flex items-center justify-between text-slate-400"><span>Seller QA:</span><span className={item.sellerQaStatus === 'VERIFIED' ? 'text-emerald-400 font-bold' : item.sellerQaStatus === 'PENDING' ? 'text-amber-300 font-bold' : 'text-slate-400 font-bold'}>{item.sellerQaStatus}</span></div>
+                <div className="text-[10px] leading-relaxed text-slate-500 border border-slate-800 rounded-xl p-2 bg-slate-950/60">
+                  <div><span className="text-slate-400">Buyer evidence:</span> {item.buyerQaEvidence}</div>
+                  <div className="mt-1"><span className="text-slate-400">Seller evidence:</span> {item.sellerQaEvidence}</div>
+                </div>
                 <div className="flex items-center justify-between text-slate-400"><span>Orders:</span><span className="text-slate-300">Not displayed without verified source</span></div>
 
                 {item.fulfillmentUrl ? (
-                  <a href={item.fulfillmentUrl} target="_blank" rel="noreferrer" className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700"><span>{item.status === 'Live' ? 'Verify Public Listing' : 'Verify Access URL'}</span><ExternalLink className="w-3.5 h-3.5" /></a>
+                  <a href={item.fulfillmentUrl} target="_blank" rel="noreferrer" className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700"><span>{item.buyerQaStatus === 'VERIFIED' ? 'Open Verified Public Page' : item.status === 'Live' ? 'Verify Public Listing' : 'Verify Access URL'}</span><ExternalLink className="w-3.5 h-3.5" /></a>
                 ) : (
                   <div className="w-full py-2 rounded-xl bg-slate-950 text-slate-500 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-800"><CheckCircle2 className="w-3.5 h-3.5" /><span>External channel verification required</span></div>
                 )}

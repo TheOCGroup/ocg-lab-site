@@ -311,6 +311,8 @@ export interface SharedCapability {
   healthMetrics: string;
 }
 
+export type StorefrontVerificationStatus = 'VERIFIED' | 'PENDING' | 'NOT_APPLICABLE';
+
 export interface StorefrontItem {
   id: string;
   productId: string;
@@ -323,6 +325,12 @@ export interface StorefrontItem {
   listingAssetPack: string;
   orderCount: number;
   deliveryFormat: string;
+  buyerQaStatus: StorefrontVerificationStatus;
+  buyerQaVerifiedAt?: string;
+  buyerQaEvidence: string;
+  sellerQaStatus: StorefrontVerificationStatus;
+  sellerQaVerifiedAt?: string;
+  sellerQaEvidence: string;
 }
 
 export interface ClientSolutionRecord {
