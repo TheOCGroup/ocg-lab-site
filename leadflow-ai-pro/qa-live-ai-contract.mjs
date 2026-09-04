@@ -1,9 +1,11 @@
 import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 const api=fs.readFileSync('api/leadflow-ai.js','utf8');
 const client=fs.readFileSync('leadflow-ai-pro/live-ai.js','utf8');
 const index=fs.readFileSync('leadflow-ai-pro/index.html','utf8');
+const isTracked=(path)=>{try{execFileSync('git',['ls-files','--error-unmatch',path],{stdio:'ignore'});return true}catch{return false}};
 const checks={
-  noNewRuntimeDependency: !fs.existsSync('package.json'),
+  noNewRuntimeDependency: !isTracked('package.json') && !isTracked('package-lock.json'),
   gatewayKeyServerOnly: api.includes('process.env.AI_GATEWAY_API_KEY') && !client.includes('AI_GATEWAY_API_KEY'),
   sameOriginEndpoint: client.includes("const endpoint='/api/leadflow-ai'"),
   noCorsBroadening: !api.includes('Access-Control-Allow-Origin'),
