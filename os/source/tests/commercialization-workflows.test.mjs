@@ -201,7 +201,7 @@ test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fu
   assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Fulfillment Blocked/);
   assert.match(aiden, /purchaser entitlement QA is still pending/);
   assert.match(aiden, /REI Playbook still has zero attached Whop experiences/);
-  assert.match(aiden, /independent QA before any storefront becomes Live/);
+  assert.match(aiden, /Independent QA is required before any storefront becomes Live/);
 });
 
 
