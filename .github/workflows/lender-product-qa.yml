@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "playbooks/lender-ai-super-pro/**"
+      - "tests/playbook-print-contract.test.mjs"
+      - "playbooks/insurance-agent/index.html"
       - "playbooks/insurance-agent/styles-2.css"
       - "playbooks/insurance-agent/app-3.js"
       - "lender-ai-super-pro/**"
@@ -19,6 +21,8 @@ on:
     branches: [main]
     paths:
       - "playbooks/lender-ai-super-pro/**"
+      - "tests/playbook-print-contract.test.mjs"
+      - "playbooks/insurance-agent/index.html"
       - "playbooks/insurance-agent/styles-2.css"
       - "playbooks/insurance-agent/app-3.js"
       - "lender-ai-super-pro/**"
@@ -47,4 +51,4 @@ jobs:
         with:
           node-version: 22
       - name: Verify Lender commercial, recorder, API, memory, failure-recovery and accessibility truth invariants
-        run: node --test tests/lender-commercial-parity.test.mjs tests/lender-recorder-contract.test.mjs tests/lender-api-truth.test.mjs tests/lender-memory-truth.test.mjs tests/lender-failure-recovery.test.mjs tests/playbook-accessibility-contract.test.mjs
+        run: node --test tests/lender-commercial-parity.test.mjs tests/lender-recorder-contract.test.mjs tests/lender-api-truth.test.mjs tests/lender-memory-truth.test.mjs tests/lender-failure-recovery.test.mjs tests/playbook-accessibility-contract.test.mjs tests/playbook-print-contract.test.mjs

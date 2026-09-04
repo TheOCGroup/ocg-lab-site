@@ -17,7 +17,7 @@
   .controls{position:sticky;bottom:10px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(16px);padding:10px 14px;border-radius:18px;border:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:45;margin:16px auto 0}
   .assistant-orb{width:52px;height:52px;right:14px;bottom:76px;z-index:60}
 }
-@media(max-width:620px){.topbar{padding:0 12px}.brand span{display:none}.top-actions .pill-btn:not(.primary){display:none}.reader{padding:14px 10px 34px}.page{padding:26px 20px;min-height:610px}.cards{grid-template-columns:1fr}.metric-row{grid-template-columns:1fr}.chapter-title{font-size:42px}.chapter-cover h2{font-size:48px}.controls{padding:0 5px}.controls .center{display:none}.cover-page{min-height:0;aspect-ratio:4/5}.assistant-orb{right:16px;bottom:16px}}
+@media(max-width:620px){.topbar{padding:0 12px}.brand span{display:none}.top-actions .pill-btn:not(.primary){display:none}.top-actions .print-btn{display:inline-flex!important;padding:9px 10px;font-size:0}.top-actions .print-btn:after{content:"PDF";font-size:11px}.reader{padding:14px 10px 34px}.page{padding:26px 20px;min-height:610px}.cards{grid-template-columns:1fr}.metric-row{grid-template-columns:1fr}.chapter-title{font-size:42px}.chapter-cover h2{font-size:48px}.controls{padding:0 5px}.controls .center{display:none}.cover-page{min-height:0;aspect-ratio:4/5}.assistant-orb{right:16px;bottom:16px}}
 /* legacy print styles superseded by V10 */
 
 /* V4: Prompt Vault + specialized playbook guide */
