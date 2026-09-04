@@ -43,3 +43,5 @@ The canonical OS promotion workflow passed after the fulfillment-state test corr
 - Canonical product target: HTTP 200 verified before publication.
 - Public product and seller configuration are verified. Purchaser entitlement execution has not been tested with a real/complimentary member because the connected Whop tool surface exposes membership read operations but no supported complimentary-membership creation path. Final state therefore remains **PUBLIC / SELLER QA PENDING**, not `VERIFIED LIVE`.
 - Marketplace status returned `not_available`; this release is a Whop company/store product and must not be represented as Whop Marketplace-listed unless that status changes and is externally verified.
+
+- OCG LAB OS canonical promotion workflow run `33833181312` completed SUCCESS after regression correction; generated `/os/` assets and parity checks were promoted before final PR CI.
