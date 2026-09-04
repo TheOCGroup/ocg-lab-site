@@ -23,9 +23,9 @@ export const STOREFRONT_ITEMS_DATA: StorefrontItem[] = [
     price: 19,
     status: 'Ready',
     fulfillmentUrl: 'https://ocg-lab-products.vercel.app/playbooks/insurance-agent/',
-    listingAssetPack: 'Use the certified Insurance Agent commercial asset package; Whop seller-side verification pending connection',
+    listingAssetPack: 'commercialization/whop/INSURANCE_AGENT_AI_PLAYBOOK_WHOP_PACKAGE.md + certified Insurance commercial assets',
     orderCount: 0,
-    deliveryFormat: 'Target: Whop checkout + entitlement/access to canonical OCG LAB product'
+    deliveryFormat: 'Whop $19 one-time publication package prepared; public listing not yet present; entitlement/access QA follows publication'
   },
   {
     id: 'store-rei-playbook-whop',

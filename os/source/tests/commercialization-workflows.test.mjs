@@ -123,3 +123,18 @@ test('C13 publicly verified Whop products are reconciled without claiming seller
   assert.match(storefronts, /seller-side entitlement\/configuration QA pending|seller-side fulfillment\/configuration QA still pending authenticated read-back/);
   assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]*status: 'Live'/);
 });
+
+
+test('C14 Insurance Whop package locks price, one-time billing, fulfillment and verification gates', () => {
+  const packagePath = new URL('../../../commercialization/whop/INSURANCE_AGENT_AI_PLAYBOOK_WHOP_PACKAGE.md', import.meta.url);
+  const packageText = fs.readFileSync(packagePath, 'utf8');
+  assert.match(packageText, /Price: `\$19\.00` one-time/);
+  assert.match(packageText, /Initial price: `\$19\.00`/);
+  assert.match(packageText, /https:\/\/ocg-lab-products\.vercel\.app\/playbooks\/insurance-agent\//);
+  assert.match(packageText, /OCG_LAB_Insurance_Agent_Playbook_ACCESS\.pdf/);
+  assert.match(packageText, /OCG_LAB_Insurance_Agent_ETSY_COMPLETE_PACKAGE_FINAL\.zip/);
+  assert.match(packageText, /READY TO PUBLISH/);
+  assert.match(packageText, /PUBLIC \/ SELLER QA PENDING/);
+  assert.match(packageText, /VERIFIED LIVE/);
+  assert.match(storefronts, /commercialization\/whop\/INSURANCE_AGENT_AI_PLAYBOOK_WHOP_PACKAGE\.md/);
+});
