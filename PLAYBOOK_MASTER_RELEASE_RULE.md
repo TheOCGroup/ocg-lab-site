@@ -34,7 +34,46 @@ Required comparison includes, at minimum:
 
 Sharing CSS, components, code, route structure, or a design system does NOT constitute visual parity evidence.
 
-## 3. Evidence rule
+## 3. Embedded-surface parity rule
+Every surface visible inside or launched from a Digital Playbook is part of the product and is subject to the same visual standard.
+
+This includes, without limitation:
+- Setup / Getting Started
+- Settings
+- Connections / Integrations
+- Help / How-To guides
+- Onboarding
+- Installation instructions
+- Tool launchers
+- Credential guidance
+- Permission guidance
+- Modals
+- drawers
+- side panels
+- overlays
+- worksheets
+- utility screens
+- empty states
+- error/recovery states
+
+These surfaces MUST visually and behaviorally inherit the canonical playbook product family. They may not look like a generic admin panel, developer utility, plain form, unrelated settings sheet, browser-native dialog, or separate product unless the founder explicitly approves that deviation.
+
+Required parity for embedded surfaces includes:
+- OCG LAB branding treatment
+- typography and type scale
+- spacing rhythm
+- premium card/callout language
+- gradients and visual hierarchy where used by the master
+- button styles
+- instructional tone
+- responsive behavior
+- dark/reading mode compatibility
+- clear relationship to the current playbook and specialist
+- no sudden visual-language break when opened
+
+**If an embedded surface does not look like it belongs to the Digital Playbook family, the entire product FAILS visual QA.**
+
+## 4. Evidence rule
 **NO EVIDENCE = NO PASS.**
 
 The following are engineering evidence only and can NEVER by themselves establish product readiness:
@@ -50,24 +89,26 @@ The following are engineering evidence only and can NEVER by themselves establis
 
 A playbook parity PASS requires retained rendered evidence from the candidate and master at equivalent desktop and mobile states, plus page/spread-by-page/spread inspection results.
 
-## 4. Builder cannot self-approve
+For any newly added or materially changed embedded surface, rendered QA evidence must include that surface open and in use on desktop and mobile. A closed button or hidden source file is not evidence of parity.
+
+## 5. Builder cannot self-approve
 The builder/fixer may report BUILD COMPLETE or READY FOR QA only.
 
 The builder/fixer may NOT issue the final Visual Parity PASS, Independent Purchaser PASS, Final Approval PASS, COMMERCIAL/SELLABLE status, or equivalent release approval for their own material work.
 
-## 5. Mandatory release sequence
+## 6. Mandatory release sequence
 SOURCE OF TRUTH → BUILD → MASTER PARITY QA → FUNCTIONAL QA → VISUAL/RESPONSIVE QA → SECURITY/INTEGRATION QA (when applicable) → INDEPENDENT PURCHASER ACCEPTANCE QA → ADVERSARIAL/FAILURE QA → FINAL APPROVAL → PRODUCTION VERIFY → RELEASED/COMMERCIAL.
 
 A failure at any gate returns the product to the responsible build/fix stage. The failed gate must then be rerun on the corrected release.
 
-## 6. Independent purchaser gate
+## 7. Independent purchaser gate
 A cold purchaser QA agent/tester who did not build or fix the release must receive only what a real purchaser receives. No developer access, hidden instructions, preloaded browser state, undocumented setup, or builder coaching is allowed.
 
 The purchaser must independently understand the product, configure it, use its primary advertised workflow, recover state after close/reopen, and understand/recover from required failure and permission-denial states.
 
 **NO INDEPENDENT PURCHASER PASS = NO SALE.**
 
-## 7. Final approval language
+## 8. Final approval language
 Until all mandatory gates pass with evidence, status language is restricted to factual intermediate states such as:
 - BUILDING
 - BUILD COMPLETE — QA REQUIRED
@@ -78,18 +119,21 @@ Until all mandatory gates pass with evidence, status language is restricted to f
 
 `READY`, `FINISHED`, `DONE`, `FINAL`, `RELEASED`, `PRODUCTION-READY`, `COMMERCIAL`, and `SELLABLE` are forbidden unless the corresponding release gates have actually passed.
 
-## 8. Reference drift rule
+## 9. Reference drift rule
 If a product has a named canonical master, architecture, repo, agent role, commercial model, or product pattern, implementation problems must be solved inside those constraints. The builder may not silently reinterpret or replace the reference to make implementation easier.
 
 Any intentional deviation requires explicit founder approval and must be documented before implementation.
 
-## 9. Lender AI SUPER PRO enforcement
+## 10. Lender AI SUPER PRO enforcement
 The current Lender AI Digital Playbook is subject to this rule immediately.
 
 Its current public deployment or HTTP health does NOT make it ready. It must pass rendered Insurance-master parity QA before any readiness claim. Harper replaces Avery in the specialist role; lender-specific content/workflows replace insurance-specific content/workflows; the Digital Playbook product family remains the Insurance master. The separate Lender AI SUPER PRO production worker may be linked from the Playbook but does not redefine the Playbook UI/UX.
 
-## 10. Permanent release invariant
+The Lender Setup & Connections guide is explicitly part of the Digital Playbook product surface and must pass this same embedded-surface parity rule.
+
+## 11. Permanent release invariant
 **NO MASTER COMPARISON = NO PASS.**
 **NO RENDERED EVIDENCE = NO PASS.**
 **NO INDEPENDENT QA = NO RELEASE.**
 **NO PURCHASER PASS = NO SALE.**
+**UTILITY SURFACE DRIFT = PRODUCT QA FAIL.**
