@@ -7,12 +7,12 @@ const book = fs.readFileSync(new URL('../playbooks/lender-ai-super-pro/book.js',
 const app = fs.readFileSync(new URL('../playbooks/lender-ai-super-pro/app.js', import.meta.url), 'utf8');
 
 test('Lender reader preserves Insurance master-family cover/header pattern', () => {
-  assert.match(index, /class=\\\"brand\\\"/);
-  assert.match(index, /data-asset=\\\"logo\\\"/);
-  assert.match(index, /\\.cover-art/);
-  assert.match(book, /class=\\\"page left cover-page\\\"/);
-  assert.match(book, /class=\\\"cover-art\\\"/);
-  assert.match(book, /LENDER AI<\\/br><span>DIGITAL PLAYBOOK<\\/span>/);
+  assert.match(index, /class="brand"/);
+  assert.match(index, /data-asset="logo"/);
+  assert.match(index, /\.cover-art/);
+  assert.match(book, /class="page left cover-page"/);
+  assert.match(book, /class="cover-art"/);
+  assert.ok(book.includes('LENDER AI<br/><span>DIGITAL PLAYBOOK</span>'));
   assert.doesNotMatch(index + book, /cover-custom/);
 });
 
