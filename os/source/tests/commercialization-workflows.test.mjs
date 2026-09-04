@@ -158,7 +158,8 @@ test('C16 current public Whop catalog is reconciled without seller-side overclai
   for (const tuple of [
     ['Real Estate Investor AI Playbook', '19.99', 'real-estate-investor-ai-playbook'],
     ['Real Estate Investor AI PRO', '29', 'real-estate-investor-ai-pro'],
-    ['LeadFlow AI PRO', '99.99', 'leadflow-ai-pro-e8']
+    ['LeadFlow AI PRO', '99.99', 'leadflow-ai-pro-e8'],
+    ['Insurance Agent AI Playbook', '19', 'insurance-agent-ai-playbook']
   ]) {
     assert.match(storefronts, new RegExp(tuple[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(storefronts, new RegExp(`price: ${tuple[1].replace('.', '\\.')}`));
@@ -166,7 +167,7 @@ test('C16 current public Whop catalog is reconciled without seller-side overclai
   }
   assert.match(storefronts, /buyerQaStatus: 'VERIFIED'/);
   assert.match(storefronts, /sellerQaStatus: 'PENDING'/);
-  assert.match(storefronts, /Insurance Agent AI Playbook[\s\S]*buyerQaStatus: 'PENDING'/);
+  assert.match(storefronts, /Insurance Agent AI Playbook[\s\S]*status: 'Live'[\s\S]*buyerQaStatus: 'VERIFIED'[\s\S]*sellerQaStatus: 'PENDING'/);
 });
 
 
@@ -201,12 +202,12 @@ test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fu
   assert.match(aiden, /Whop Seller-QA Queue — Authenticated \/ Fulfillment Blocked/);
   assert.match(aiden, /purchaser entitlement QA is still pending/);
   assert.match(aiden, /REI Playbook still has zero attached Whop experiences/);
-  assert.match(aiden, /Independent QA is required before any storefront becomes Live/);
+  assert.match(aiden, /Independent QA is required before any storefront may be promoted to VERIFIED LIVE/);
 });
 
 
 test('C20 authenticated Whop seller read-back records exact product/plan evidence and remains fail-closed through fulfillment QA', () => {
-  for (const id of ['prod_rjqgwvr66ZSkX','prod_EEmswqofRNOpM','prod_Kma1MiZdJXFBv','plan_FoJYDwiCXxEd9','plan_ep13hdJeMHRfW','plan_PhwwSWqwyRCQq']) assert.match(storefronts, new RegExp(id));
+  for (const id of ['prod_rjqgwvr66ZSkX','prod_EEmswqofRNOpM','prod_Kma1MiZdJXFBv','plan_FoJYDwiCXxEd9','plan_ep13hdJeMHRfW','plan_PhwwSWqwyRCQq','prod_R5E61gns17el5','plan_J0CgGcDHZl59l','exp_ZZyLbvtTb11enK','cors_r0pU0GE9FN4wP']) assert.match(storefronts, new RegExp(id));
   assert.match(storefronts, /account biz_1s3AzoabzwjpqM \(The OCG LAB\)/);
   assert.match(storefronts, /Fulfillment BLOCKED: GET \/experiences returned zero attached experiences/);
   assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_cGOclvtvus6YrC/);

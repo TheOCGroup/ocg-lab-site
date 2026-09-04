@@ -29,7 +29,7 @@ export class AidenEngine {
 
 ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
 
-**Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING. REI AI PRO and LEADFLOW AI PRO now have private product-gated Courses experiences with verified launch targets, but purchaser entitlement QA is still pending. REI Playbook still has zero attached Whop experiences and remains fulfillment-blocked. Independent QA is required before any storefront becomes Live.`,
+**Execution rule:** authenticated seller identity, product, plan, price, visibility, and billing read-back are complete for the existing public products. Seller QA remains PENDING. Insurance Playbook, REI AI PRO, and LEADFLOW AI PRO now have private product-gated Courses experiences with verified launch targets, but purchaser entitlement QA is still pending. REI Playbook still has zero attached Whop experiences and remains fulfillment-blocked. Independent QA is required before any storefront may be promoted to VERIFIED LIVE.`,
         category: 'STATUS',
         suggestedArea: 'storefronts',
         actionTaken: 'Reported authenticated Whop seller-QA blockers from canonical storefront evidence',
@@ -313,9 +313,9 @@ ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
     if (q.includes('what should ocg lab work on') || q.includes('work on right now') || q.includes('priority')) {
       return {
         reply: `**Aiden Operational Priority Briefing:**\n\n` +
-          `1. **P0 Revenue Action**: Approve the Insurance Agent AI Playbook Etsy listing release.\n` +
-          `2. **P1 Infrastructure Action**: Deploy OCG LAB OS subpath (\`/os/\`) to the production infrastructure at \`https://ocg-lab-products.vercel.app/os/\`.\n` +
-          `3. **P2 Commercial Action**: Prepare the second wave of Playbook releases (Realtor AI Playbook and Roofing AI Playbook).\n\n` +
+          `1. **P0 Revenue Action**: Complete purchaser-entitlement QA for the public Insurance Agent AI Playbook Whop release and restore the standalone REI Playbook fulfillment route.\n` +
+          `2. **P1 Commercial Action**: Finish Whop fulfillment QA for the remaining public products without duplicating listings.\n` +
+          `3. **P2 Growth Action**: Launch second-wave Playbooks and marketing only from independently verified channel states.\n\n` +
           `*All specialist departments are aligned and standing by.*`,
         category: 'STATUS',
         suggestedArea: 'command'
@@ -331,7 +331,7 @@ ${lines || 'No buyer-verified Whop products are awaiting seller QA.'}
           `• AI PRO: Insurance Agent AI PRO Access Guide Final (PASS)\n` +
           `• Storefront Delivery: 14.3MB Complete Etsy Package verified in Downloads\n` +
           `• Etsy Commerce Status: LIVE & BUYER-VERIFIED\n` +
-          `• Whop Commerce Status: READY / UNVERIFIED pending authenticated audit\n\n` +
+          `• Whop Commerce Status: PUBLIC / SELLER QA PENDING — $19 one-time; gallery and gated fulfillment configured; purchaser entitlement QA pending\n\n` +
           `*Action executed: Product package remains certified; Etsy is live and Whop is the next external certification gate.*`,
         category: 'TASK_DISPATCH',
         suggestedArea: 'command',
