@@ -120,7 +120,7 @@ test('C13 publicly verified Whop products are reconciled without claiming seller
   assert.match(storefronts, /productId: 'playbook-rei'[\s\S]*price: 19\.99[\s\S]*status: 'Ready'[\s\S]*real-estate-investor-ai-playbook/);
   assert.match(storefronts, /productId: 'aipro-rei'[\s\S]*price: 29[\s\S]*status: 'Ready'[\s\S]*real-estate-investor-ai-pro/);
   assert.match(storefronts, /productId: 'aipro-leadflow'[\s\S]*price: 99\.99[\s\S]*status: 'Ready'[\s\S]*leadflow-ai-pro-e8/);
-  assert.match(storefronts, /authenticated seller plan read-back passed; fulfillment blocked because no Whop experience is attached/);
+  assert.match(storefronts, /dedicated standalone Playbook route restored; private Whop fulfillment experience configured/);
   assert.doesNotMatch(storefronts, /productId: 'playbook-rei'[\s\S]*status: 'Live'/);
 });
 
@@ -222,4 +222,14 @@ test('C21 AI PRO production URLs use the verified Vercel delivery surface', () =
   const portfolio = fs.readFileSync(new URL('../src/data/portfolio.ts', import.meta.url), 'utf8');
   assert.match(portfolio, /id: 'aipro-rei'[\s\S]{0,1200}productionUrl: 'https:\/\/ocg-lab-products\.vercel\.app\/real-estate-investor-ai-pro\/'/);
   assert.match(portfolio, /id: 'aipro-leadflow'[\s\S]{0,1200}productionUrl: 'https:\/\/ocg-lab-products\.vercel\.app\/leadflow-ai-pro\/'/);
+});
+
+
+test('C25 live commercial portfolio values match verified channel state', () => {
+  const portfolio = fs.readFileSync(new URL('../src/data/portfolio.ts', import.meta.url), 'utf8');
+  assert.match(portfolio, /id: 'playbook-insurance'[\s\S]*amount: 19[\s\S]*https:\/\/ocg-lab-products\.vercel\.app\/playbooks\/insurance-agent\//);
+  assert.match(portfolio, /id: 'playbook-rei'[\s\S]*amount: 19\.99[\s\S]*real-estate-investor-ai-playbook-FINAL\.html[\s\S]*https:\/\/ocg-lab-products\.vercel\.app\/playbooks\/real-estate-investor\//);
+  assert.match(portfolio, /id: 'aipro-rei'[\s\S]*amount: 29/);
+  assert.match(portfolio, /id: 'aipro-leadflow'[\s\S]*amount: 99\.99/);
+  assert.match(storefronts, /productId: 'playbook-rei'[\s\S]*exp_cGgH7TuG35pn1K[\s\S]*cors_vP4HkHqbziimp/);
 });
