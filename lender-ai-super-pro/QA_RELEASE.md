@@ -69,8 +69,8 @@ Evidence: desktop + mobile screenshots/video and first-use transcript.
 - [x] Reading Mode matches master behavior.
 - [x] Every spread visually inspected desktop/mobile.
 - [ ] Keyboard and screen-reader order audited.
-- [ ] Print/PDF visually inspected page-by-page.
-- [ ] Refresh/reopen restores reading/workbook state.
+- [x] Print/PDF visually inspected page-by-page.
+- [x] Refresh/reopen restores reading/workbook state.
 
 **Shared CSS/components or HTTP 200 do not satisfy this gate. Rendered evidence is mandatory.**
 
@@ -143,7 +143,7 @@ QA is separate from script generation.
 
 ## K. Responsive / browser / resilience QA
 - [ ] Chrome/Edge desktop; iPhone/Android/narrow mobile.
-- [ ] Reload persistence.
+- [x] Reload persistence.
 - [ ] Network/provider failures.
 - [ ] Camera/microphone denial.
 - [ ] Duplicate-click/idempotency, keyboard-only and focus visibility.
@@ -209,6 +209,9 @@ Required proof: master/candidate rendered comparisons, screenshots/video, resear
 - [x] Independent Purchaser Acceptance QA is an explicit mandatory release gate.
 - [x] Insurance-master rendered parity is an explicit mandatory release gate.
 - [x] Commercial first-run profile source no longer requires a named purchaser or Wichita-specific default.
+- [x] Production reload/reopen persistence verified for reader position and workbook fields.
+- [x] Production keyboard focus visibility and Prompt Vault heading semantics verified; true screen-reader QA remains open.
+- [x] Native Print / Save PDF control and 13-spread Letter print output verified on production.
 
 ### Not yet proven production-ready
 - [x] Rendered Insurance-master parity PASS.
