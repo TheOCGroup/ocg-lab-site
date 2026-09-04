@@ -5,6 +5,7 @@ import { PRODUCT_COMMERCIALIZATION_READINESS } from '../../data/productCommercia
 import { STOREFRONT_ITEMS_DATA } from '../../data/storefronts';
 import { getStorefrontVerificationDebt } from '../../data/storefrontVerification';
 import { WHOP_SELLER_QA_TARGETS } from '../../data/whopSellerQa';
+import { resolveAgentOperationsIntent } from '../../data/agentOperationsSkills';
 
 export interface AidenResolution {
   reply: string;
@@ -12,12 +13,55 @@ export interface AidenResolution {
   suggestedArea?: OperatingArea;
   actionTaken?: string;
   evidence?: string;
+  skillsUsed?: string[];
+}
+
+export interface AidenQueryContext {
+  recentFounderQueries?: string[];
 }
 
 export class AidenEngine {
-  public static processQuery(rawQuery: string): AidenResolution {
+  public static processQuery(rawQuery: string, context: AidenQueryContext = {}): AidenResolution {
     const q = rawQuery.toLowerCase().trim();
     const state = StorageEngine.loadState();
+    const agentOps = resolveAgentOperationsIntent(q, context.recentFounderQueries || []);
+
+    if (agentOps) {
+      const skillNames = agentOps.skills.map(skill => skill.name);
+      const contextLine = agentOps.contextualizedFrom ? `\n\n**Recovered context:** ${agentOps.contextualizedFrom}` : '';
+
+      if (skillNames.includes('MONEY FIRST')) {
+        const priority = { 'CHANNEL VERIFICATION': 0, 'CHANNEL PUBLISH': 1, 'CHANNEL REGISTRATION': 2, 'FOUNDATION BLOCKED': 3, 'LIVE': 4 } as const;
+        const ranked = [...PRODUCT_COMMERCIALIZATION_READINESS]
+          .filter(item => item.state !== 'LIVE')
+          .sort((a, b) => priority[a.state] - priority[b.state] || a.productName.localeCompare(b.productName));
+        const lines = ranked.slice(0, 5).map((item, index) => `**${index + 1}. ${item.productName}** — ${item.state}\n${item.nextAction}`).join('\n\n');
+        return { reply: `### **MONEY FIRST — Nearest Revenue Gates**\n\n${lines || 'No registered product is waiting on a revenue gate.'}${contextLine}\n\nAiden ranked only evidence-backed channel state; no sales, provider state, or revenue was inferred.`, category: 'LAUNCHES', suggestedArea: 'storefronts', evidence: 'Canonical PRODUCT_COMMERCIALIZATION_READINESS ranking.', skillsUsed: skillNames };
+      }
+
+      if (skillNames.includes('ETSY LAUNCH')) {
+        const etsy = STOREFRONT_ITEMS_DATA.filter(item => item.channel === 'Etsy');
+        const lines = etsy.map(item => `• **${item.productName}** — ${item.status}; buyer QA ${item.buyerQaStatus}; seller QA ${item.sellerQaStatus}`).join('\n');
+        return { reply: `### **ETSY LAUNCH — Source Truth First**\n\n${lines || 'No Etsy storefront records are registered.'}${contextLine}\n\nAiden will reuse an existing provider-backed listing when one exists, require seller/provider read-back, and refuse duplicate publication or a LIVE claim by metadata alone.`, category: 'TASK_DISPATCH', suggestedArea: 'storefronts', evidence: 'Canonical Etsy storefront registry; provider read-back remains authoritative.', skillsUsed: skillNames };
+      }
+
+      if (skillNames.includes('EXECUTIVE BRIEF')) {
+        const blockers = state.objectives.filter(item => item.blockers?.length).length + state.projects.filter(item => item.blockers?.length).length;
+        const corrections = state.workOrders.filter(item => item.status === 'CORRECTION_REQUIRED' || item.status === 'BLOCKED').length;
+        return { reply: `### **EXECUTIVE BRIEF**\n\n**Open blocker records:** ${blockers}\n**Work orders requiring correction/blocker resolution:** ${corrections}\n**Commercialization workflows:** ${COMMERCIAL_WORKFLOWS.length}\n**Active agents:** ${state.agents.filter(agent => agent.status === 'ACTIVE').length}${contextLine}\n\nUse the linked workspace for the underlying evidence. Aiden is reporting persisted OS state, not claiming external provider completion.`, category: 'EXECUTIVE_BRIEFING', suggestedArea: 'command', evidence: 'Derived from persisted OCG LAB OS state.', skillsUsed: skillNames };
+      }
+
+      if (skillNames.includes('VERIFY')) {
+        return { reply: `### **VERIFY — Independent Evidence Gate**\n\nAiden resolved this request to independent verification${contextLine}. The correct next step is QA evidence against the actual target: source truth, runtime/build, public deployment where applicable, and provider read-back for external systems. No completion is asserted until that evidence exists.`, category: 'TASK_DISPATCH', suggestedArea: 'qa', actionTaken: 'Routed request to VERIFY skill without fabricating a pass result', evidence: 'Verification skill is fail-closed: no evidence means VERIFY/PENDING, never PASS.', skillsUsed: skillNames };
+      }
+
+      if (skillNames.includes('ACT & VERIFY')) {
+        return { reply: `### **ACT & VERIFY — Governed Execution**\n\nAiden recovered the action intent${contextLine}. Internal reversible work may proceed autonomously; consequential external actions still require the applicable approval/authorization gate. Every action must be read back and independently verified before status is promoted.`, category: 'TASK_DISPATCH', suggestedArea: 'operations', actionTaken: 'Resolved founder continuation language to governed ACT & VERIFY workflow', evidence: 'No external action was inferred or marked complete from conversational intent alone.', skillsUsed: skillNames };
+      }
+
+      const names = skillNames.map(name => `• **${name}**`).join('\n');
+      return { reply: `### **Agent Operations Intent Resolved**\n\n${names}${contextLine}\n\n**Primary skill:** ${agentOps.primary.name}\n**Purpose:** ${agentOps.primary.purpose}\n**Approval policy:** ${agentOps.primary.approvalPolicy}\n\nAiden routed ordinary founder language into the existing OCG LAB operating model; no separate bot or orchestration layer was created.`, category: 'STATUS', suggestedArea: agentOps.primary.operatingArea, evidence: `Semantic resolver confidence: ${agentOps.confidence}.`, skillsUsed: skillNames };
+    }
 
     // COMMERCE CONTROL PLANE — generalized channel/workflow commands.
 
