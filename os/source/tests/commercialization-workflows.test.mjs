@@ -209,7 +209,8 @@ test('C19 Whop seller-QA queue is deterministic and remains fail-closed until fu
 test('C20 authenticated Whop seller read-back records exact product/plan evidence and remains fail-closed through fulfillment QA', () => {
   for (const id of ['prod_rjqgwvr66ZSkX','prod_EEmswqofRNOpM','prod_Kma1MiZdJXFBv','plan_FoJYDwiCXxEd9','plan_ep13hdJeMHRfW','plan_PhwwSWqwyRCQq','prod_R5E61gns17el5','plan_J0CgGcDHZl59l','exp_ZZyLbvtTb11enK','cors_r0pU0GE9FN4wP']) assert.match(storefronts, new RegExp(id));
   assert.match(storefronts, /account biz_1s3AzoabzwjpqM \(The OCG LAB\)/);
-  assert.match(storefronts, /Fulfillment BLOCKED: GET \/experiences returned zero attached experiences/);
+  assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_cGgH7TuG35pn1K/);
+  assert.match(storefronts, /Purchaser entitlement QA remains pending/);
   assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_cGOclvtvus6YrC/);
   assert.match(storefronts, /Fulfillment CONFIGURED: private Courses experience exp_jd9jmW0lZv3AxY/);
   assert.match(storefronts, /Purchaser entitlement QA remains pending/);
