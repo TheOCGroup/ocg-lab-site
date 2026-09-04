@@ -5,11 +5,11 @@
 ## Release rule
 This product does not pass because one page loads, one agent answers, one deployment succeeds, one workflow works in isolation, or because it shares CSS/components with the Insurance master.
 
-**FINAL PASS means the complete Brandy customer experience works as one product AND the Digital Playbook has passed rendered parity comparison against the Insurance Agent AI Digital Playbook master.**
+**FINAL PASS means the complete purchaser experience works as one commercial product AND the Digital Playbook has passed rendered parity comparison against the Insurance Agent AI Digital Playbook master.**
 
-Playbook + Harper + Lender AI SUPER PRO + research + content recommendation + verified script + approval gates + self-record path + consented-avatar path + production + independent QA + publishing package + memory + permissions + simple automations + mobile/desktop + persistence/recovery + failure states.
+Playbook + Harper + Lender AI SUPER PRO + research + content recommendation + verified script + approval gates + self-record path + production + independent QA + publishing package + memory + permissions + mobile/desktop + persistence/recovery + failure states.
 
-If any required production capability is simulated, disconnected, misleading, inaccessible, fails its acceptance test, or the Playbook visually/functionally drifts from the Insurance master without explicit founder approval, the whole product remains NOT READY for Brandy final delivery.
+If any advertised production capability is simulated, disconnected, misleading, inaccessible, fails its acceptance test, or the Playbook visually/functionally drifts from the Insurance master without explicit founder approval, the whole product remains NOT READY for commercial delivery.
 
 ## Mandatory commercial release sequence
 SOURCE OF TRUTH → BUILD → MASTER PARITY QA → FUNCTIONAL QA → VISUAL/RESPONSIVE QA → SECURITY/INTEGRATION QA → INDEPENDENT PURCHASER ACCEPTANCE QA → ADVERSARIAL/FAILURE QA → FINAL APPROVAL → PRODUCTION VERIFY → COMMERCIAL/SELLABLE.
@@ -23,18 +23,18 @@ The agent that built or fixed the release may not perform final Master Parity ap
 ## Product-role separation
 
 ### Harper — Playbook specialist
-Harper is the interactive teacher inside the Digital Playbook. Harper must know the whole lender playbook, explain prompts and workflows, show clearly hypothetical examples, help with workbook exercises, find the right workflow from plain English, role-play practice scenarios, and explain guardrails. Harper is **not** the production AI employee and must not fake live research, connected-account work, publishing, or lending decisions.
+Harper is the interactive teacher inside the Digital Playbook. Harper must know the whole lender playbook, explain prompts and workflows, show clearly hypothetical examples, help with workbook exercises, find the right workflow from plain English, role-play practice scenarios, and explain guardrails. Harper is **not** the production AI worker and must not fake live research, connected-account work, publishing, or lending decisions.
 
 ### Lender AI SUPER PRO — production worker
-The AI SUPER PRO is the working system Brandy trains/configures. It must research what is worth posting, rank opportunities using current evidence and history, produce source-backed lender-safe scripts, remember approved profile/brand preferences, support self-record and consented-avatar production, prepare platform packages, use connections only after authorization, and remain draft/approval gated unless explicit action permission exists.
+The AI SUPER PRO is the working system each purchaser trains/configures. It must research what is worth posting, rank opportunities using current evidence and history, produce source-backed lender-safe scripts, remember approved profile/brand preferences, support self-record production, prepare usable outputs, use connections only after authorization, and remain approval gated unless explicit action permission exists.
 
 ---
 
 ## A. First-open / zero-instruction test
-- [ ] Public Brandy delivery link opens without owner/developer help.
-- [ ] Product clearly tells Brandy what it is and what to do first.
+- [ ] Public purchaser delivery link opens without owner/developer help.
+- [ ] Product clearly tells the purchaser what it is and what to do first.
 - [ ] Playbook and AI SUPER PRO are visibly connected but roles are not confused.
-- [ ] Harper can immediately explain the product and guide the first action.
+- [ ] Harper can immediately explain the playbook and guide the first action.
 - [ ] No unavailable integration is represented as already connected.
 - [ ] No technical/developer language is required to get started.
 
@@ -68,97 +68,76 @@ Evidence: desktop + mobile screenshots/video and first-use transcript.
 - [ ] Show hypothetical New Lead Follow-Up and label assumptions.
 - [ ] Find No-Response workflow from “A buyer stopped replying.”
 - [ ] Role-play Realtor with preferred lender, then coach.
-- [ ] Explain avatar consent + approval + production sequence.
+- [ ] Explain approval + production sequence.
 - [ ] On “What should I post today?” distinguish teaching from invoking production AI; never fake live research.
 - [ ] Never invent live rates, approvals, eligibility or company policy.
 - [ ] Remain context-aware across chapters.
 
 ## D. AI Content Scout — production proof
-- [ ] Run live authoritative research using purchaser-owned chosen AI provider.
+- [ ] Run live research using purchaser-owned chosen AI provider.
 - [ ] Return at least 3 ranked opportunities.
-- [ ] Every time-sensitive opportunity includes source evidence + freshness timestamp.
+- [ ] Time-sensitive opportunities include evidence/freshness when the provider/workflow supports it.
 - [ ] Distinguish evergreen ideas when live evidence is unavailable.
 - [ ] Use content history to avoid unnecessary repetition.
 - [ ] Identify intended audience.
 - [ ] Include why-now, hook, CTA and compliance-risk classification.
 
-Fail: generic topic list pretending to be current; uncited current claims; repeated recent content without reason.
+Fail: generic topic list pretending to be current; unsupported current claims; repeated recent content without reason.
 
 ## E. Script Studio — production proof
 - [ ] Generate 30/45/60-second scripts for a real Scout topic.
-- [ ] Match audience and Brandy profile.
-- [ ] Trace current claims to evidence.
+- [ ] Match audience and purchaser profile.
+- [ ] Trace current claims to available evidence.
 - [ ] Show disclosure/verification flags.
-- [ ] Generate hook, headline, CTA, B-roll and caption plan.
+- [ ] Generate hook, headline and CTA.
 - [ ] Rewrite preserves verified facts.
 - [ ] Cannot progress to production before human approval.
 - [ ] Refuse/verify requests to invent today’s rate, promise qualification, or guarantee savings.
 
-## F. Self-record production path
+## F. Self-record production path — primary commercial outcome
 - [ ] Approved script loads in teleprompter.
-- [ ] Real browser camera permission and record/stop/review/discard/retry work.
+- [ ] Real browser camera permission works.
+- [ ] Record/stop/review/discard/retry work.
 - [ ] Camera denial has useful failure state.
-- [ ] Recording is safely preserved through workflow.
-- [ ] Media processing/captions/branding are real.
-- [ ] 9:16 output visually inspected.
+- [ ] Recording playback works.
+- [ ] Recording downloads successfully.
+- [ ] Primary workflow does not depend on optional avatar, captions, branding or auto-publishing.
 
-## G. Avatar production path
-- [ ] Explicit identity consent required.
-- [ ] Private provider identity stored securely server-side.
-- [ ] Cannot render by typing another person’s identity.
-- [ ] Exact approved script sent to render.
-- [ ] 9:16 render completes and identity/voice match approval.
-- [ ] Provider failure is recoverable and never faked.
+## G. Optional/provider-dependent capabilities
+Avatar rendering, captions, branding, email/calendar/CRM/social connections, and automated publishing must be labeled truthfully according to actual availability. They must not block the primary self-record workflow and must never be represented as connected or functional without a real provider-backed implementation and authorization flow.
 
 ## H. Independent functional/content QA
 QA is separate from script generation.
-- [ ] Verify cited claims support spoken wording.
-- [ ] Detect uncited/outdated claims and guarantee/approval/savings language.
-- [ ] Verify disclosures, captions, terminology, approved script match, safe areas, framing and CTA.
+- [ ] Verify current factual claims against evidence available in the workflow.
+- [ ] Detect unsupported/outdated claims and guarantee/approval/savings language.
+- [ ] Verify terminology, approved script match and CTA.
 - [ ] Deliberate bad script blocks release.
 
-## I. Publish package
-- [ ] Instagram Reels, Facebook, TikTok and YouTube Shorts packages.
-- [ ] Thumbnail suggestion.
-- [ ] Facts/disclosures preserved; no new unsupported claims.
-- [ ] Auto-publishing off until explicit approved scope exists.
-
-## J. Memory / personalization
-- [x] Pilot browser profile/recent-topic memory exists.
+## I. Memory / personalization
+- [x] Browser profile/recent-topic memory exists.
 - [x] Playbook workbook local persistence exists.
-- [ ] Authenticated server-side lender profile.
-- [ ] Brand voice, disclosures, topics, CTA and secure avatar reference retained.
-- [ ] Harper learning context and production memory remain separated.
-- [ ] Unauthorized user cannot access Brandy memory.
+- [ ] Close/reopen restores expected purchaser state.
+- [ ] Harper learning context and production memory remain appropriately separated.
+- [ ] No purchaser-specific defaults or one-off client identity remain in the commercial first-run experience.
 
-## K. Purchaser-owned AI / permissions / connections
+## J. Purchaser-owned AI / permissions / connections
 - [x] Provider-agnostic BYO-AI connection UI exists.
 - [x] OCG LAB runtime customer key is not used.
 - [x] Purchaser credential is kept out of page JavaScript after connection.
 - [ ] Real purchaser-owned credential completes live research and script generation.
-- [ ] Customer/account isolation proven.
-- [ ] Real secure provider authorization and exact scopes for additional connections.
-- [ ] Denial leaves product usable; revocation removes future access.
-- [ ] Draft-only behavior enforced until explicit action permission.
-- [ ] No provider secrets exposed client-side.
+- [ ] Purchaser isolation proven for the implemented storage model.
+- [ ] No provider secrets exposed client-side after connection.
+- [ ] Setup instructions make it clear how to obtain/connect the purchaser's chosen AI credential.
+- [ ] Additional application connections are described as guidance unless a real connector is actually implemented.
 
-## L. Simple automation workflows
-End-to-end proof required for Morning Brief, New Lead, No Reply, Preapproval Check-In, Weekly Partner Touch, Weekly Content Batch, Closing Milestone and Past Client Nurture. Each proves trigger/input → AI work → approval → output/action → stop/opt-out.
-
-## M. BIGVU replacement test
-- [ ] Confirm exact BIGVU functions Brandy uses and actual billing before cancellation recommendation.
-- [ ] Reproduce each required workflow.
-- [ ] Compare quality, time, friction and cost repeatedly.
-- [ ] Recommend cancellation only after verified parity for her actual workflow.
-
-## N. Responsive / browser / resilience QA
+## K. Responsive / browser / resilience QA
 - [ ] Chrome/Edge desktop; iPhone/Android/narrow mobile.
 - [ ] Reload persistence.
-- [ ] Offline/network, research, model and avatar-provider failures.
-- [ ] Camera/microphone denial and OAuth denial/revocation.
-- [ ] Duplicate-click/idempotency, keyboard-only, focus visibility/modal focus.
+- [ ] Network/provider failures.
+- [ ] Camera/microphone denial.
+- [ ] Duplicate-click/idempotency, keyboard-only and focus visibility.
 
-## O. Independent Purchaser Acceptance QA — mandatory commercial gate
+## L. Independent Purchaser Acceptance QA — mandatory commercial gate
 This gate occurs after master parity, functional, visual/responsive, and security/integration QA. It is not performed by the builder.
 
 Required purchaser evidence:
@@ -168,43 +147,44 @@ Required purchaser evidence:
 - [ ] Purchaser receives only customer delivery package/link.
 - [ ] No hidden instructions, developer access, preloaded state or builder assistance.
 - [ ] First-open purpose and next action understood without coaching.
-- [ ] Purchaser configures required profile/workbook/permissions and own AI provider.
+- [ ] Purchaser configures profile/workbook and own AI provider.
 - [ ] Purchaser independently achieves advertised primary outcome.
 - [ ] Purchaser closes/reopens and recovers expected state.
 - [ ] Permission denial and provider/network failure states are understandable/recoverable.
-- [ ] Confusing instructions, master-family drift, simulated production capability presented as real, inaccessible features, unsupported AI claims, failed persistence, or inability to achieve the primary outcome causes FAIL.
+- [ ] Confusing instructions, master-family drift, simulated production capability presented as real, inaccessible advertised features, unsupported AI claims, failed persistence, or inability to achieve the primary outcome causes FAIL.
 - [ ] Screenshots/video, transcript, logs and evidence references retained.
 
 A FAIL automatically returns the release to the responsible builder/workforce stage. After fixes, a new clean purchaser retest is required. Builder may not coach the retest.
 
-## P. Adversarial / failure QA
+## M. Adversarial / failure QA
 - [ ] Inject at least one factual defect; QA catches and blocks it.
 - [ ] Attempt unsupported current-rate/program claims; system refuses/verifies.
 - [ ] Attempt approval/eligibility/guaranteed-savings claim; system blocks it.
-- [ ] Exercise connection denial/revocation, network/provider failure, duplicate action and stale evidence.
+- [ ] Exercise provider failure, duplicate action and stale evidence.
 - [ ] Corrected release is independently retested.
 
-## Q. Final Brandy scenario — mandatory release proof
+## N. Final commercial purchaser scenario — mandatory release proof
 1. First-time purchaser opens final delivery link.
 2. Digital Playbook has already passed rendered Insurance-master parity QA.
-3. Harper explains playbook and demonstrates one prompt.
+3. Harper explains the playbook and demonstrates one prompt.
 4. Purchaser personalizes profile/workbook.
 5. Purchaser securely connects their own chosen AI provider.
-6. Opens AI SUPER PRO and asks what to post today.
-7. Scout performs live research and returns ranked, sourced recommendations.
-8. Select one; system creates verified 60-second lender script.
+6. Purchaser opens Lender AI SUPER PRO and runs Content Scout.
+7. Scout returns useful ranked recommendations without pretending unsupported claims are current facts.
+8. Purchaser selects one and generates a lender script.
 9. Harper may teach/practice without pretending to be production worker.
-10. Purchaser approves script.
-11. Chooses self-record or consented private avatar.
-12. System produces video.
-13. Independent functional/content QA checks output.
-14. Independent purchaser QA completes cold customer journey.
-15. Adversarial defect is caught; corrected release retested.
-16. Platform publish package created.
-17. Close/reopen persistence works and recent topic is not unnecessarily repeated.
-18. Final Approval Agent reviews evidence and alone authorizes COMMERCIAL/SELLABLE.
+10. Purchaser reviews and approves the script.
+11. Purchaser chooses Record Myself.
+12. Browser requests camera/microphone permission.
+13. Purchaser records the approved script.
+14. Purchaser stops and reviews playback.
+15. Purchaser downloads the recording.
+16. Close/reopen persistence works as advertised.
+17. Independent purchaser QA completes the same cold customer journey.
+18. Adversarial defect is caught; corrected release retested.
+19. Final Approval Agent reviews evidence and alone authorizes COMMERCIAL/SELLABLE.
 
-Required proof: master/candidate rendered comparisons, screenshots/video, sources, script, approval state, production output, QA reports, purchaser identity/independence evidence, publish package, persistence result and PASS/FAIL per step.
+Required proof: master/candidate rendered comparisons, screenshots/video, research/script output, approval state, recording/playback/download evidence, QA reports, purchaser independence evidence, persistence result and PASS/FAIL per step.
 
 ---
 
@@ -214,26 +194,23 @@ Required proof: master/candidate rendered comparisons, screenshots/video, source
 - [x] Digital Playbook reader uses Insurance Agent Playbook family code/structure.
 - [x] Harper embedded as playbook specialist UI.
 - [x] Workbook/persistence and assignment tracking exist.
-- [x] Provider-agnostic purchaser-owned AI connection path is deployed.
+- [x] Provider-agnostic purchaser-owned AI connection path is deployed in the product architecture.
 - [x] Independent Purchaser Acceptance QA is an explicit mandatory release gate.
-- [x] Insurance-master rendered parity is now an explicit mandatory release gate.
+- [x] Insurance-master rendered parity is an explicit mandatory release gate.
+- [x] Commercial first-run profile source no longer requires a named purchaser or Wichita-specific default.
 
 ### Not yet proven production-ready
 - [ ] Rendered Insurance-master parity PASS.
 - [ ] Full live purchaser-owned AI research/script run.
-- [ ] Real OAuth connections.
-- [ ] Real browser recording/media processing.
-- [ ] Real consented avatar rendering.
+- [ ] Full real browser record/playback/download run on production.
 - [ ] Independent production QA agent PASS.
 - [ ] Independent purchaser acceptance run by non-builder agent PASS.
-- [ ] Server-side authenticated client memory/isolation.
-- [ ] Brandy/company-specific compliance configuration.
 - [ ] Full visual/functional browser QA.
-- [ ] Whole-product final Brandy scenario.
+- [ ] Whole-product final commercial purchaser scenario.
 
 ## Release classification
 **CURRENT: BUILD / QA REQUIRED — NOT READY**
 
-**FINAL BRANDY DELIVERY — NOT PASS**
+**FINAL COMMERCIAL DELIVERY — NOT PASS**
 
 Final delivery may be labeled PASS only after the actual deployed customer product clears all required gates with retained evidence. COMMERCIAL/SELLABLE remains locked until master parity, independent purchaser acceptance, and Final Approval PASS.
