@@ -1,0 +1,63 @@
+name: OCG LAB Tech Ops Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 13 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'ops/tech/**'
+      - 'scripts/tech-ops-audit.mjs'
+      - '.github/workflows/tech-ops-audit.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ocg-lab-tech-ops-audit
+  cancel-in-progress: true
+
+jobs:
+  dependency-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate registry and production endpoints
+        run: node scripts/tech-ops-audit.mjs
+      - name: Publish audit summary
+        if: always()
+        run: |
+          if [ -f tech-ops-report.json ]; then
+            node - <<'NODE'
+            const fs = require('fs');
+            const r = JSON.parse(fs.readFileSync('tech-ops-report.json', 'utf8'));
+            const lines = [
+              '# OCG LAB Tech Ops Audit',
+              '',
+              `Generated: ${r.generatedAt}`,
+              `Healthy: ${r.summary.healthySystems}/${r.summary.systemCount}`,
+              `Registry issues: ${r.summary.registryIssueCount}`,
+              '',
+              '| System | Status |',
+              '|---|---|',
+              ...r.systems.map(s => `| ${s.name} | ${s.ok ? 'PASS' : 'FAIL'} |`)
+            ];
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+            NODE
+          fi
+      - name: Upload machine-readable audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ocg-lab-tech-ops-report
+          path: tech-ops-report.json
+          if-no-files-found: warn
+          retention-days: 14
