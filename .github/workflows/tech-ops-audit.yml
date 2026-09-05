@@ -43,22 +43,17 @@ jobs:
         if: always()
         run: |
           if [ -f tech-ops-report.json ]; then
-            node - <<'NODE'
-            const fs = require('fs');
-            const r = JSON.parse(fs.readFileSync('tech-ops-report.json', 'utf8'));
-            const lines = [
-              '# OCG LAB Tech Ops Audit',
-              '',
-              `Generated: ${r.generatedAt}`,
-              `Healthy: ${r.summary.healthySystems}/${r.summary.systemCount}`,
-              `Registry issues: ${r.summary.registryIssueCount}`,
-              '',
-              '| System | Status |',
-              '|---|---|',
-              ...r.systems.map(s => `| ${s.name} | ${s.ok ? 'PASS' : 'FAIL'} |`)
-            ];
-            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
-            NODE
+            {
+              echo '# OCG LAB Tech Ops Audit'
+              echo
+              echo "Generated: $(jq -r '.generatedAt' tech-ops-report.json)"
+              echo "Healthy: $(jq -r '.summary.healthySystems' tech-ops-report.json)/$(jq -r '.summary.systemCount' tech-ops-report.json)"
+              echo "Registry issues: $(jq -r '.summary.registryIssueCount' tech-ops-report.json)"
+              echo
+              echo '| System | Status |'
+              echo '|---|---|'
+              jq -r '.systems[] | "| \(.name) | \(if .ok then "PASS" else "FAIL" end) |"' tech-ops-report.json
+            } >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Upload machine-readable audit report
         if: always()
