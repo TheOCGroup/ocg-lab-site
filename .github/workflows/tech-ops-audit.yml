@@ -9,7 +9,7 @@ on:
       - '.github/workflows/tech-ops-audit.yml'
       - 'docs/OCG_LAB_TECH_DEPENDENCY_REGISTRY.md'
   schedule:
-    - cron: '17 13 * * *'
+    - cron: '17 13 * * 1,4'
   push:
     branches:
       - main
@@ -62,4 +62,4 @@ jobs:
           name: ocg-lab-tech-ops-report
           path: tech-ops-report.json
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 7
