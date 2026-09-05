@@ -51,6 +51,13 @@ jobs:
         run: npm run build
       - name: Scan generated bundle for client-side secrets
         run: node scripts/scan-production-bundle.mjs dist
+      - name: Upload generated OS bundle for parity repair
+        uses: actions/upload-artifact@v4
+        with:
+          name: ocg-lab-os-generated
+          path: os/source/dist
+          if-no-files-found: error
+          retention-days: 1
       - name: Verify checked-in /os matches canonical source build
         run: node scripts/check-production-parity.mjs
       - name: Scan checked-in production bundle
