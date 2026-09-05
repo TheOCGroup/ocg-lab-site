@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Cpu,
-  Layers3,
   Orbit,
   Play,
   Radio,
@@ -18,6 +17,7 @@ import {
   Zap
 } from 'lucide-react';
 import { StorageEngine, OcgLabOsState } from '../data/storageEngine';
+import { PUBLIC_SITE_INTEGRATION_BOUNDARY } from '../data/publicSiteBoundary';
 import { OperatingArea, ProjectRecord } from '../types';
 import { ObjectiveDetailModal } from '../components/ObjectiveDetailModal';
 
@@ -53,6 +53,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
   }, []);
 
   const refreshState = () => setState(StorageEngine.loadState());
+  const publicBoundary = PUBLIC_SITE_INTEGRATION_BOUNDARY;
 
   const activeAgents = useMemo(() => state.agents.filter(agent => agent.status === 'ACTIVE'), [state.agents]);
   const attentionProjects = useMemo(
@@ -151,7 +152,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
                       <p className="text-xs text-slate-500">OCG LAB orchestration layer</p>
                     </div>
                   </div>
-                  <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-mono font-bold text-emerald-300">AVAILABLE</span>
+                  <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-mono font-bold text-emerald-300">COMMAND READY</span>
                 </div>
                 <button onClick={onOpenAiden} className="mt-4 flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-left text-sm text-slate-300 transition hover:border-cyan-400/30 hover:text-white">
                   <span>Tell Aiden what needs to happen next</span>
@@ -361,6 +362,12 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
           )}
         </div>
       </motion.section>
+
+      <div data-public-boundary="active" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/8 bg-slate-950/50 px-4 py-3 text-[10px] font-mono text-slate-500">
+        <span>Public Surface: Request Only</span>
+        <span>{publicBoundary.publicSurface.mayRequest.length} scoped capabilities • {publicBoundary.forbiddenPublicScopes.length} internal scopes blocked</span>
+        <span className="sr-only">FOUNDER → AIDEN → OCG LAB TECHNOLOGY DIRECTOR → SPECIALIST WORKFORCE → GOVERNED TOOLS → INDEPENDENT QA • {publicBoundary.forbiddenPublicScopes.join(' | ')}</span>
+      </div>
 
       {selectedObjectiveId && (
         <ObjectiveDetailModal
