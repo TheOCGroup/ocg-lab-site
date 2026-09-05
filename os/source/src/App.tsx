@@ -54,7 +54,7 @@ export function App() {
   const handleOpenCheckout = () => setIsCheckoutOpen(true);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#030712] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200 bg-ambient-grid relative">
+    <div className="min-h-screen w-full min-w-0 max-w-full overflow-x-clip flex flex-col bg-[#030712] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200 bg-ambient-grid relative">
       
       <Toaster 
         position="top-right" 
@@ -82,10 +82,11 @@ export function App() {
         onToggleFocus={() => setIsFocusMode(!isFocusMode)}
       />
 
-      <main className="flex-grow">
+      <main className="flex-grow w-full min-w-0 max-w-full overflow-x-clip">
         <AnimatePresence mode="wait">
           <motion.div
             key={activePage}
+            className="w-full min-w-0 max-w-full overflow-x-clip"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
