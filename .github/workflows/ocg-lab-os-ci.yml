@@ -22,9 +22,6 @@ on:
       - '.github/workflows/ocg-lab-os-ci.yml'
       - '.github/workflows/ocg-lab-os-promote.yml'
 
-permissions:
-  contents: write
-
 concurrency:
   group: ocg-lab-os-ci-${{ github.ref }}
   cancel-in-progress: true
@@ -38,8 +35,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -56,21 +51,6 @@ jobs:
         run: npm run build
       - name: Scan generated bundle for client-side secrets
         run: node scripts/scan-production-bundle.mjs dist
-      - name: Synchronize checked-in production bundle
-        working-directory: .
-        run: |
-          rm -rf os/assets
-          mkdir -p os/assets
-          cp -R os/source/dist/assets/. os/assets/
-          cp os/source/dist/index.html os/index.html
-          cp os/source/dist/favicon.* os/ 2>/dev/null || true
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A os/index.html os/assets os/favicon.ico os/favicon.png
-          if ! git diff --cached --quiet; then
-            git commit -m "build(os): synchronize mobile interface v3 bundle"
-            git push origin HEAD:${{ github.head_ref }}
-          fi
       - name: Verify checked-in /os matches canonical source build
         run: node scripts/check-production-parity.mjs
       - name: Scan checked-in production bundle
