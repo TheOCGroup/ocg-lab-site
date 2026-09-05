@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-05T02:21:00Z",
+  "updatedAt": "2026-09-05T22:49:00Z",
   "policy": {
     "secretValuesAllowed": false,
     "connectionStates": [
@@ -38,9 +38,9 @@
       "health": {"type": "http", "expectedStatus": 200},
       "dependencies": [
         {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "FUNCTIONAL", "founderActionRequired": false},
-        {"provider": "Auth.js", "kind": "session-auth", "credentialType": "runtime-secret", "logicalCredentialNames": ["AUTH_SECRET", "NEXTAUTH_SECRET"], "currentState": "DEGRADED", "founderActionRequired": false, "note": "Production logs show repeated JWTSessionError/no matching decryption secret. Generated build-time fallback must not be treated as stable production session key."},
+        {"provider": "Auth.js", "kind": "session-auth", "credentialType": "runtime-secret", "logicalCredentialNames": ["AUTH_SECRET", "NEXTAUTH_SECRET"], "currentState": "END_TO_END_VERIFIED", "founderActionRequired": false, "note": "Recovered 2026-09-05. Stable auth-secret handling is deployed and the production /workforce guest-session flow passed the Tech Ops audit with HTTP 200."},
         {"provider": "Neon PostgreSQL", "kind": "persistence", "credentialType": "runtime-secret", "logicalCredentialNames": ["POSTGRES_URL"], "currentState": "FUNCTIONAL", "founderActionRequired": false},
-        {"provider": "Aiden Desktop", "kind": "device-runtime", "credentialType": "device-credential", "logicalCredentialNames": ["AIDEN_DESKTOP_DEVICE_SECRET"], "currentState": "DEGRADED", "founderActionRequired": false, "note": "Production device route recently rejected registration because the device was already registered to another user."}
+        {"provider": "Aiden Desktop", "kind": "device-runtime", "credentialType": "device-credential", "logicalCredentialNames": ["AIDEN_DESKTOP_DEVICE_SECRET"], "currentState": "DEGRADED", "founderActionRequired": false, "note": "Secure automatic ownership rebind is implemented in the current Workforce/Desktop code. Final certification remains gated on a fresh physical Windows worker heartbeat and a durable real-command execution result."}
       ]
     },
     {
