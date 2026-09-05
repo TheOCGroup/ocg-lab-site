@@ -119,7 +119,9 @@ export function App() {
           )}
           {activePage === "portfolio" && <PortfolioPage />}
           {activePage === "projects" && <ProjectsPage />}
-          {(activePage === "operations" || activePage === "agents") && <OperationsPage />}
+          {(activePage === "operations" || activePage === "agents") && (
+            <OperationsPage onOpenAiden={() => setIsAidenOpen(true)} />
+          )}
           {(activePage === "qa" || activePage === "releases") && <QAReleasesPage />}
           {activePage === "engineering" && <EngineeringPage />}
           {activePage === "storefronts" && <StorefrontsPage />}
