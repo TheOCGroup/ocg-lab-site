@@ -1,441 +1,367 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { motion } from 'motion/react';
+import {
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  Bot,
+  CheckCircle2,
+  ChevronRight,
+  Cpu,
+  Layers3,
+  Orbit,
+  Play,
+  Radio,
+  ShieldCheck,
+  Sparkles,
+  Workflow,
+  Zap
+} from 'lucide-react';
 import { StorageEngine, OcgLabOsState } from '../data/storageEngine';
-import { DEPARTMENTS_DATA } from '../data/departments';
-import { PUBLIC_SITE_INTEGRATION_BOUNDARY } from '../data/publicSiteBoundary';
 import { OperatingArea, ProjectRecord } from '../types';
 import { ObjectiveDetailModal } from '../components/ObjectiveDetailModal';
-import { 
-  Activity, 
-  AlertTriangle, 
-  ArrowRight, 
-  Bot, 
-  CheckCircle2, 
-  ChevronRight, 
-  Clock, 
-  Code2, 
-  Flame, 
-  Layers, 
-  Package, 
-  Rocket, 
-  ShieldCheck, 
-  Sparkles, 
-  Terminal, 
-  TrendingUp, 
-  Zap,
-  ShoppingBag,
-  Lock,
-  UserCheck
-} from 'lucide-react';
-import { toast } from 'sonner';
 
 interface CommandPageProps {
   onNavigate: (area: OperatingArea) => void;
   onOpenAiden: () => void;
 }
 
+const statusTone = (status: ProjectRecord['status']) => {
+  if (['PRODUCTION', 'RELEASED', 'QA PASSED'].includes(status)) return 'emerald';
+  if (['BLOCKED', 'QA FAILED'].includes(status)) return 'rose';
+  if (['BUILDING', 'TESTING', 'PREVIEW'].includes(status)) return 'cyan';
+  return 'slate';
+};
+
+const toneClasses: Record<string, string> = {
+  emerald: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-300',
+  rose: 'border-rose-400/30 bg-rose-400/10 text-rose-300',
+  cyan: 'border-cyan-400/30 bg-cyan-400/10 text-cyan-300',
+  slate: 'border-white/10 bg-white/5 text-slate-300'
+};
+
 export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAiden }) => {
   const [state, setState] = useState<OcgLabOsState>(StorageEngine.loadState());
-  const [clock, setClock] = useState<string>(new Date().toLocaleTimeString());
+  const [clock, setClock] = useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   const [selectedObjectiveId, setSelectedObjectiveId] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setClock(new Date().toLocaleTimeString());
-    }, 1000);
+      setClock(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    }, 30000);
     return () => clearInterval(timer);
   }, []);
 
-  const refreshState = () => {
-    setState(StorageEngine.loadState());
-  };
+  const refreshState = () => setState(StorageEngine.loadState());
 
-  const benchProjects = state.projects.filter(p => p.isBench);
-  const releasedProjects = state.projects.filter(p => p.status === 'RELEASED');
-  const activeAgents = state.agents.filter(a => a.status === 'ACTIVE');
+  const activeAgents = useMemo(() => state.agents.filter(agent => agent.status === 'ACTIVE'), [state.agents]);
+  const attentionProjects = useMemo(
+    () => state.projects.filter(project => ['BLOCKED', 'QA FAILED', 'TESTING', 'BUILDING'].includes(project.status)).slice(0, 5),
+    [state.projects]
+  );
+  const systemProjects = useMemo(() => state.projects.filter(project => !project.isBench).slice(0, 8), [state.projects]);
   const primaryObjective = state.objectives[0];
-  const publicBoundary = PUBLIC_SITE_INTEGRATION_BOUNDARY;
-  const publicCapabilityCount = publicBoundary.publicSurface.mayRequest.length;
-  const forbiddenScopeCount = publicBoundary.forbiddenPublicScopes.length;
+  const blockedCount = state.projects.filter(project => ['BLOCKED', 'QA FAILED'].includes(project.status)).length;
+  const releasedCount = state.projects.filter(project => ['PRODUCTION', 'RELEASED'].includes(project.status)).length;
 
-  const handleAuthorizePublish = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!primaryObjective) return;
-    try {
-      StorageEngine.authorizeFounderPublication(primaryObjective.id, 'Genaro Ocasio (Founder)');
-      toast.success('Founder authorization recorded in audit ledger. Live Etsy release authorized!');
-      refreshState();
-    } catch (err: any) {
-      toast.error(err.message);
-    }
-  };
+  const flow = [
+    { label: 'REQUEST', icon: Sparkles },
+    { label: 'AIDEN', icon: Bot },
+    { label: 'ASSIGN', icon: Workflow },
+    { label: 'BUILD', icon: Cpu },
+    { label: 'QA', icon: ShieldCheck },
+    { label: 'RELEASE', icon: Zap }
+  ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      
-      {/* Top Telemetry Strip */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/20 bg-slate-950/60 relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-xs text-cyan-400 uppercase tracking-widest font-semibold">
-                OCG LAB OS • OPERATIONAL COMMAND
-              </span>
-              <span className="text-slate-600">|</span>
-              <span className="font-mono text-xs text-slate-400">{clock}</span>
-            </div>
-            <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
-              Technology Department Operating System
-            </h1>
-            <p className="text-sm text-slate-400 mt-1 max-w-2xl">
-              FOUNDER → AIDEN → OCG LAB TECHNOLOGY DIRECTOR → SPECIALIST WORKFORCE → GOVERNED TOOLS → INDEPENDENT QA → VERIFIED BUSINESS OUTCOME
-            </p>
-            <div data-public-boundary="active" className="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-wider">
-              <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">Public Surface: Request Only</span>
-              <span className="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-300">{publicCapabilityCount} Scoped Capabilities</span>
-              <span className="px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300">{forbiddenScopeCount} Forbidden Internal Scopes</span>
-              <span className="sr-only">{publicBoundary.forbiddenPublicScopes.join(' | ')}</span>
-            </div>
-          </div>
+    <div className="relative max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-[-180px] h-[520px] bg-[radial-gradient(circle_at_22%_30%,rgba(37,99,235,.20),transparent_35%),radial-gradient(circle_at_72%_24%,rgba(6,182,212,.14),transparent_34%),radial-gradient(circle_at_84%_52%,rgba(16,185,129,.14),transparent_30%)] blur-2xl" />
 
-          <div className="flex items-center gap-3 w-full lg:w-auto">
-            <button
-              onClick={onOpenAiden}
-              data-aiden-btn="desktop"
-              className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 transition"
-            >
-              <Bot className="w-4 h-4" />
-              <span>Command Aiden</span>
-            </button>
-            <button
-              onClick={() => onNavigate('qa')}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs transition"
-            >
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>QA & Releases</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Pulse Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-800/80">
-          <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-            <span className="block text-2xl sm:text-3xl font-light text-white font-mono">{state.projects.length}</span>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Total Systems</span>
-          </div>
-          <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-            <span className="block text-2xl sm:text-3xl font-light text-emerald-400 font-mono">{releasedProjects.length}</span>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Released SKUs</span>
-          </div>
-          <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-            <span className="block text-2xl sm:text-3xl font-light text-cyan-400 font-mono">{activeAgents.length}</span>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Active Agents</span>
-          </div>
-          <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-            <span className="block text-2xl sm:text-3xl font-light text-amber-400 font-mono">$0.00</span>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">New Cloud Cost</span>
-          </div>
-        </div>
-      </div>
-
-      {/* STRATEGIC OBJECTIVES: ETSY COMMERCIALIZATION PROOF */}
-      {primaryObjective && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">
-                  ACTIVE STRATEGIC OBJECTIVE • PRODUCTION PROOF
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+        className="relative overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/80 shadow-2xl"
+      >
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
+        <div className="grid lg:grid-cols-[1.35fr_.65fr]">
+          <div className="p-6 sm:p-8 lg:p-10">
+            <div className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs font-mono uppercase tracking-[0.18em] text-slate-400">
+              <span className="inline-flex items-center gap-2 text-emerald-300">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
                 </span>
-                <span className="text-slate-600">|</span>
-                <span className="text-[10px] font-mono text-emerald-400 font-semibold">END-TO-END VERIFIED</span>
-              </div>
-              <h2 className="font-heading font-bold text-xl text-white">
-                {primaryObjective.title}
-              </h2>
+                OCG LAB TECHNOLOGY
+              </span>
+              <span className="text-slate-700">•</span>
+              <span>{clock}</span>
             </div>
 
-            <button
-              onClick={() => setSelectedObjectiveId(primaryObjective.id)}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 font-semibold text-xs border border-cyan-500/30 flex items-center gap-1.5 transition"
-            >
-              <span>Inspect Objective & Work Orders</span>
-              <ChevronRight className="w-4 h-4" />
+            <div className="mt-5 max-w-4xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Founder Command Center</p>
+              <h1 className="mt-3 font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[0.98] tracking-tight text-white">
+                Run the department.
+                <span className="block bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">See what is actually moving.</span>
+              </h1>
+              <p className="mt-5 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-400">
+                A single operating view for systems, agents, work in motion, QA, release readiness and founder decisions. No decorative status theater—only recorded OCG LAB state.
+              </p>
+            </div>
+
+            <div className="mt-7 flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={onOpenAiden}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 px-5 py-3.5 text-sm font-bold text-slate-950 shadow-[0_12px_40px_rgba(6,182,212,.18)] transition hover:scale-[1.01]"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <Bot className="h-4 w-4" /> Command Aiden <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </button>
+              <button
+                onClick={() => onNavigate('operations')}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm font-semibold text-white transition hover:border-cyan-400/30 hover:bg-cyan-400/[0.06]"
+              >
+                Open Operations
+              </button>
+            </div>
+          </div>
+
+          <div className="relative border-t border-white/10 bg-white/[0.025] p-6 sm:p-8 lg:border-l lg:border-t-0">
+            <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-gradient-to-br from-blue-500/20 via-cyan-400/10 to-emerald-400/20 blur-3xl" />
+            <div className="relative">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-slate-500">Aiden orchestration</p>
+                  <h2 className="mt-1 text-xl font-bold text-white">Command presence</h2>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-400/20 bg-gradient-to-br from-blue-500/15 to-emerald-400/10 text-cyan-300">
+                  <Orbit className="h-6 w-6 animate-[spin_9s_linear_infinite]" />
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-white/10 bg-slate-950/70 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-emerald-400 text-slate-950 shadow-lg">
+                      <Bot className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white">Aiden</p>
+                      <p className="text-xs text-slate-500">OCG LAB orchestration layer</p>
+                    </div>
+                  </div>
+                  <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-mono font-bold text-emerald-300">AVAILABLE</span>
+                </div>
+                <button onClick={onOpenAiden} className="mt-4 flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-left text-sm text-slate-300 transition hover:border-cyan-400/30 hover:text-white">
+                  <span>Tell Aiden what needs to happen next</span>
+                  <ChevronRight className="h-4 w-4 text-cyan-300" />
+                </button>
+              </div>
+
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                {[
+                  ['ACTIVE', activeAgents.length],
+                  ['RELEASED', releasedCount],
+                  ['ATTENTION', blockedCount]
+                ].map(([label, value]) => (
+                  <div key={String(label)} className="rounded-xl border border-white/8 bg-white/[0.025] p-3">
+                    <p className="text-xl font-semibold text-white">{value}</p>
+                    <p className="mt-1 text-[9px] font-mono tracking-[0.14em] text-slate-500">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.08, duration: 0.4 }}
+        className="rounded-[26px] border border-white/10 bg-white/[0.025] p-4 sm:p-5"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cyan-300">Operating flow</p>
+            <h2 className="mt-1 text-lg font-bold text-white">How work moves through OCG LAB</h2>
+          </div>
+          <button onClick={() => onNavigate('agents')} className="hidden sm:flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-white">
+            Workforce <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+          {flow.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <div key={step.label} className="relative">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.12 + index * 0.05 }}
+                  className="group relative overflow-hidden rounded-2xl border border-white/8 bg-slate-950/60 p-3 sm:p-4"
+                >
+                  <div className="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 transition-transform duration-500 group-hover:scale-x-100" />
+                  <Icon className="h-4 w-4 text-cyan-300" />
+                  <p className="mt-3 text-[10px] sm:text-xs font-mono font-bold tracking-[0.12em] text-slate-300">{step.label}</p>
+                </motion.div>
+                {index < flow.length - 1 && <div className="pointer-events-none absolute -right-2 top-1/2 hidden h-px w-2 bg-gradient-to-r from-cyan-400/50 to-emerald-400/20 sm:block" />}
+              </div>
+            );
+          })}
+        </div>
+      </motion.section>
+
+      <div className="grid gap-6 xl:grid-cols-[1.3fr_.7fr]">
+        <motion.section
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.14, duration: 0.4 }}
+          className="rounded-[28px] border border-white/10 bg-slate-950/65 p-5 sm:p-6"
+        >
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-300">System constellation</p>
+              <h2 className="mt-1 text-xl font-bold text-white">Canonical systems</h2>
+              <p className="mt-1 text-xs text-slate-500">State is read from the existing OCG LAB registry.</p>
+            </div>
+            <button onClick={() => onNavigate('projects')} className="flex items-center gap-1 text-xs font-semibold text-cyan-300 hover:text-white">
+              All systems <ChevronRight className="h-4 w-4" />
             </button>
           </div>
 
-          <div 
-            onClick={() => setSelectedObjectiveId(primaryObjective.id)}
-            className="p-6 sm:p-8 rounded-3xl bg-slate-950/80 border border-cyan-500/30 hover:border-cyan-500/60 shadow-2xl transition cursor-pointer relative overflow-hidden group"
-          >
-            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-              <div className="space-y-2 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold border ${
-                    primaryObjective.finalCommerceStatus === 'LIVE'
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
-                      : primaryObjective.finalCommerceStatus === 'BLOCKED'
-                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/50'
-                      : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                  }`}>
-                    COMMERCE STATE: {primaryObjective.finalCommerceStatus}
-                  </span>
-                  <span className="text-xs text-slate-400 font-mono">
-                    Product: <strong>{primaryObjective.targetProduct}</strong>
-                  </span>
-                  <span className="text-xs text-slate-500 font-mono">Owner: {primaryObjective.owner}</span>
-                </div>
-
-                <p className="text-sm text-slate-300">
-                  Founder Instruction: <strong className="text-white">&ldquo;{primaryObjective.founderInstruction}&rdquo;</strong>
-                </p>
-
-                <p className="text-xs text-slate-400 leading-relaxed max-w-3xl">
-                  {primaryObjective.completionEvidence}
-                </p>
-              </div>
-
-              {/* Status & Action */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
-                <div className="text-left sm:text-right">
-                  <span className="text-[10px] font-mono text-slate-400 uppercase block">Workforce Progress</span>
-                  <span className="text-xl font-bold font-mono text-emerald-400">8 / 8 Work Orders Complete</span>
-                </div>
-
-                {primaryObjective.finalCommerceStatus === 'READY TO LIST' && (
-                  <button
-                    onClick={handleAuthorizePublish}
-                    className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2"
-                  >
-                    <UserCheck className="w-4 h-4" />
-                    <span>Authorize Live Etsy Publication</span>
-                  </button>
-                )}
-
-                {primaryObjective.finalCommerceStatus === 'LIVE' && (
-                  <div className="px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Authorized by {primaryObjective.approvedBy}</span>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {systemProjects.map((project, index) => {
+              const tone = statusTone(project.status);
+              return (
+                <motion.button
+                  key={project.id}
+                  onClick={() => onNavigate('projects')}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18 + index * 0.04 }}
+                  className="group relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.025] p-4 text-left transition hover:-translate-y-0.5 hover:border-cyan-400/25 hover:bg-cyan-400/[0.035]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate font-semibold text-white">{project.name}</p>
+                      <p className="mt-1 truncate text-xs text-slate-500">{project.currentPhase}</p>
+                    </div>
+                    <span className={`shrink-0 rounded-full border px-2 py-1 text-[9px] font-mono font-bold ${toneClasses[tone]}`}>{project.status}</span>
                   </div>
-                )}
-              </div>
-            </div>
-
-            {/* Department Hierarchy Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mt-6 pt-5 border-t border-slate-800/80 text-[11px] font-mono">
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-500 block text-[9px] uppercase">Product Dev</span>
-                <span className="text-slate-200 font-semibold">Piper (Audit)</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-500 block text-[9px] uppercase">Engineering</span>
-                <span className="text-slate-200 font-semibold">Victor (Parity)</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-500 block text-[9px] uppercase">Storefronts</span>
-                <span className="text-slate-200 font-semibold">Mira (Etsy Tags)</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-500 block text-[9px] uppercase">Design & UX</span>
-                <span className="text-slate-200 font-semibold">Archer (Images)</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-500 block text-[9px] uppercase">Documentation</span>
-                <span className="text-slate-200 font-semibold">Nova (Access PDF)</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-500 block text-[9px] uppercase">Compliance</span>
-                <span className="text-slate-200 font-semibold">Sentinel (Scrub)</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-500 block text-[9px] uppercase">Independent QA</span>
-                <span className="text-emerald-400 font-semibold">Quincey (14/14)</span>
-              </div>
-            </div>
+                  <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/5">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.max(2, Math.min(project.completionPercent || 0, 100))}%` }}
+                      transition={{ delay: 0.24 + index * 0.04, duration: 0.7 }}
+                      className="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-[10px] font-mono text-slate-500">
+                    <span>{project.priority}</span>
+                    <span>{project.completionPercent}%</span>
+                  </div>
+                </motion.button>
+              );
+            })}
           </div>
-        </div>
-      )}
+        </motion.section>
 
-      {/* 10 FOUNDER QUESTIONS: IMMEDIATE OPERATIONAL STATUS */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-heading font-bold text-xl text-white">Founder Operational Briefing</h2>
-            <p className="text-xs text-slate-400">Truthful, grounded answers to the 10 core company operating questions.</p>
-          </div>
-          <button 
-            onClick={() => onNavigate('projects')}
-            className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+        <div className="space-y-6">
+          <motion.section
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="rounded-[28px] border border-white/10 bg-slate-950/65 p-5 sm:p-6"
           >
-            View Projects <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">1. WHAT ARE WE BUILDING?</span>
-            <h4 className="font-medium text-white text-sm">OCG LAB OS & Commercial Product Ladder</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Consolidating canonical Technology Department OS while commercializing the 4-tier ladder: Playbooks → AI PRO → AI SUPER PRO → Toolkits.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-semibold">2. WHAT IS WORKING?</span>
-            <h4 className="font-medium text-white text-sm">All Core Interactive Tools & Playbooks</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Clean TypeScript build (0 errors). Insurance Playbook v10 print fixed. Allie v6.8 certified. PIPER 154/154 tests passing.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">3. WHAT IS BROKEN?</span>
-            <h4 className="font-medium text-emerald-400 text-sm">Zero Active Regressions</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Recent intake parameter defects repaired. Node:sqlite transactions committed without rollback. All routes returning HTTP 200.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold">4. WHAT IS BLOCKED?</span>
-            <h4 className="font-medium text-amber-300 text-sm">Etsy Live Publish Authorization</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Insurance Agent AI Playbook is in state READY TO LIST, awaiting Founder live authorization before publishing to Etsy.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">5. WHAT IS READY TO TEST?</span>
-            <h4 className="font-medium text-white text-sm">Storefront Checkout & Entitlement Delivery</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Digital Playbook instant download links and webhook receipt dispatches ready for end-to-end operator testing.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-semibold">6. WHAT CAN RELEASE?</span>
-            <h4 className="font-medium text-white text-sm">8 Finished Commercial SKUs</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Insurance Playbook, REI Playbook, LeadFlow AI PRO, Allie Wedding Concierge, and 4 Financial Calculators are 100% release certified.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">7. WHAT IS SELLING?</span>
-            <h4 className="font-medium text-white text-sm">Whop, Etsy & Direct Channels</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Active listings on Whop and Etsy complete packs. Allie Destination Concierge selling directly to luxury event coordinators.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold">8. WHAT NEEDS MY APPROVAL?</span>
-            <h4 className="font-medium text-amber-300 text-sm">Etsy Live Listing Release</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Genaro authorization required to release the Insurance Agent AI Playbook to the public Etsy marketplace.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">9. WHAT ARE AGENTS DOING?</span>
-            <h4 className="font-medium text-white text-sm">10 Active Autonomous Specialists</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Aiden coordinating releases; Victor validating math; Piper auditing playbooks; Hunter enforcing independent QA gates.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* ON THE BENCH: P1 CURRENT MISSIONS */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-heading font-bold text-xl text-white">On the Bench</h2>
-            <p className="text-xs text-slate-400">Strict P1 active missions. Max 3 active items at one time.</p>
-          </div>
-          <span className="font-mono text-xs font-semibold text-cyan-400">
-            {benchProjects.length} ACTIVE MISSIONS
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {benchProjects.map((p, idx) => (
-            <div 
-              key={p.id}
-              className="p-6 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition flex flex-col justify-between space-y-4 shadow-xl group"
-            >
+            <div className="flex items-center justify-between">
               <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-                    SLOT #{idx + 1} • {p.priority}
-                  </span>
-                  <span className="text-[11px] font-mono text-slate-400">{p.completionPercent}% COMPLETE</span>
-                </div>
-                <h3 className="font-heading font-bold text-lg text-white group-hover:text-cyan-300 transition">
-                  {p.name}
-                </h3>
-                <p className="text-xs text-slate-400 mt-2 line-clamp-2">
-                  {p.objective}
-                </p>
+                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-amber-300">Needs attention</p>
+                <h2 className="mt-1 text-lg font-bold text-white">Founder queue</h2>
               </div>
-
-              <div className="space-y-3 pt-4 border-t border-slate-800/80">
-                <div>
-                  <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block mb-1">
-                    CURRENT MISSION / NEXT ACTION
-                  </span>
-                  <p className="text-xs text-slate-200 font-medium">
-                    {p.nextAction}
-                  </p>
-                </div>
-
-                {p.blockers && p.blockers.length > 0 && (
-                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-2 text-xs text-amber-300">
-                    <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                    <span>Blocker: {p.blockers.join(', ')}</span>
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 font-mono">
-                  <span>Owner: {p.assignedAgents.join(', ')}</span>
-                  <span className="text-emerald-400">{p.qaStatus}</span>
-                </div>
-              </div>
+              <Activity className="h-5 w-5 text-amber-300" />
             </div>
-          ))}
+
+            <div className="mt-4 space-y-2.5">
+              {attentionProjects.length === 0 ? (
+                <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/[0.05] p-4 text-sm text-emerald-200">
+                  No recorded blocked, failed, testing or building projects in the current registry.
+                </div>
+              ) : attentionProjects.map(project => (
+                <button key={project.id} onClick={() => onNavigate('projects')} className="flex w-full items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.025] p-3.5 text-left transition hover:border-cyan-400/20">
+                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${['BLOCKED', 'QA FAILED'].includes(project.status) ? 'bg-rose-400/10 text-rose-300' : 'bg-cyan-400/10 text-cyan-300'}`}>
+                    {['BLOCKED', 'QA FAILED'].includes(project.status) ? <AlertTriangle className="h-4 w-4" /> : <Radio className="h-4 w-4" />}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-white">{project.name}</p>
+                    <p className="truncate text-[11px] text-slate-500">{project.nextAction || project.currentPhase}</p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-slate-600" />
+                </button>
+              ))}
+            </div>
+          </motion.section>
+
+          {primaryObjective && (
+            <motion.section
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.26, duration: 0.4 }}
+              className="relative overflow-hidden rounded-[28px] border border-cyan-400/20 bg-gradient-to-br from-blue-500/[0.07] via-cyan-400/[0.04] to-emerald-400/[0.06] p-5 sm:p-6"
+            >
+              <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-400/10 blur-3xl" />
+              <div className="relative">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-[9px] font-mono font-bold text-cyan-200">ACTIVE OBJECTIVE</span>
+                  <span className="text-[10px] font-mono text-emerald-300">{primaryObjective.finalCommerceStatus}</span>
+                </div>
+                <h2 className="mt-4 text-lg font-bold text-white">{primaryObjective.title}</h2>
+                <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-slate-400">{primaryObjective.description}</p>
+                <button onClick={() => setSelectedObjectiveId(primaryObjective.id)} className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm font-semibold text-white transition hover:border-cyan-400/30 hover:bg-cyan-400/[0.07]">
+                  <Play className="h-4 w-4 text-emerald-300" /> Inspect work in motion
+                </button>
+              </div>
+            </motion.section>
+          )}
         </div>
       </div>
 
-      {/* DEPARTMENT WORKFORCE OVERVIEW STRIP */}
-      <div className="p-6 rounded-3xl bg-slate-950/70 border border-slate-800/80 space-y-4">
-        <div className="flex items-center justify-between">
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+        className="rounded-[28px] border border-white/10 bg-white/[0.02] p-5 sm:p-6"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="font-heading font-bold text-lg text-white">Department Workforce Hierarchy</h3>
-            <p className="text-xs text-slate-400">12 Specialized Departments coordinating engineering, creative, and commercialization.</p>
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cyan-300">Technology workforce</p>
+            <h2 className="mt-1 text-xl font-bold text-white">Agents with recorded active state</h2>
           </div>
-          <button
-            onClick={() => onNavigate('operations')}
-            className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
-          >
-            Manage Workforce <ChevronRight className="w-4 h-4" />
+          <button onClick={() => onNavigate('agents')} className="flex items-center gap-1 text-xs font-semibold text-cyan-300 hover:text-white">
+            Open workforce <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {DEPARTMENTS_DATA.slice(0, 6).map(d => (
-            <div key={d.id} className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
-              <span className="text-[10px] font-mono text-cyan-400 block font-semibold mb-1">DEPT #{d.number}</span>
-              <h5 className="font-semibold text-xs text-white truncate">{d.name}</h5>
-              <p className="text-[11px] text-slate-400 mt-1">Director: <strong className="text-slate-300">{d.director}</strong></p>
-              <span className="text-[10px] text-slate-500 block font-mono">Lead: {d.leadAgent}</span>
+        <div className="mt-5 flex gap-3 overflow-x-auto pb-2">
+          {activeAgents.length ? activeAgents.slice(0, 10).map(agent => (
+            <div key={agent.id} className="min-w-[210px] rounded-2xl border border-white/8 bg-slate-950/60 p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-emerald-400/15 text-cyan-300"><Bot className="h-5 w-5" /></div>
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-white">{agent.name}</p>
+                  <p className="truncate text-[11px] text-slate-500">{agent.role}</p>
+                </div>
+              </div>
+              <p className="mt-4 line-clamp-2 text-xs leading-relaxed text-slate-400">{agent.currentTask || agent.specialty}</p>
+              <div className="mt-4 flex items-center gap-2 text-[9px] font-mono text-emerald-300"><CheckCircle2 className="h-3.5 w-3.5" /> RECORDED ACTIVE</div>
             </div>
-          ))}
+          )) : (
+            <div className="rounded-2xl border border-white/8 bg-slate-950/60 p-4 text-sm text-slate-400">No agents are currently recorded as ACTIVE.</div>
+          )}
         </div>
-      </div>
+      </motion.section>
 
-      {/* Objective Detail Modal */}
       {selectedObjectiveId && (
         <ObjectiveDetailModal
           objectiveId={selectedObjectiveId}
@@ -443,7 +369,6 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
           onStateChange={refreshState}
         />
       )}
-
     </div>
   );
 };
