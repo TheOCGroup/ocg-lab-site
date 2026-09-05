@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-05T02:08:00Z",
+  "policy": {
+    "secretValuesAllowed": false,
+    "connectionStates": [
+      "CONFIGURED",
+      "CONNECTED",
+      "AUTHENTICATED",
+      "AUTHORIZED",
+      "FUNCTIONAL",
+      "END_TO_END_VERIFIED",
+      "DEGRADED",
+      "BLOCKED_EXTERNAL"
+    ]
+  },
+  "systems": [
+    {
+      "id": "ocg-lab-os",
+      "name": "OCG LAB OS",
+      "owner": "Technology Operations",
+      "repo": "TheOCGroup/ocg-lab-site",
+      "branch": "main",
+      "productionUrls": ["https://ocg-lab-products.vercel.app/os/"],
+      "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "The OCG Lab"},
+      "dependencies": [
+        {
+          "provider": "Vercel",
+          "kind": "hosting",
+          "credentialType": "managed-platform",
+          "logicalCredentialNames": [],
+          "currentState": "FUNCTIONAL",
+          "founderActionRequired": false
+        },
+        {
+          "provider": "Google Cloud Storage",
+          "kind": "persistence",
+          "credentialType": "legacy-encrypted-oauth",
+          "logicalCredentialNames": ["OCG_OS_FOUNDER_KEY", "GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_OAUTH_REFRESH_TOKEN"],
+          "currentState": "DEGRADED",
+          "founderActionRequired": false,
+          "note": "Current api/os/sync.js decrypts an encrypted credential file using a Founder-supplied key. Migrate to managed runtime secrets/workload identity before calling credential automation complete."
+        }
+      ]
+    },
+    {
+      "id": "insurance-playbook",
+      "name": "Insurance Agent AI Playbook",
+      "repo": "TheOCGroup/ocg-lab-site",
+      "branch": "main",
+      "productionUrls": ["https://ocg-lab-products.vercel.app/playbooks/insurance-agent/"],
+      "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "Insurance"},
+      "dependencies": [
+        {"provider": "Whop", "kind": "commerce-entitlement", "credentialType": "managed-connector", "logicalCredentialNames": ["WHOP_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Etsy", "kind": "commerce-listing", "credentialType": "managed-connector", "logicalCredentialNames": ["ETSY_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false}
+      ]
+    },
+    {
+      "id": "rei-playbook",
+      "name": "Real Estate Investor AI Playbook",
+      "repo": "TheOCGroup/ocg-lab-site",
+      "branch": "main",
+      "productionUrls": ["https://ocg-lab-products.vercel.app/playbooks/real-estate-investor/"],
+      "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "Real Estate Investor"},
+      "dependencies": [
+        {"provider": "Whop", "kind": "commerce-entitlement", "credentialType": "managed-connector", "logicalCredentialNames": ["WHOP_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false}
+      ]
+    },
+    {
+      "id": "rei-ai-pro",
+      "name": "Real Estate Investor AI PRO",
+      "repo": "TheOCGroup/ocg-lab-site",
+      "branch": "main",
+      "productionUrls": ["https://ocg-lab-products.vercel.app/real-estate-investor-ai-pro/"],
+      "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "Real Estate Investor AI PRO"},
+      "dependencies": [
+        {"provider": "Whop", "kind": "commerce-entitlement", "credentialType": "managed-connector", "logicalCredentialNames": ["WHOP_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false}
+      ]
+    },
+    {
+      "id": "leadflow-ai-pro",
+      "name": "LEADFLOW AI PRO",
+      "repo": "TheOCGroup/ocg-lab-site",
+      "branch": "main",
+      "productionUrls": ["https://ocg-lab-products.vercel.app/leadflow-ai-pro/"],
+      "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "LeadFlow AI PRO"},
+      "dependencies": [
+        {"provider": "Whop", "kind": "commerce-entitlement", "credentialType": "managed-connector", "logicalCredentialNames": ["WHOP_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false}
+      ]
+    }
+  ]
+}

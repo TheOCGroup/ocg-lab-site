@@ -1,0 +1,65 @@
+name: OCG LAB Tech Ops Audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ops/tech/**'
+      - 'scripts/tech-ops-audit.mjs'
+      - '.github/workflows/tech-ops-audit.yml'
+      - 'docs/OCG_LAB_TECH_DEPENDENCY_REGISTRY.md'
+  schedule:
+    - cron: '17 13 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'ops/tech/**'
+      - 'scripts/tech-ops-audit.mjs'
+      - '.github/workflows/tech-ops-audit.yml'
+      - 'docs/OCG_LAB_TECH_DEPENDENCY_REGISTRY.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ocg-lab-tech-ops-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate registry and production endpoints
+        run: node scripts/tech-ops-audit.mjs
+      - name: Publish audit summary
+        if: always()
+        run: |
+          if [ -f tech-ops-report.json ]; then
+            {
+              echo '# OCG LAB Tech Ops Audit'
+              echo
+              echo "Generated: $(jq -r '.generatedAt' tech-ops-report.json)"
+              echo "Healthy: $(jq -r '.summary.healthySystems' tech-ops-report.json)/$(jq -r '.summary.systemCount' tech-ops-report.json)"
+              echo "Registry issues: $(jq -r '.summary.registryIssueCount' tech-ops-report.json)"
+              echo
+              echo '| System | Status |'
+              echo '|---|---|'
+              jq -r '.systems[] | "| \(.name) | \(if .ok then "PASS" else "FAIL" end) |"' tech-ops-report.json
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload machine-readable audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ocg-lab-tech-ops-report
+          path: tech-ops-report.json
+          if-no-files-found: warn
+          retention-days: 14
