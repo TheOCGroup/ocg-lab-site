@@ -1,269 +1,231 @@
-import React, { useState } from "react";
-import { StorageEngine } from "../data/storageEngine";
-import { AgentRecord, AgentTaskRun } from "../types";
-import { 
-  Bot, 
-  Play, 
-  CheckCircle2, 
-  Clock, 
-  ShieldCheck, 
-  AlertCircle, 
-  Terminal, 
-  Sparkles, 
-  Cpu, 
-  Zap, 
-  Square
-} from "lucide-react";
-import { toast } from "sonner";
+import React from 'react';
+import { motion } from 'motion/react';
+import {
+  AlertTriangle,
+  ArrowRight,
+  Bot,
+  CheckCircle2,
+  ChevronRight,
+  CloudCog,
+  Code2,
+  Database,
+  Network,
+  Radar,
+  ShieldCheck,
+  Sparkles,
+  TestTube2,
+  Wrench,
+} from 'lucide-react';
+import { TECHNOLOGY_AGENTS, TECHNOLOGY_FLOW } from '../data/technologyAgents';
 
-export const OperationsPage: React.FC = () => {
-  const [state, setState] = useState(StorageEngine.loadState());
-  const [isTriggerModalOpen, setIsTriggerModalOpen] = useState(false);
-  const [selectedAgentId, setSelectedAgentId] = useState(state.agents[0]?.id || "");
-  const [newTaskName, setNewTaskName] = useState("");
-  const [newToolsUsed, setNewToolsUsed] = useState("Capability Gateway, Verification Engine");
-  const [newEvidence, setNewEvidence] = useState("");
+interface OperationsPageProps {
+  onOpenAiden?: () => void;
+}
 
-  const handleTriggerRun = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTaskName.trim() || !newEvidence.trim()) {
-      toast.error("Task name and verifiable evidence are strictly required (Anti-Fabrication Rule).");
-      return;
-    }
+const iconForLayer = (layer: string) => {
+  if (layer === 'BUILD') return Code2;
+  if (layer === 'CONNECT') return Network;
+  if (layer === 'TOOLS') return Wrench;
+  if (layer === 'RUN') return CloudCog;
+  if (layer === 'DATA') return Database;
+  if (layer === 'PROTECT') return ShieldCheck;
+  if (layer === 'VERIFY') return TestTube2;
+  if (layer === 'EXPERIENCE') return Sparkles;
+  return Bot;
+};
 
-    const agent = state.agents.find(a => a.id === selectedAgentId);
-    const toolsArray = newToolsUsed.split(",").map(t => t.trim());
+const stateTone = (readiness: 'RUNTIME_ACTIVE' | 'ROLE_READY') =>
+  readiness === 'RUNTIME_ACTIVE'
+    ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200'
+    : 'border-cyan-400/25 bg-cyan-400/8 text-cyan-200';
 
-    const run = StorageEngine.addAgentTaskRun({
-      taskId: "task-" + Date.now(),
-      agentId: selectedAgentId,
-      agentName: agent ? agent.name : "Specialist Agent",
-      taskName: newTaskName,
-      status: "COMPLETED",
-      initiatedBy: "GENARO",
-      toolsUsed: toolsArray,
-      approvalsRequired: false,
-      evidence: newEvidence
-    });
-
-    setState(StorageEngine.loadState());
-    setIsTriggerModalOpen(false);
-    setNewTaskName("");
-    setNewEvidence("");
-    toast.success("Executed " + run.taskName + " with verified evidence recorded.");
-  };
-
-  const handleStopRun = (runId: string) => {
-    toast.info("Sent halt signal to execution run " + runId);
-  };
+export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenAiden }) => {
+  const activeCount = TECHNOLOGY_AGENTS.filter(agent => agent.readiness === 'RUNTIME_ACTIVE').length;
+  const roleReadyCount = TECHNOLOGY_AGENTS.filter(agent => agent.readiness === 'ROLE_READY').length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-mono text-xs text-cyan-400 font-semibold uppercase tracking-wider">
-              AGENT OPERATIONS & AUTONOMY LAYER
-            </span>
-            <span className="text-slate-600">|</span>
-            <span className="text-xs text-emerald-400 font-medium font-mono">STRICT ANTI-FABRICATION RULE</span>
-          </div>
-          <h1 className="font-heading font-extrabold text-3xl text-white">
-            Specialist Agents & Execution Ledger
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            GENARO → AIDEN → SPECIALIST AGENT → TOOLS / SERVICES → EXECUTION → QA / VERIFICATION → AIDEN → GENARO.
-          </p>
-        </div>
+    <div className="relative mx-auto w-full max-w-[1480px] overflow-hidden px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+      <div className="pointer-events-none absolute inset-x-0 top-[-220px] h-[560px] bg-[radial-gradient(circle_at_18%_28%,rgba(37,99,235,.22),transparent_32%),radial-gradient(circle_at_62%_22%,rgba(6,182,212,.15),transparent_30%),radial-gradient(circle_at_86%_38%,rgba(16,185,129,.14),transparent_26%)] blur-3xl" />
 
-        <button
-          onClick={() => setIsTriggerModalOpen(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20"
-        >
-          <Play className="w-3.5 h-3.5" />
-          <span>Dispatch Agent Task</span>
-        </button>
-      </div>
+      <div className="relative space-y-6 sm:space-y-8">
+        <section className="overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/85 shadow-2xl">
+          <div className="h-[2px] bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
+          <div className="grid gap-0 lg:grid-cols-[1.25fr_.75fr]">
+            <div className="p-6 sm:p-8 lg:p-10">
+              <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 sm:text-xs">
+                <span className="text-cyan-300">OCG LAB TECHNOLOGY DEPARTMENT</span>
+                <span className="text-slate-700">•</span>
+                <span>Governed technical operations</span>
+              </div>
 
-      <div className="space-y-4">
-        <h2 className="font-heading font-bold text-xl text-white flex items-center gap-2">
-          <Terminal className="w-5 h-5 text-cyan-400" />
-          <span>Live Execution Ledger & Verifiable Evidence</span>
-        </h2>
+              <h1 className="mt-4 max-w-4xl font-heading text-4xl font-extrabold leading-[.98] tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Build. Connect. Protect. Verify.
+                <span className="block bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+                  One department. One operating truth.
+                </span>
+              </h1>
 
-        <div className="space-y-3">
-          {state.taskRuns.map(run => (
-            <div 
-              key={run.id}
-              className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3 shadow-md"
-            >
-              <div className="flex items-center justify-between gap-4 flex-wrap">
-                <div className="flex items-center gap-2.5">
-                  <span className={"px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold " + (
-                    run.status === "COMPLETED" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" :
-                    run.status === "RUNNING" ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 animate-pulse" :
-                    "bg-amber-500/10 text-amber-400 border border-amber-500/30"
-                  )}>
-                    {run.status}
-                  </span>
-                  <span className="font-mono text-xs text-slate-400">ID: {run.id}</span>
-                  <span className="text-slate-600">|</span>
-                  <span className="text-xs font-semibold text-cyan-300">Agent: {run.agentName}</span>
+              <p className="mt-5 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
+                Aiden directs a governed set of technical specialist roles across software, integrations, tooling, infrastructure, data, security, QA and product experience. No duplicate public personas. No fake activity. No system is called operational until its full runtime path is verified.
+              </p>
+
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <button
+                  onClick={onOpenAiden}
+                  className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 px-5 py-3.5 text-sm font-bold text-slate-950 shadow-[0_12px_40px_rgba(6,182,212,.18)] transition hover:scale-[1.01]"
+                >
+                  <Bot className="h-4 w-4" /> Command Aiden <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </button>
+                <a
+                  href="https://chatbot-seven-tau-23.vercel.app/workforce"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm font-semibold text-white transition hover:border-cyan-400/30 hover:bg-cyan-400/[0.06]"
+                >
+                  Open Workforce <ChevronRight className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+
+            <div className="border-t border-white/10 bg-white/[0.025] p-6 sm:p-8 lg:border-l lg:border-t-0">
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500">Department state</p>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.06] p-4">
+                  <p className="text-3xl font-bold text-white">{activeCount}</p>
+                  <p className="mt-1 text-[10px] font-mono uppercase tracking-[0.15em] text-emerald-300">Runtime active</p>
                 </div>
-
-                <div className="flex items-center gap-3 text-xs text-slate-400 font-mono">
-                  <span>Initiated: {run.initiatedBy}</span>
-                  <span>{new Date(run.startTime).toLocaleTimeString()}</span>
-                  {run.status === "RUNNING" && (
-                    <button
-                      onClick={() => handleStopRun(run.id)}
-                      className="text-rose-400 hover:text-rose-300 flex items-center gap-1 font-semibold"
-                    >
-                      <Square className="w-3 h-3" /> Stop
-                    </button>
-                  )}
+                <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.05] p-4">
+                  <p className="text-3xl font-bold text-white">{roleReadyCount}</p>
+                  <p className="mt-1 text-[10px] font-mono uppercase tracking-[0.15em] text-cyan-300">Role ready</p>
                 </div>
               </div>
 
-              <div>
-                <h4 className="font-bold text-white text-sm">{run.taskName}</h4>
-                <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 mt-0.5">
-                  <span>Tools: {run.toolsUsed.join(", ")}</span>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 flex items-start gap-2.5 text-xs font-mono text-emerald-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-400">Verifiable Output: </strong>
-                  {run.evidence}
+              <div className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-400/[0.05] p-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+                  <div>
+                    <p className="text-xs font-semibold text-white">Truth boundary</p>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                      Specialist roles remain STANDBY until a real Aiden/Workforce execution is bound to them. The OS will not manufacture “working” indicators.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </section>
 
-      <div className="space-y-4 pt-4 border-t border-slate-800">
-        <h2 className="font-heading font-bold text-xl text-white flex items-center gap-2">
-          <Bot className="w-5 h-5 text-cyan-400" />
-          <span>Persistent Specialist Agents Registry</span>
-        </h2>
+        <section className="rounded-[26px] border border-white/10 bg-white/[0.025] p-4 sm:p-5">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cyan-300">Operating loop</p>
+              <h2 className="mt-1 text-lg font-bold text-white">How a technical request moves</h2>
+            </div>
+            <Radar className="h-5 w-5 text-cyan-300" />
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {state.agents.map(agent => (
-            <div 
-              key={agent.id}
-              className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 flex flex-col justify-between space-y-4"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-wider">
-                    {agent.departmentId}
+          <div className="flex snap-x gap-2 overflow-x-auto pb-2 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0">
+            {TECHNOLOGY_FLOW.map((step, index) => (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.04 }}
+                className="min-w-[150px] snap-start rounded-2xl border border-white/8 bg-slate-950/65 p-3 sm:min-w-0"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full border border-cyan-400/20 bg-cyan-400/10 text-[10px] font-mono font-bold text-cyan-200">
+                    {index + 1}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                    {agent.status}
-                  </span>
+                  <p className="text-[10px] font-mono font-bold tracking-[0.12em] text-slate-300">{step}</p>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
-                <h3 className="font-heading font-bold text-lg text-white">{agent.name}</h3>
-                <span className="text-xs font-medium text-slate-400 block">{agent.role}</span>
-                <p className="text-xs text-slate-400 mt-2 leading-relaxed">{agent.specialty}</p>
-              </div>
+        <section>
+          <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-300">Technical workforce</p>
+              <h2 className="mt-1 text-2xl font-bold text-white">All technology agent roles</h2>
+              <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-400">
+                These are governed execution roles behind Aiden. They are deliberately descriptive instead of inventing another layer of characters.
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-2 text-xs text-slate-400">
+              <CheckCircle2 className="h-4 w-4 text-emerald-300" /> 9 roles defined
+            </div>
+          </div>
 
-              <div className="space-y-3 pt-3 border-t border-slate-800/80 text-xs font-mono">
-                <div>
-                  <span className="text-slate-500 block text-[10px] uppercase">Core Skills</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {agent.skills.slice(0, 3).map((s, i) => (
-                      <span key={i} className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-[10px]">
-                        {s}
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {TECHNOLOGY_AGENTS.map((agent, index) => {
+              const Icon = iconForLayer(agent.operatingLayer);
+              return (
+                <motion.article
+                  key={agent.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.04 + index * 0.035 }}
+                  className="group overflow-hidden rounded-[24px] border border-white/10 bg-slate-950/70 p-5 transition hover:border-cyan-400/25"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex min-w-0 items-start gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/15 bg-gradient-to-br from-blue-500/15 via-cyan-400/10 to-emerald-400/10 text-cyan-200">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-cyan-300">{agent.operatingLayer}</p>
+                        <h3 className="mt-1 truncate text-base font-bold text-white">{agent.name}</h3>
+                        <p className="text-xs text-slate-400">{agent.role}</p>
+                      </div>
+                    </div>
+                    <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-mono font-bold ${stateTone(agent.readiness)}`}>
+                      {agent.readiness === 'RUNTIME_ACTIVE' ? 'ACTIVE' : 'ROLE READY'}
+                    </span>
+                  </div>
+
+                  <p className="mt-4 text-xs leading-relaxed text-slate-300">{agent.specialty}</p>
+
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {agent.skills.slice(0, 4).map(skill => (
+                      <span key={skill} className="rounded-lg border border-white/8 bg-white/[0.035] px-2 py-1 text-[9px] text-slate-300">
+                        {skill}
                       </span>
                     ))}
                   </div>
-                </div>
 
-                <div className="flex items-center justify-between text-slate-400 pt-2 border-t border-slate-800/50 text-[11px]">
-                  <span>Runs: {agent.executionStats.totalRuns}</span>
-                  <span className="text-emerald-400">Pass: {agent.executionStats.passCount}</span>
-                  <span className="text-rose-400">Fail: {agent.executionStats.failCount}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {isTriggerModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="w-full max-w-xl bg-[#090e18] border border-cyan-500/30 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-            <h3 className="font-heading font-bold text-xl text-white">Dispatch Specialist Agent Task</h3>
-            
-            <form onSubmit={handleTriggerRun} className="space-y-4 text-xs font-mono">
-              <div>
-                <label className="text-slate-400 block mb-1">SELECT AGENT</label>
-                <select
-                  value={selectedAgentId}
-                  onChange={e => setSelectedAgentId(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white outline-none"
-                >
-                  {state.agents.map(a => (
-                    <option key={a.id} value={a.id}>{a.name} — {a.role}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-slate-400 block mb-1">TASK NAME / MISSION</label>
-                <input
-                  type="text"
-                  value={newTaskName}
-                  onChange={e => setNewTaskName(e.target.value)}
-                  placeholder="e.g. Audit LeadFlow webhook payloads"
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-slate-400 block mb-1">TOOLS / SERVICES USED (COMMA SEPARATED)</label>
-                <input
-                  type="text"
-                  value={newToolsUsed}
-                  onChange={e => setNewToolsUsed(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-slate-400 block mb-1">VERIFIABLE EVIDENCE (ANTI-FABRICATION REQUIREMENT)</label>
-                <textarea
-                  rows={3}
-                  value={newEvidence}
-                  onChange={e => setNewEvidence(e.target.value)}
-                  placeholder="Document the exact verified output, test pass count, commit SHA, or execution log..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white outline-none"
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setIsTriggerModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold"
-                >
-                  Confirm & Dispatch Run
-                </button>
-              </div>
-            </form>
+                  <div className="mt-4 border-t border-white/8 pt-4">
+                    <p className="text-[9px] font-mono uppercase tracking-[0.15em] text-slate-500">Truth note</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-slate-400">{agent.truthNote}</p>
+                  </div>
+                </motion.article>
+              );
+            })}
           </div>
-        </div>
-      )}
+        </section>
+
+        <section className="rounded-[26px] border border-white/10 bg-slate-950/70 p-5 sm:p-6">
+          <div className="grid gap-5 lg:grid-cols-3">
+            <div>
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cyan-300">Release rule</p>
+              <h2 className="mt-1 text-xl font-bold text-white">HTTP 200 is not “working.”</h2>
+            </div>
+            <div className="lg:col-span-2">
+              <div className="grid gap-2 sm:grid-cols-5">
+                {['SOURCE', 'AUTH / TOOLS', 'DATA', 'USER FLOW', 'RECOVERY'].map(label => (
+                  <div key={label} className="rounded-xl border border-white/8 bg-white/[0.025] px-3 py-3 text-center text-[9px] font-mono font-bold tracking-[0.12em] text-slate-300">
+                    {label}
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs leading-relaxed text-slate-400">
+                Production certification requires evidence across the complete dependency path, independent QA where applicable, and a verified recovery path. Green CI alone cannot close a release.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };
