@@ -39,8 +39,8 @@ export const AidenOrchestratorModal: React.FC<AidenOrchestratorModalProps> = ({
     {
       id: 'init-1',
       sender: 'aiden',
-      text: `**Aiden Technology Orchestrator Online.**\n\nI have complete contextual visibility into OCG LAB OS, all 12 departments, our 50-product portfolio, the 3 active bench missions, and connected operating systems.\n\nHow can I coordinate the workforce for you right now?`,
-      timestamp: '20:18'
+      text: `**Aiden · OCG LAB orchestration**\n\nInspect recorded work, find blockers and approvals, or give a directive. I use the OS registry and its existing command capabilities. External execution and runtime health are not implied by a reply.`,
+      timestamp: ''
     }
   ]);
   const [input, setInput] = useState('');
@@ -52,6 +52,19 @@ export const AidenOrchestratorModal: React.FC<AidenOrchestratorModalProps> = ({
     }
   }, [messages, isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const panel = document.querySelector<HTMLElement>('[role="dialog"][aria-label="Aiden"]');
+    const controls = () => Array.from(panel?.querySelectorAll<HTMLElement>('button, input, textarea, a[href]') || []).filter(el => !el.hasAttribute('disabled'));
+    controls()[0]?.focus();
+    const key = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'Tab') { const list = controls(); const first = list[0]; const last = list[list.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); } }
+    };
+    document.addEventListener('keydown', key);
+    return () => { document.removeEventListener('keydown', key); previous?.focus(); };
+  }, [isOpen, onClose]);
   if (!isOpen) return null;
 
   const handleSend = (queryText?: string) => {
@@ -96,19 +109,19 @@ export const AidenOrchestratorModal: React.FC<AidenOrchestratorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-4xl h-[85vh] bg-[#070d18] border border-cyan-500/30 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+      <div role="dialog" aria-modal="true" aria-label="Aiden" className="relative w-full max-w-4xl h-[85dvh] bg-[#070d18] border border-cyan-500/30 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
         
         {/* Header */}
         <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/20">
-              <Bot className="w-5 h-5 animate-pulse" />
+              <Bot className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h3 className="font-heading font-bold text-white text-base">AIDEN ORCHESTRATOR</h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  SYSTEM READY
+                  REGISTRY ASSISTANT
                 </span>
               </div>
               <p className="text-xs text-slate-400">Chief Intelligence & Department Coordinator for The OCG Lab</p>
@@ -116,7 +129,7 @@ export const AidenOrchestratorModal: React.FC<AidenOrchestratorModalProps> = ({
           </div>
 
           <button 
-            onClick={onClose}
+            aria-label="Close Aiden" onClick={onClose}
             className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />

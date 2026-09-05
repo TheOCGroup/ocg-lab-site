@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Page } from "../types";
 import {
   Activity,
@@ -54,6 +54,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
   const activeNavItems = isOsMode ? osNavItems : publicNavItems;
   const currentLabel = activeNavItems.find((item) => item.id === activePage)?.label ?? (isOsMode ? "Command" : "Storefront");
 
+  useEffect(() => {
+    const close = () => setMobileMenuOpen(false);
+    const key = (event: KeyboardEvent) => { if (event.key === 'Escape') close(); };
+    window.addEventListener('pageshow', close);
+    window.addEventListener('hashchange', close);
+    window.addEventListener('keydown', key);
+    return () => { window.removeEventListener('pageshow', close); window.removeEventListener('hashchange', close); window.removeEventListener('keydown', key); };
+  }, []);
+
   const goTo = (page: Page) => {
     setActivePage(page);
     setMobileMenuOpen(false);
@@ -77,12 +86,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#020711]/96 backdrop-blur-2xl">
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#090d14]">
       <div className="h-[2px] w-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
       <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8">
-        <div className="flex h-[68px] min-w-0 items-center justify-between gap-3 sm:h-20">
+        <div className="flex min-h-[104px] min-w-0 flex-wrap items-center justify-between gap-3 py-3">
           <button type="button" aria-label="Open OCG LAB command center" onClick={() => goTo("command")} className="group flex min-w-0 items-center gap-3 text-left">
-            <div className="flex h-11 w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] px-2 shadow-[0_10px_34px_-18px_rgba(34,211,238,.9)] sm:h-12 sm:w-[86px]">
+            <div className="flex h-14 w-[128px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#f4f7fa] px-2 shadow-[0_10px_34px_-18px_rgba(34,211,238,.9)] sm:h-14 sm:w-[144px]">
               <img src="/assets/approved-logo.png" alt="OCG LAB" className="max-h-9 w-auto object-contain sm:max-h-10" />
             </div>
             <div className="min-w-0">
@@ -91,19 +100,19 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
                 <span className="hidden shrink-0 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-emerald-300 min-[390px]:inline-flex">{isOsMode ? "OS" : "PUBLIC"}</span>
               </div>
               <div className="mt-0.5 flex min-w-0 items-center gap-2">
-                <span className="truncate font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500 sm:text-[10px]">{isOsMode ? "Technology Command" : "Software + AI"}</span>
+                <span className="truncate font-mono text-[9px] uppercase tracking-[0.18em] text-slate-300 sm:text-[10px]">{isOsMode ? "Operating System" : "Software + AI"}</span>
                 <span className="hidden h-1 w-1 rounded-full bg-cyan-400 min-[420px]:block" />
                 <span className="hidden truncate text-[10px] font-semibold text-slate-400 min-[420px]:block">{currentLabel}</span>
               </div>
             </div>
           </button>
 
-          <nav className="hidden items-center gap-1 rounded-2xl border border-white/8 bg-white/[0.025] p-1 lg:flex">
+          <nav className="hidden w-full order-3 items-center gap-1 rounded-2xl border border-white/8 bg-white/[0.025] p-1 lg:flex">
             {activeNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.id === activePage;
               return (
-                <button key={item.id} onClick={() => goTo(item.id)} className={`relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition ${isActive ? "text-white" : "text-slate-400 hover:bg-white/[0.04] hover:text-white"}`}>
+                <button key={item.id} onClick={() => goTo(item.id)} className={`relative flex whitespace-nowrap items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition ${isActive ? "text-white" : "text-slate-400 hover:bg-white/[0.04] hover:text-white"}`}>
                   {isActive && <motion.div layoutId="ocg-primary-nav" className="absolute inset-0 rounded-xl border border-cyan-400/20 bg-gradient-to-r from-blue-500/14 via-cyan-400/12 to-emerald-400/14" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
                   <Icon className={`relative z-10 h-3.5 w-3.5 ${isActive ? "text-cyan-300" : ""}`} />
                   <span className="relative z-10">{item.label}</span>
@@ -119,24 +128,24 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
                 {isSyncing ? "SYNCING" : cloudStatus === "SYNCED" ? "SYNCED" : "SYNC"}
               </button>
             )}
-            <button data-aiden-btn="desktop" onClick={onOpenAiden} className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-extrabold text-slate-950">
+            <button data-aiden-btn="desktop" onClick={() => { setMobileMenuOpen(false); onOpenAiden(); }} className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-extrabold text-slate-950">
               <Bot className="h-4 w-4" />AIDEN
             </button>
             <button onClick={() => goTo(isOsMode ? "storefront" : "command")} className="rounded-xl border border-white/10 bg-white/[0.035] px-3 py-2 font-mono text-[10px] text-slate-300 transition hover:bg-white/[0.06]">{isOsMode ? "STORE" : "OS"}</button>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2 lg:hidden">
-            <button aria-label="Open Aiden" onClick={onOpenAiden} className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-300/20 bg-gradient-to-br from-blue-500/14 via-cyan-400/10 to-emerald-400/12 text-cyan-200"><Bot className="h-4.5 w-4.5" /></button>
-            <button aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)} className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.045] text-slate-200">{mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
+          <div className="flex w-full items-center justify-end gap-2 lg:hidden">
+            <button aria-label="Open Aiden" onClick={() => { setMobileMenuOpen(false); onOpenAiden(); }} className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-cyan-300/40 bg-cyan-400/10 px-3 text-sm font-bold text-cyan-200">Aiden</button>
+            <button aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-controls="mobile-navigation" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)} className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/20 px-3 text-sm text-white">Menu {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden pb-4">
+          <div id="mobile-navigation" className="lg:hidden pb-4 max-h-[calc(100dvh-160px)] overflow-y-auto overscroll-contain">
             <div className="rounded-[22px] border border-white/10 bg-[#07101c] p-3 shadow-2xl shadow-black/30">
               <div className="mb-3 flex items-center justify-between px-1">
                 <div>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500">{isOsMode ? "Technology Department" : "OCG LAB"}</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-300">{isOsMode ? "Technology Department" : "OCG LAB"}</p>
                   <p className="mt-1 text-sm font-bold text-white">{currentLabel}</p>
                 </div>
                 <button onClick={() => goTo(isOsMode ? "storefront" : "command")} className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-slate-300">{isOsMode ? "Public Store" : "Open OS"}</button>
@@ -147,7 +156,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
                   const isActive = item.id === activePage;
                   return (
                     <button key={item.id} onClick={() => goTo(item.id)} className={`flex min-w-0 items-center gap-2 rounded-2xl border p-3 text-left text-xs font-semibold transition ${isActive ? "border-cyan-300/25 bg-gradient-to-br from-blue-500/14 to-emerald-400/10 text-white" : "border-white/8 bg-white/[0.025] text-slate-300"}`}>
-                      <Icon className={`h-4 w-4 shrink-0 ${isActive ? "text-cyan-300" : "text-slate-500"}`} />
+                      <Icon className={`h-4 w-4 shrink-0 ${isActive ? "text-cyan-300" : "text-slate-300"}`} />
                       <span className="min-w-0 break-words">{item.label}</span>
                     </button>
                   );
