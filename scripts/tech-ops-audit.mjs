@@ -5,19 +5,60 @@ const registryPath = path.resolve(process.argv[2] || 'ops/tech/dependencies.json
 const reportPath = path.resolve(process.env.TECH_OPS_REPORT || 'tech-ops-report.json');
 const timeoutMs = Number(process.env.TECH_OPS_TIMEOUT_MS || 15000);
 const retries = Number(process.env.TECH_OPS_RETRIES || 2);
+const maxRedirects = Number(process.env.TECH_OPS_MAX_REDIRECTS || 10);
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function captureCookies(response, jar) {
+  const setCookies = typeof response.headers.getSetCookie === 'function'
+    ? response.headers.getSetCookie()
+    : [];
+
+  for (const setCookie of setCookies) {
+    const pair = setCookie.split(';', 1)[0];
+    const separator = pair.indexOf('=');
+    if (separator <= 0) continue;
+    const name = pair.slice(0, separator).trim();
+    const value = pair.slice(separator + 1).trim();
+    if (value) jar.set(name, value);
+    else jar.delete(name);
+  }
+}
+
+function cookieHeader(jar) {
+  return [...jar.entries()].map(([name, value]) => `${name}=${value}`).join('; ');
+}
 
 async function fetchWithTimeout(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const jar = new Map();
+  let currentUrl = url;
+
   try {
-    return await fetch(url, {
-      method: 'GET',
-      redirect: 'follow',
-      signal: controller.signal,
-      headers: { 'user-agent': 'OCG-LAB-Tech-Ops-Audit/1.0' }
-    });
+    for (let redirectCount = 0; redirectCount <= maxRedirects; redirectCount += 1) {
+      const headers = { 'user-agent': 'OCG-LAB-Tech-Ops-Audit/1.1' };
+      const cookies = cookieHeader(jar);
+      if (cookies) headers.cookie = cookies;
+
+      const response = await fetch(currentUrl, {
+        method: 'GET',
+        redirect: 'manual',
+        signal: controller.signal,
+        headers
+      });
+
+      captureCookies(response, jar);
+
+      if (![301, 302, 303, 307, 308].includes(response.status)) return response;
+
+      const location = response.headers.get('location');
+      if (!location) return response;
+      if (redirectCount === maxRedirects) throw new Error(`too many redirects (>${maxRedirects})`);
+      currentUrl = new URL(location, currentUrl).toString();
+    }
+
+    throw new Error('redirect handling failed');
   } finally {
     clearTimeout(timer);
   }
