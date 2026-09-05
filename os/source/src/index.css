@@ -13,7 +13,7 @@
 }
 
 @layer base {
-  html { background: var(--ocg-ink); scroll-behavior: smooth; }
+  html { background: var(--ocg-ink); scroll-behavior: smooth; width: 100%; max-width: 100%; overflow-x: clip; }
   body {
     background:
       radial-gradient(circle at 15% -10%, rgba(37, 99, 235, .16), transparent 34rem),
@@ -21,13 +21,18 @@
       #02050b;
     color: #f1f5f9;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
     min-height: 100vh;
   }
 
-  h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; }
+  #root { width: 100%; max-width: 100%; min-width: 0; overflow-x: clip; }
+  h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; overflow-wrap: anywhere; }
+  p, span, a, button { overflow-wrap: anywhere; }
   code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
   button, a { -webkit-tap-highlight-color: transparent; }
+  img, video, canvas, svg { max-width: 100%; }
 }
 
 /* OCG LAB signature surface: dark precision + restrained blue→green energy. */
@@ -138,6 +143,25 @@ input[type='range'] { accent-color: #22c55e; }
   .glass-panel { border-radius: 1.35rem !important; }
   .max-w-7xl { padding-top: 1rem !important; }
   .max-w-7xl > * { animation-duration: .45s; }
+
+  /* Phone layout contract: every OS panel must fit the viewport without horizontal panning. */
+  main, main > div, main section, main article, main aside, main nav, main header, main footer {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  main .grid > *, main .flex > * { min-width: 0; }
+  main table { display: block; width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  main pre, main code { max-width: 100%; white-space: pre-wrap; word-break: break-word; }
+  main [class*='tracking-[0.2'], main [class*='tracking-[0.24'] { letter-spacing: .12em !important; }
+  main h1 { font-size: clamp(2rem, 10vw, 2.75rem) !important; line-height: 1.02 !important; }
+  main h2 { line-height: 1.15; }
+  main button { max-width: 100%; }
+}
+
+@media (max-width: 390px) {
+  main h1 { font-size: clamp(1.85rem, 9.5vw, 2.35rem) !important; }
+  main .rounded-\[30px\], main .rounded-\[28px\], main .rounded-\[26px\] { border-radius: 1.25rem !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
