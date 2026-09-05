@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-05T02:08:00Z",
+  "updatedAt": "2026-09-05T02:21:00Z",
   "policy": {
     "secretValuesAllowed": false,
     "connectionStates": [
@@ -24,23 +24,88 @@
       "productionUrls": ["https://ocg-lab-products.vercel.app/os/"],
       "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "The OCG Lab"},
       "dependencies": [
-        {
-          "provider": "Vercel",
-          "kind": "hosting",
-          "credentialType": "managed-platform",
-          "logicalCredentialNames": [],
-          "currentState": "FUNCTIONAL",
-          "founderActionRequired": false
-        },
-        {
-          "provider": "Google Cloud Storage",
-          "kind": "persistence",
-          "credentialType": "legacy-encrypted-oauth",
-          "logicalCredentialNames": ["OCG_OS_FOUNDER_KEY", "GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_OAUTH_REFRESH_TOKEN"],
-          "currentState": "DEGRADED",
-          "founderActionRequired": false,
-          "note": "Current api/os/sync.js decrypts an encrypted credential file using a Founder-supplied key. Migrate to managed runtime secrets/workload identity before calling credential automation complete."
-        }
+        {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Google Cloud Storage", "kind": "persistence", "credentialType": "legacy-encrypted-oauth", "logicalCredentialNames": ["OCG_OS_FOUNDER_KEY", "GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_OAUTH_REFRESH_TOKEN"], "currentState": "DEGRADED", "founderActionRequired": false, "note": "Current api/os/sync.js uses the legacy encrypted OAuth credential path. Migrate to managed runtime secrets or workload identity before credential automation is complete."}
+      ]
+    },
+    {
+      "id": "workforce-aiden",
+      "name": "Aiden Workforce Room",
+      "owner": "Technology Operations",
+      "repo": "TheOCGroup/chatbot",
+      "branch": "main",
+      "productionUrls": ["https://chatbot-seven-tau-23.vercel.app/workforce"],
+      "health": {"type": "http", "expectedStatus": 200},
+      "dependencies": [
+        {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Auth.js", "kind": "session-auth", "credentialType": "runtime-secret", "logicalCredentialNames": ["AUTH_SECRET", "NEXTAUTH_SECRET"], "currentState": "DEGRADED", "founderActionRequired": false, "note": "Production logs show repeated JWTSessionError/no matching decryption secret. Generated build-time fallback must not be treated as stable production session key."},
+        {"provider": "Neon PostgreSQL", "kind": "persistence", "credentialType": "runtime-secret", "logicalCredentialNames": ["POSTGRES_URL"], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Aiden Desktop", "kind": "device-runtime", "credentialType": "device-credential", "logicalCredentialNames": ["AIDEN_DESKTOP_DEVICE_SECRET"], "currentState": "DEGRADED", "founderActionRequired": false, "note": "Production device route recently rejected registration because the device was already registered to another user."}
+      ]
+    },
+    {
+      "id": "maestro",
+      "name": "MAESTRO",
+      "owner": "Technology Operations",
+      "repo": "TheOCGroup/maestro",
+      "branch": "main",
+      "productionUrls": ["https://maestro-six-peach.vercel.app/"],
+      "health": {"type": "http", "expectedStatus": 200},
+      "dependencies": [
+        {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Supabase", "kind": "auth-and-persistence", "credentialType": "runtime-secret", "logicalCredentialNames": ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"], "currentState": "FUNCTIONAL", "founderActionRequired": false, "note": "One historical middleware error on an older deployment reported missing Supabase URL/key; current production deployment is READY and should remain under automated probe."}
+      ]
+    },
+    {
+      "id": "chief-os",
+      "name": "Chief OS",
+      "owner": "Technology Operations",
+      "repo": "TheOCGroup/chief",
+      "branch": "main",
+      "productionUrls": ["https://chief-ruby.vercel.app/"],
+      "health": {"type": "http", "expectedStatus": 200},
+      "dependencies": [
+        {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "FUNCTIONAL", "founderActionRequired": false}
+      ]
+    },
+    {
+      "id": "ocg-media",
+      "name": "OCG MEDIA / NOVA",
+      "owner": "Technology Operations",
+      "repo": "TheOCGroup/nova",
+      "branch": "release/ocg-media-v4.0.0",
+      "productionUrls": ["https://nova-eight-green.vercel.app/"],
+      "health": {"type": "http", "expectedStatus": 200},
+      "dependencies": [
+        {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "FUNCTIONAL", "founderActionRequired": false, "note": "Production runtime shows no error groups in the current seven-day audit window. Latest non-production deployment may still fail and must not be confused with production health."},
+        {"provider": "Whop", "kind": "commerce", "credentialType": "managed-connector", "logicalCredentialNames": ["WHOP_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Etsy", "kind": "commerce", "credentialType": "managed-connector", "logicalCredentialNames": ["ETSY_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Meta", "kind": "social-publishing", "credentialType": "managed-connector", "logicalCredentialNames": ["META_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "YouTube", "kind": "video-publishing", "credentialType": "managed-connector", "logicalCredentialNames": ["YOUTUBE_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false}
+      ]
+    },
+    {
+      "id": "deal-finder",
+      "name": "Deal Finder / Hunter",
+      "owner": "Technology Operations",
+      "repo": "TheOCGroup/deal-finder",
+      "branch": "main",
+      "productionUrls": ["https://deal-finder-the-ocg-lab-lab-report.vercel.app/"],
+      "health": {"type": "http", "expectedStatus": 200},
+      "dependencies": [
+        {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "DEGRADED", "founderActionRequired": false, "note": "No runtime error groups were found, but the latest production-target deployment is canceled. HTTP health audit must determine the actual serving state before PASS."}
+      ]
+    },
+    {
+      "id": "ocg-pipeline",
+      "name": "OCG Pipeline",
+      "owner": "Technology Operations",
+      "repo": "TheOCGroup/deal-finder",
+      "branch": "main",
+      "productionUrls": ["https://ocg-pipeline-the-ocg-lab-lab-report.vercel.app/"],
+      "health": {"type": "http", "expectedStatus": 200},
+      "dependencies": [
+        {"provider": "Vercel", "kind": "hosting", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "DEGRADED", "founderActionRequired": false, "note": "No runtime error groups were found, but the latest production-target deployment is canceled. HTTP health audit must determine the actual serving state before PASS."}
       ]
     },
     {
@@ -64,6 +129,18 @@
       "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "Real Estate Investor"},
       "dependencies": [
         {"provider": "Whop", "kind": "commerce-entitlement", "credentialType": "managed-connector", "logicalCredentialNames": ["WHOP_CONNECTION"], "currentState": "FUNCTIONAL", "founderActionRequired": false}
+      ]
+    },
+    {
+      "id": "lender-ai-super-pro",
+      "name": "Lender AI SUPER PRO",
+      "repo": "TheOCGroup/ocg-lab-site",
+      "branch": "main",
+      "productionUrls": ["https://ocg-lab-products.vercel.app/playbooks/lender-ai-super-pro/"],
+      "health": {"type": "http", "expectedStatus": 200, "titleIncludes": "Lender"},
+      "dependencies": [
+        {"provider": "Vercel", "kind": "hosting-and-api", "credentialType": "managed-platform", "logicalCredentialNames": [], "currentState": "FUNCTIONAL", "founderActionRequired": false},
+        {"provider": "Customer AI Endpoint", "kind": "buyer-supplied-ai", "credentialType": "customer-credential", "logicalCredentialNames": ["CUSTOMER_AI_ENDPOINT", "CUSTOMER_AI_API_KEY"], "currentState": "DEGRADED", "founderActionRequired": false, "note": "Production logs recorded CUSTOMER_ENDPOINT_INVALID on the credential API. Product must keep truthful unconfigured state until a valid purchaser endpoint is supplied and verified."}
       ]
     },
     {
