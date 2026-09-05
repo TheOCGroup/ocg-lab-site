@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import { Page } from "../types";
-import { 
-  Building2, 
-  Layers, 
-  BookOpen, 
-  ShieldCheck, 
-  ShoppingCart, 
-  Sliders, 
-  Bot, 
-  Activity, 
-  FolderGit2, 
-  Zap,
+import {
+  Activity,
+  BookOpen,
+  Bot,
+  Cloud,
+  FolderGit2,
+  Layers,
   Menu,
-  X,
+  ShieldCheck,
+  ShoppingCart,
   Target,
-  Cloud
+  X,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { StorageEngine } from "../data/storageEngine";
@@ -33,201 +30,234 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   activePage,
   setActivePage,
-  onOpenAiden
+  onOpenAiden,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [cloudStatus, setCloudStatus] = useState<'SYNCED' | 'OFFLINE_CACHED' | 'AUTH_REQUIRED'>('AUTH_REQUIRED');
+  const [cloudStatus, setCloudStatus] = useState<"SYNCED" | "OFFLINE_CACHED" | "AUTH_REQUIRED">("AUTH_REQUIRED");
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleCloudSync = async () => {
-    if (!StorageEngine.getFounderKey()) {
-      const entered = window.prompt('Enter the Founder cloud-sync key for this session. It is kept in sessionStorage only and is never bundled into OCG LAB OS.');
-      if (!entered) { setCloudStatus('AUTH_REQUIRED'); return; }
-      StorageEngine.setFounderKey(entered);
-    }
-    setIsSyncing(true);
-    const result = await StorageEngine.syncWithCloud();
-    setIsSyncing(false);
-    setCloudStatus(result.status === 'OFFLINE_CACHED' ? 'OFFLINE_CACHED' : result.status === 'AUTH_REQUIRED' ? 'AUTH_REQUIRED' : 'SYNCED');
-  };
-
   const isOsMode = [
-    "command", "portfolio", "projects", "operations", "qa", "engineering", "storefronts", "knowledge", "agents", "releases"
+    "command",
+    "portfolio",
+    "projects",
+    "operations",
+    "qa",
+    "engineering",
+    "storefronts",
+    "knowledge",
+    "agents",
+    "releases",
   ].includes(activePage);
 
-  const osNavItems: { id: Page; label: string; icon: any }[] = [
+  const osNavItems: { id: Page; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: "command", label: "Command", icon: Activity },
-    { id: "portfolio", label: "Portfolio", icon: Layers },
+    { id: "portfolio", label: "Systems", icon: Layers },
     { id: "projects", label: "Projects", icon: Target },
-    { id: "operations", label: "Agents & Ops", icon: Bot },
+    { id: "operations", label: "Workforce", icon: Bot },
     { id: "qa", label: "QA & Releases", icon: ShieldCheck },
     { id: "engineering", label: "Engineering", icon: FolderGit2 },
-    { id: "storefronts", label: "Storefronts", icon: ShoppingCart },
-    { id: "knowledge", label: "Knowledge & R&D", icon: BookOpen }
+    { id: "storefronts", label: "Commercial", icon: ShoppingCart },
+    { id: "knowledge", label: "Knowledge", icon: BookOpen },
   ];
 
-  const publicNavItems: { id: Page; label: string; icon: any }[] = [
-    { id: "home", label: "Home", icon: Building2 },
-    { id: "storefront", label: "Public Storefront", icon: ShoppingCart },
-    { id: "my-ocg", label: "MY OCG Hub", icon: Zap },
-    { id: "about", label: "About", icon: ShieldCheck },
-    { id: "resources", label: "SOP Kits", icon: BookOpen },
-    { id: "pricing", label: "Pricing", icon: Sliders },
-    { id: "admin", label: "Admin Portal", icon: Sliders }
+  const publicNavItems: { id: Page; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+    { id: "storefront", label: "Storefront", icon: ShoppingCart },
+    { id: "home", label: "Company", icon: Layers },
+    { id: "about", label: "About", icon: BookOpen },
   ];
 
   const activeNavItems = isOsMode ? osNavItems : publicNavItems;
+  const currentLabel = activeNavItems.find((item) => item.id === activePage)?.label ?? (isOsMode ? "Command" : "Storefront");
+
+  const goTo = (page: Page) => {
+    setActivePage(page);
+    setMobileMenuOpen(false);
+  };
+
+  const handleCloudSync = async () => {
+    if (!StorageEngine.getFounderKey()) {
+      const entered = window.prompt("Enter the Founder cloud-sync key for this session.");
+      if (!entered) {
+        setCloudStatus("AUTH_REQUIRED");
+        return;
+      }
+      StorageEngine.setFounderKey(entered);
+    }
+
+    setIsSyncing(true);
+    const result = await StorageEngine.syncWithCloud();
+    setIsSyncing(false);
+    setCloudStatus(
+      result.status === "OFFLINE_CACHED"
+        ? "OFFLINE_CACHED"
+        : result.status === "AUTH_REQUIRED"
+          ? "AUTH_REQUIRED"
+          : "SYNCED",
+    );
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full max-w-full overflow-x-clip border-b border-slate-800/80 bg-[#030712]/95 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto w-full min-w-0 px-3 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center justify-between gap-2 h-16 sm:h-20">
-          
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#020711]/96 backdrop-blur-2xl">
+      <div className="h-[2px] w-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
+
+      <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8">
+        <div className="flex h-[68px] min-w-0 items-center justify-between gap-3 sm:h-20">
           <button
             type="button"
-            className="flex min-w-0 items-center gap-2.5 sm:gap-3 text-left group"
-            onClick={() => setActivePage("command")}
+            aria-label="Open OCG LAB command center"
+            onClick={() => goTo("command")}
+            className="group flex min-w-0 items-center gap-3 text-left"
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-xl bg-gradient-to-br from-cyan-500 via-emerald-500 to-amber-500 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
-              <div className="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center">
-                <span className="font-heading font-extrabold text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">OCG</span>
-              </div>
+            <div className="flex h-11 w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] px-2 shadow-[0_10px_34px_-18px_rgba(34,211,238,.9)] sm:h-12 sm:w-[86px]">
+              <img
+                src="/assets/approved-logo.png"
+                alt="OCG LAB"
+                className="max-h-9 w-auto object-contain sm:max-h-10"
+              />
             </div>
-            <div className="min-w-0 flex flex-col">
-              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-                <span className="truncate font-heading font-extrabold text-base sm:text-xl tracking-tight text-white group-hover:text-cyan-400 transition-colors">The OCG Lab</span>
-                <span className={"hidden min-[390px]:inline-flex shrink-0 text-[9px] sm:text-[10px] font-mono font-bold px-1.5 sm:px-2 py-0.5 rounded-full border " + (
-                  isOsMode 
-                    ? "bg-cyan-950/80 text-cyan-300 border-cyan-700/50" 
-                    : "bg-emerald-950/80 text-emerald-300 border-emerald-700/50"
-                )}>
-                  {isOsMode ? "LAB OS" : "STORE"}
+
+            <div className="min-w-0">
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="truncate font-heading text-[15px] font-extrabold tracking-tight text-white sm:text-xl">
+                  OCG LAB
+                </span>
+                <span className="hidden shrink-0 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-emerald-300 min-[390px]:inline-flex">
+                  {isOsMode ? "OS" : "PUBLIC"}
                 </span>
               </div>
-              <span className="hidden sm:block truncate text-xs text-slate-400 font-medium tracking-wide">BUILD | AUTOMATE | CREATE | SCALE</span>
+              <div className="mt-0.5 flex min-w-0 items-center gap-2">
+                <span className="truncate font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500 sm:text-[10px]">
+                  {isOsMode ? "Technology Command" : "Software + AI"}
+                </span>
+                <span className="hidden h-1 w-1 rounded-full bg-cyan-400 min-[420px]:block" />
+                <span className="hidden truncate text-[10px] font-semibold text-slate-400 min-[420px]:block">
+                  {currentLabel}
+                </span>
+              </div>
             </div>
           </button>
 
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1 rounded-full border border-slate-800/60">
+          <nav className="hidden items-center gap-1 rounded-2xl border border-white/8 bg-white/[0.025] p-1 lg:flex">
             {activeNavItems.map((item) => {
               const Icon = item.icon;
-              const isActive = activePage === item.id;
+              const isActive = item.id === activePage;
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActivePage(item.id)}
-                  className={"relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer " + (
-                    isActive 
-                      ? "text-white font-bold" 
-                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-                  )}
+                  onClick={() => goTo(item.id)}
+                  className={`relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition ${
+                    isActive ? "text-white" : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
+                  }`}
                 >
                   {isActive && (
                     <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 border border-cyan-500/40 rounded-full shadow-inner shadow-cyan-500/10"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      layoutId="ocg-primary-nav"
+                      className="absolute inset-0 rounded-xl border border-cyan-400/20 bg-gradient-to-r from-blue-500/14 via-cyan-400/12 to-emerald-400/14"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     />
                   )}
-                  <Icon className={"w-3.5 h-3.5 relative z-10 " + (isActive ? "text-cyan-400" : "")} />
+                  <Icon className={`relative z-10 h-3.5 w-3.5 ${isActive ? "text-cyan-300" : ""}`} />
                   <span className="relative z-10">{item.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-2 shrink-0">
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
             {isOsMode && (
               <button
-                data-cloud-sync-btn="true"
                 onClick={handleCloudSync}
-                title="Canonical cloud persistence; Founder key is session-only"
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-mono transition"
+                className="flex items-center gap-1.5 rounded-xl border border-emerald-400/20 bg-emerald-400/8 px-3 py-2 font-mono text-[10px] text-emerald-300 transition hover:bg-emerald-400/12"
               >
-                <Cloud className={"w-3.5 h-3.5 " + (isSyncing ? "animate-pulse" : "")} />
-                <span>{isSyncing ? "SYNCING..." : cloudStatus === 'OFFLINE_CACHED' ? 'OFFLINE CACHED' : cloudStatus === 'AUTH_REQUIRED' ? 'SYNC AUTH' : 'CLOUD SYNCED'}</span>
+                <Cloud className={`h-3.5 w-3.5 ${isSyncing ? "animate-pulse" : ""}`} />
+                {isSyncing ? "SYNCING" : cloudStatus === "SYNCED" ? "SYNCED" : "SYNC"}
               </button>
             )}
+
             <button
               data-aiden-btn="desktop"
               onClick={onOpenAiden}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-bold shadow-lg shadow-cyan-500/10 transition"
+              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-extrabold text-slate-950"
             >
-              <Bot className="w-4 h-4 animate-pulse" />
-              <span>AIDEN</span>
+              <Bot className="h-4 w-4" />
+              AIDEN
             </button>
 
             <button
-              onClick={() => setActivePage(isOsMode ? "storefront" : "command")}
-              className="px-3 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-[11px] font-mono border border-slate-700 transition"
+              onClick={() => goTo(isOsMode ? "storefront" : "command")}
+              className="rounded-xl border border-white/10 bg-white/[0.035] px-3 py-2 font-mono text-[10px] text-slate-300 transition hover:bg-white/[0.06]"
             >
-              {isOsMode ? "View Storefront" : "Switch to OS"}
+              {isOsMode ? "STORE" : "OS"}
             </button>
           </div>
 
-          <div className="lg:hidden flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div className="flex shrink-0 items-center gap-2 lg:hidden">
             <button
-              data-aiden-btn="mobile"
               aria-label="Open Aiden"
               onClick={onOpenAiden}
-              className="p-2 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-300/20 bg-gradient-to-br from-blue-500/14 via-cyan-400/10 to-emerald-400/12 text-cyan-200"
             >
-              <Bot className="w-5 h-5" />
+              <Bot className="h-4.5 w-4.5" />
             </button>
             <button
-              data-menu-toggle="mobile"
               aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
               aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl bg-slate-800 text-slate-300"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.045] text-slate-200"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-slate-800 py-3 sm:py-4">
-            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-2 text-xs">
-              {activeNavItems.map(item => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    data-nav-mobile={item.id}
-                    onClick={() => {
-                      setActivePage(item.id);
-                      setMobileMenuOpen(false);
-                    }}
-                    className={"flex min-w-0 items-center gap-2 p-3 rounded-xl border text-left " + (
-                      activePage === item.id ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" : "bg-slate-900 border-slate-800 text-slate-300"
-                    )}
-                  >
-                    <Icon className="w-4 h-4 shrink-0" />
-                    <span className="min-w-0 break-words">{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="mt-3 grid grid-cols-1 min-[360px]:grid-cols-2 gap-2">
+          <div className="lg:hidden pb-4">
+            <div className="rounded-[22px] border border-white/10 bg-[#07101c] p-3 shadow-2xl shadow-black/30">
+              <div className="mb-3 flex items-center justify-between px-1">
+                <div>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500">
+                    {isOsMode ? "Technology Department" : "OCG LAB"}
+                  </p>
+                  <p className="mt-1 text-sm font-bold text-white">{currentLabel}</p>
+                </div>
+                <button
+                  onClick={() => goTo(isOsMode ? "storefront" : "command")}
+                  className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-slate-300"
+                >
+                  {isOsMode ? "Public Store" : "Open OS"}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {activeNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = item.id === activePage;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => goTo(item.id)}
+                      className={`flex min-w-0 items-center gap-2 rounded-2xl border p-3 text-left text-xs font-semibold transition ${
+                        isActive
+                          ? "border-cyan-300/25 bg-gradient-to-br from-blue-500/14 to-emerald-400/10 text-white"
+                          : "border-white/8 bg-white/[0.025] text-slate-300"
+                      }`}
+                    >
+                      <Icon className={`h-4 w-4 shrink-0 ${isActive ? "text-cyan-300" : "text-slate-500"}`} />
+                      <span className="min-w-0 break-words">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
               {isOsMode && (
                 <button
                   onClick={handleCloudSync}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-3 text-xs font-mono text-emerald-300"
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-400/8 px-3 py-3 font-mono text-[10px] text-emerald-300"
                 >
-                  <Cloud className={"w-4 h-4 " + (isSyncing ? "animate-pulse" : "")} />
-                  {isSyncing ? "SYNCING..." : "CLOUD SYNC"}
+                  <Cloud className={`h-4 w-4 ${isSyncing ? "animate-pulse" : ""}`} />
+                  {isSyncing ? "SYNCING" : "SYNC CANONICAL STATE"}
                 </button>
               )}
-              <button
-                onClick={() => {
-                  setActivePage(isOsMode ? "storefront" : "command");
-                  setMobileMenuOpen(false);
-                }}
-                className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-3 text-xs font-mono text-slate-300"
-              >
-                {isOsMode ? "View Storefront" : "Switch to OS"}
-              </button>
             </div>
           </div>
         )}
