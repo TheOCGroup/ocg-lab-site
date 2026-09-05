@@ -46,8 +46,13 @@ const OS_PAGES: Page[] = [
   "releases",
 ];
 
+const ROUTES: Page[] = [...OS_PAGES, 'home', 'storefront', 'my-ocg', 'admin', 'about', 'resources', 'pricing', 'contact', 'rd'];
+const readRoute = (): Page => { const route = location.hash.slice(1) as Page; return ROUTES.includes(route) ? route : 'command'; };
+
 export function App() {
-  const [activePage, setActivePage] = useState<Page>("command");
+  const [activePage, updateActivePage] = useState<Page>(() => readRoute());
+  const setActivePage = (page: Page) => { location.hash = page; updateActivePage(page); window.scrollTo(0, 0); };
+  useEffect(() => { const sync = () => updateActivePage(readRoute()); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync); }, []);
   const [isAidenOpen, setIsAidenOpen] = useState(false);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [selectedSOP, setSelectedSOP] = useState<SOPItem | null>(null);
@@ -142,11 +147,11 @@ export function App() {
         </div>
       </main>
 
-      <Footer
+      {OS_PAGES.includes(activePage) ? <footer className="mx-auto w-full max-w-7xl border-t border-white/15 px-5 py-6 text-sm text-slate-300"><p>OCG LAB · Operating System</p><p className="mt-2">Registry records describe saved work. Runtime health requires current verification.</p><button className="mt-4 text-cyan-200" onClick={() => setActivePage("storefront")}>Open public storefront →</button></footer> : <Footer
         setActivePage={setActivePage}
         onOpenPrivacy={() => setIsPrivacyOpen(true)}
         onOpenTerms={() => setIsTermsOpen(true)}
-      />
+      />}
 
       <AidenOrchestratorModal
         isOpen={isAidenOpen}

@@ -103,8 +103,8 @@
 .glow-amber { box-shadow: 0 0 25px -5px rgba(245, 158, 11, .28); }
 
 @keyframes ocg-enter {
-  from { opacity: 0; transform: translateY(14px) scale(.992); filter: blur(3px); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  from { transform: translateY(6px); }
+  to { transform: translateY(0); }
 }
 
 @keyframes ocg-breathe {
@@ -216,3 +216,15 @@ input[type='range'] { accent-color: #22c55e; }
     transition-duration: .01ms !important;
   }
 }
+
+/* Readable surfaces are independent of animation and Android compositing. */
+:root { color-scheme: dark; }
+:focus-visible { outline: 2px solid #67e8f9; outline-offset: 4px; }
+.glass-panel, .glass-card { backdrop-filter: none; -webkit-backdrop-filter: none; background-color: #101722; }
+.text-slate-500, .text-slate-600 { color: #aebdce; }
+[class*="text-[9px]"], [class*="text-[10px]"], [class*="text-[11px]"] { font-size: .75rem; }
+header button { overflow-wrap: normal; }
+button, input, select, textarea { touch-action: manipulation; }
+.fixed.inset-0.z-50 { backdrop-filter: none; padding-top: max(.75rem, env(safe-area-inset-top)) !important; padding-bottom: max(.75rem, env(safe-area-inset-bottom)) !important; }
+.fixed.inset-0.z-50 > * { min-width: 0; max-height: calc(100dvh - 1.5rem); }
+@media (max-width: 640px) { input, textarea, select { font-size: 16px !important; } }

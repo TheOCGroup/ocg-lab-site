@@ -75,7 +75,7 @@ export const ContactPage: React.FC = () => {
         {/* Left Form (7 Cols) */}
         <div className="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6">
           {ticket ? (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 py-4">
+            <motion.div initial={{ opacity: 1, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 py-4">
               <div className="w-14 h-14 rounded-2xl bg-emerald-950 border border-emerald-800 text-emerald-400 mx-auto flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8" />
               </div>

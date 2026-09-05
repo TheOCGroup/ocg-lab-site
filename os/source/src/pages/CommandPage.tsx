@@ -57,7 +57,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
 
   const activeAgents = useMemo(() => state.agents.filter(agent => agent.status === 'ACTIVE'), [state.agents]);
   const attentionProjects = useMemo(
-    () => state.projects.filter(project => ['BLOCKED', 'QA FAILED', 'TESTING', 'BUILDING'].includes(project.status)).slice(0, 5),
+    () => state.projects.filter(project => (project.blockers.length > 0 || ['BLOCKED', 'QA FAILED', 'TESTING', 'BUILDING'].includes(project.status))).slice(0, 5),
     [state.projects]
   );
   const systemProjects = useMemo(() => state.projects.filter(project => !project.isBench).slice(0, 8), [state.projects]);
@@ -66,11 +66,11 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
   const releasedCount = state.projects.filter(project => ['PRODUCTION', 'RELEASED'].includes(project.status)).length;
 
   const flow = [
-    { label: 'REQUEST', icon: Sparkles },
+    { label: 'FOUNDER', icon: Sparkles },
     { label: 'AIDEN', icon: Bot },
-    { label: 'ASSIGN', icon: Workflow },
-    { label: 'BUILD', icon: Cpu },
-    { label: 'QA', icon: ShieldCheck },
+    { label: 'DEPARTMENT', icon: Workflow },
+    { label: 'WORK', icon: Cpu },
+    { label: 'QA / APPROVAL', icon: ShieldCheck },
     { label: 'RELEASE', icon: Zap }
   ];
 
@@ -78,8 +78,42 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
     <div className="relative max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-[-180px] h-[520px] bg-[radial-gradient(circle_at_22%_30%,rgba(37,99,235,.20),transparent_35%),radial-gradient(circle_at_72%_24%,rgba(6,182,212,.14),transparent_34%),radial-gradient(circle_at_84%_52%,rgba(16,185,129,.14),transparent_30%)] blur-2xl" />
 
+          <motion.section
+            initial={{ opacity: 1, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="rounded-[28px] border border-white/10 bg-slate-950/65 p-5 sm:p-6"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-amber-300">Needs attention</p>
+                <h2 className="mt-1 text-lg font-bold text-white">What needs your attention?</h2>
+              </div>
+              <Activity className="h-5 w-5 text-amber-300" />
+            </div>
+
+            <div className="mt-4 space-y-2.5">
+              {attentionProjects.length === 0 ? (
+                <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/[0.05] p-4 text-sm text-emerald-200">
+                  No recorded blocked, failed, testing or building projects in the current registry.
+                </div>
+              ) : attentionProjects.map(project => (
+                <button key={project.id} onClick={() => onNavigate('projects')} className="flex w-full items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.025] p-3.5 text-left transition hover:border-cyan-400/20">
+                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${['BLOCKED', 'QA FAILED'].includes(project.status) ? 'bg-rose-400/10 text-rose-300' : 'bg-cyan-400/10 text-cyan-300'}`}>
+                    {['BLOCKED', 'QA FAILED'].includes(project.status) ? <AlertTriangle className="h-4 w-4" /> : <Radio className="h-4 w-4" />}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-white">{project.name}</p>
+                    <p className="text-sm text-slate-300">{project.nextAction || project.currentPhase}</p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-slate-600" />
+                </button>
+              ))}
+            </div>
+          </motion.section>
+
       <motion.section
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
         className="relative overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/80 shadow-2xl"
@@ -90,7 +124,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
             <div className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs font-mono uppercase tracking-[0.18em] text-slate-400">
               <span className="inline-flex items-center gap-2 text-emerald-300">
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
+                  <span className="absolute inline-flex h-full w-full  rounded-full bg-emerald-400 opacity-40" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
                 </span>
                 OCG LAB TECHNOLOGY
@@ -102,11 +136,11 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
             <div className="mt-5 max-w-4xl">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Founder Command Center</p>
               <h1 className="mt-3 font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[0.98] tracking-tight text-white">
-                Run the department.
-                <span className="block bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">See what is actually moving.</span>
+                What needs your attention?
+                <span className="block bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">Direct the next outcome.</span>
               </h1>
               <p className="mt-5 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-400">
-                A single operating view for systems, agents, work in motion, QA, release readiness and founder decisions. No decorative status theater—only recorded OCG LAB state.
+                Review recorded work, resolve decisions and direct Aiden. Saved registry state does not establish live runtime health.
               </p>
             </div>
 
@@ -137,7 +171,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
                   <h2 className="mt-1 text-xl font-bold text-white">Command presence</h2>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-400/20 bg-gradient-to-br from-blue-500/15 to-emerald-400/10 text-cyan-300">
-                  <Orbit className="h-6 w-6 animate-[spin_9s_linear_infinite]" />
+                  <Orbit className="h-6 w-6 " />
                 </div>
               </div>
 
@@ -152,7 +186,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
                       <p className="text-xs text-slate-500">OCG LAB orchestration layer</p>
                     </div>
                   </div>
-                  <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-mono font-bold text-emerald-300">COMMAND READY</span>
+                  <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-mono font-bold text-emerald-300">REGISTRY ASSISTANT</span>
                 </div>
                 <button onClick={onOpenAiden} className="mt-4 flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-left text-sm text-slate-300 transition hover:border-cyan-400/30 hover:text-white">
                   <span>Tell Aiden what needs to happen next</span>
@@ -178,7 +212,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
       </motion.section>
 
       <motion.section
-        initial={{ opacity: 0, y: 14 }}
+        initial={{ opacity: 1, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.08, duration: 0.4 }}
         className="rounded-[26px] border border-white/10 bg-white/[0.025] p-4 sm:p-5"
@@ -199,7 +233,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
             return (
               <div key={step.label} className="relative">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.96 }}
+                  initial={{ opacity: 1, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.12 + index * 0.05 }}
                   className="group relative overflow-hidden rounded-2xl border border-white/8 bg-slate-950/60 p-3 sm:p-4"
@@ -217,7 +251,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
 
       <div className="grid gap-6 xl:grid-cols-[1.3fr_.7fr]">
         <motion.section
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 1, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.14, duration: 0.4 }}
           className="rounded-[28px] border border-white/10 bg-slate-950/65 p-5 sm:p-6"
@@ -226,7 +260,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
             <div>
               <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-300">System constellation</p>
               <h2 className="mt-1 text-xl font-bold text-white">Canonical systems</h2>
-              <p className="mt-1 text-xs text-slate-500">State is read from the existing OCG LAB registry.</p>
+              <p className="mt-1 text-xs text-slate-500">Saved registry records. Release labels and completion values are not live verification.</p>
             </div>
             <button onClick={() => onNavigate('projects')} className="flex items-center gap-1 text-xs font-semibold text-cyan-300 hover:text-white">
               All systems <ChevronRight className="h-4 w-4" />
@@ -240,7 +274,7 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
                 <motion.button
                   key={project.id}
                   onClick={() => onNavigate('projects')}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 1, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.18 + index * 0.04 }}
                   className="group relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.025] p-4 text-left transition hover:-translate-y-0.5 hover:border-cyan-400/25 hover:bg-cyan-400/[0.035]"
@@ -271,97 +305,23 @@ export const CommandPage: React.FC<CommandPageProps> = ({ onNavigate, onOpenAide
         </motion.section>
 
         <div className="space-y-6">
-          <motion.section
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
-            className="rounded-[28px] border border-white/10 bg-slate-950/65 p-5 sm:p-6"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-amber-300">Needs attention</p>
-                <h2 className="mt-1 text-lg font-bold text-white">Founder queue</h2>
-              </div>
-              <Activity className="h-5 w-5 text-amber-300" />
-            </div>
-
-            <div className="mt-4 space-y-2.5">
-              {attentionProjects.length === 0 ? (
-                <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/[0.05] p-4 text-sm text-emerald-200">
-                  No recorded blocked, failed, testing or building projects in the current registry.
-                </div>
-              ) : attentionProjects.map(project => (
-                <button key={project.id} onClick={() => onNavigate('projects')} className="flex w-full items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.025] p-3.5 text-left transition hover:border-cyan-400/20">
-                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${['BLOCKED', 'QA FAILED'].includes(project.status) ? 'bg-rose-400/10 text-rose-300' : 'bg-cyan-400/10 text-cyan-300'}`}>
-                    {['BLOCKED', 'QA FAILED'].includes(project.status) ? <AlertTriangle className="h-4 w-4" /> : <Radio className="h-4 w-4" />}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-white">{project.name}</p>
-                    <p className="truncate text-[11px] text-slate-500">{project.nextAction || project.currentPhase}</p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-slate-600" />
-                </button>
-              ))}
-            </div>
-          </motion.section>
-
-          {primaryObjective && (
-            <motion.section
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.26, duration: 0.4 }}
-              className="relative overflow-hidden rounded-[28px] border border-cyan-400/20 bg-gradient-to-br from-blue-500/[0.07] via-cyan-400/[0.04] to-emerald-400/[0.06] p-5 sm:p-6"
-            >
-              <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-400/10 blur-3xl" />
-              <div className="relative">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-[9px] font-mono font-bold text-cyan-200">ACTIVE OBJECTIVE</span>
-                  <span className="text-[10px] font-mono text-emerald-300">{primaryObjective.finalCommerceStatus}</span>
-                </div>
-                <h2 className="mt-4 text-lg font-bold text-white">{primaryObjective.title}</h2>
-                <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-slate-400">{primaryObjective.description}</p>
-                <button onClick={() => setSelectedObjectiveId(primaryObjective.id)} className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm font-semibold text-white transition hover:border-cyan-400/30 hover:bg-cyan-400/[0.07]">
-                  <Play className="h-4 w-4 text-emerald-300" /> Inspect work in motion
-                </button>
-              </div>
-            </motion.section>
-          )}
+          {primaryObjective && <section className="p-5 border border-white/20 rounded-2xl"><p className="text-sm text-cyan-200">CURRENT OBJECTIVE · RECORDED</p><h2 className="mt-3 text-xl font-bold">{primaryObjective.title}</h2><p className="mt-3 text-slate-300">{primaryObjective.description}</p><button className="mt-4 min-h-11 text-cyan-200" onClick={() => setSelectedObjectiveId(primaryObjective.id)}>Inspect objective and work →</button></section>}
         </div>
       </div>
-
-      <motion.section
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.4 }}
-        className="rounded-[28px] border border-white/10 bg-white/[0.02] p-5 sm:p-6"
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cyan-300">Technology workforce</p>
-            <h2 className="mt-1 text-xl font-bold text-white">Agents with recorded active state</h2>
-          </div>
-          <button onClick={() => onNavigate('agents')} className="flex items-center gap-1 text-xs font-semibold text-cyan-300 hover:text-white">
-            Open workforce <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-        <div className="mt-5 flex gap-3 overflow-x-auto pb-2">
-          {activeAgents.length ? activeAgents.slice(0, 10).map(agent => (
-            <div key={agent.id} className="min-w-[210px] rounded-2xl border border-white/8 bg-slate-950/60 p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-emerald-400/15 text-cyan-300"><Bot className="h-5 w-5" /></div>
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-white">{agent.name}</p>
-                  <p className="truncate text-[11px] text-slate-500">{agent.role}</p>
-                </div>
-              </div>
-              <p className="mt-4 line-clamp-2 text-xs leading-relaxed text-slate-400">{agent.currentTask || agent.specialty}</p>
-              <div className="mt-4 flex items-center gap-2 text-[9px] font-mono text-emerald-300"><CheckCircle2 className="h-3.5 w-3.5" /> RECORDED ACTIVE</div>
-            </div>
-          )) : (
-            <div className="rounded-2xl border border-white/8 bg-slate-950/60 p-4 text-sm text-slate-400">No agents are currently recorded as ACTIVE.</div>
-          )}
-        </div>
-      </motion.section>
+      <section className="border-t border-white/20 pt-6">
+        <p className="text-sm text-cyan-200">TECHNOLOGY DEPARTMENT</p>
+        <h2 className="mt-2 text-2xl font-bold">One department. A clear path to release.</h2>
+        <p className="mt-3 text-base text-slate-300">You set direction. Aiden coordinates workforce and systems. Work moves through independent QA and approval before release.</p>
+        <div className="mt-5 divide-y divide-white/15">{[
+          ['Engineering', 'Build and repair canonical applications.', 'engineering'],
+          ['AI / Agent Systems', 'Inspect recorded assignments and governed work.', 'operations'],
+          ['DevOps / Infrastructure', 'Review hosting and deployment dependencies.', 'engineering'],
+          ['Security', 'Inspect security evidence and release gates.', 'qa'],
+          ['Integrations', 'Review shared capabilities and dependencies.', 'engineering'],
+          ['QA', 'Inspect evidence, corrections and approvals.', 'qa'],
+          ['Product', 'Define outcomes and acceptance criteria.', 'projects']
+        ].map(([name, purpose, area]) => <details key={name} className="py-4"><summary className="cursor-pointer text-lg font-semibold">{name}</summary><p className="mt-3 text-slate-300">{purpose}</p><button onClick={() => onNavigate(area as OperatingArea)} className="mt-2 min-h-11 text-cyan-200">Open workspace →</button></details>)}</div>
+      </section>
 
       <div data-public-boundary="active" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/8 bg-slate-950/50 px-4 py-3 text-[10px] font-mono text-slate-500">
         <span>Public Surface: Request Only</span>
