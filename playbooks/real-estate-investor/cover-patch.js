@@ -1,5 +1,5 @@
 if (typeof spreads !== 'undefined' && spreads[0]) {
-  spreads[0].left = `<div class="approved-book-stage"><img class="approved-book-visual" src="/playbooks/real-estate-investor/rei-approved-book.webp?v=2" alt="Real Estate Investor AI Playbook retail book cover" /></div>`;
+  spreads[0].left = `<div class="approved-book-stage"><img class="approved-book-visual" src="https://cdn.openart.ai/openart-uploads/production/2026-09/create-image/F7tXVTCKiQ3uldEbPShJ/3bef60ba-ecab-4dd9-bb67-133ffac35ab5_1788797902694_437e596b.png" alt="Real Estate Investor AI Playbook retail book cover" /></div>`;
 }
 
 (() => {
@@ -16,9 +16,8 @@ if (typeof spreads !== 'undefined' && spreads[0]) {
     .spread:first-child .page.left{padding:0!important;overflow:hidden!important}
     .controls{width:100%!important;margin-top:10px!important}
 
-    /* FIRST PAGE: physical book should visually fill the page, not float as a small card. */
     .approved-book-stage{height:100%!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:8px 10px 10px!important;background:radial-gradient(circle at 50% 38%,#fff 0%,#f7fafc 54%,#edf4f8 100%)!important;overflow:hidden!important}
-    .approved-book-visual{display:block!important;width:auto!important;height:96%!important;max-width:97%!important;max-height:96%!important;object-fit:contain!important;filter:drop-shadow(0 20px 26px rgba(14,38,67,.22))!important;transform-origin:center center!important;animation:reiCoverSettle .5s cubic-bezier(.2,.75,.2,1) both!important}
+    .approved-book-visual{display:block!important;width:auto!important;height:96%!important;max-width:97%!important;max-height:96%!important;object-fit:contain!important;image-rendering:auto!important;filter:drop-shadow(0 20px 26px rgba(14,38,67,.22))!important;transform-origin:center center!important;animation:reiCoverSettle .5s cubic-bezier(.2,.75,.2,1) both!important}
     @keyframes reiCoverSettle{from{opacity:.75;transform:translateY(7px) scale(.985)}to{opacity:1;transform:none}}
 
     .opening{padding:4px 0!important}
