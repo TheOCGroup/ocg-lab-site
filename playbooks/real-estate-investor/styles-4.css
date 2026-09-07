@@ -1,0 +1,7 @@
+@media print{
+  .print-profile-sheet{display:block !important;margin-top:8pt !important;}
+  .print-profile-row,.print-profile-row.full{display:block !important;width:100% !important;margin:0 0 7pt 0 !important;}
+  .print-profile-row b{display:block !important;width:100% !important;font-size:8pt !important;margin-bottom:2pt !important;white-space:normal !important;}
+  .print-profile-row span{display:block !important;width:100% !important;height:12pt !important;border-bottom:1pt solid #9fb0bf !important;}
+  .print-profile-row.full span{height:18pt !important;}
+}
