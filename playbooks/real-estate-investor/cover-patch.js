@@ -1,10 +1,10 @@
 if (typeof spreads !== 'undefined' && spreads[0]) {
-  spreads[0].left = `<div class="approved-book-stage"><img class="approved-book-visual" src="/playbooks/real-estate-investor/rei-book-final.webp?v=1" alt="Real Estate Investor AI Playbook retail book cover" /></div>`;
+  spreads[0].left = `<div class="approved-book-stage"><img class="approved-book-visual" src="/playbooks/real-estate-investor/rei-approved-book.webp?v=9" alt="Real Estate Investor AI Playbook retail book cover" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><div class="cover-fallback-book" style="display:none"><div class="physical-book"><div class="book-spine"></div><div class="retail-cover"><img src="/assets/approved-logo.png" alt="OCG LAB"/><div class="series">PROFESSIONAL PLAYBOOKS</div><h1>REAL ESTATE<br/>INVESTOR <span>AI PLAYBOOK</span></h1><p>Source smarter. Underwrite harder. Protect the margin.</p><div class="cover-flow">SOURCE → ANALYZE → STRESS TEST → DECIDE → EXECUTE</div><div class="cover-signature">BUILD · AUTOMATE · CREATE · SCALE</div></div></div></div></div>`;
 }
 
 (() => {
   const style = document.createElement('style');
-  style.id = 'rei-final-polish-v8';
+  style.id = 'rei-final-polish-v9';
   style.textContent = `
     .stage{grid-template-columns:250px minmax(0,1fr)!important}
     .sidebar{padding:18px 12px!important}
@@ -18,6 +18,8 @@ if (typeof spreads !== 'undefined' && spreads[0]) {
 
     .approved-book-stage{height:100%!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:4px 6px!important;background:radial-gradient(circle at 50% 38%,#fff 0%,#f7fafc 54%,#edf4f8 100%)!important;overflow:hidden!important;box-sizing:border-box!important}
     .approved-book-visual{display:block!important;width:auto!important;height:99%!important;max-width:99%!important;max-height:99%!important;object-fit:contain!important;object-position:center center!important;image-rendering:auto!important;filter:drop-shadow(0 18px 24px rgba(14,38,67,.18))!important;transform-origin:center center!important;animation:reiCoverSettle .42s cubic-bezier(.2,.75,.2,1) both!important}
+    .cover-fallback-book{width:92%!important;max-width:430px!important;margin:auto!important}
+    .cover-fallback-book .physical-book{transform:scale(.96)!important;transform-origin:center!important}
     @keyframes reiCoverSettle{from{opacity:.75;transform:translateY(5px) scale(.99)}to{opacity:1;transform:none}}
 
     .opening{padding:4px 0!important}
@@ -31,7 +33,6 @@ if (typeof spreads !== 'undefined' && spreads[0]) {
     .spread:not(.active){transform:translateY(8px) scale(.995)!important}
     .spread.active{transform:none!important}
 
-    /* North-star reading mode: focused, wider, centered reader. */
     body.reading-mode .sidebar{display:none!important}
     body.reading-mode .stage{grid-template-columns:minmax(0,1fr)!important}
     body.reading-mode .reader{padding:16px 24px 24px!important;overflow:auto!important}
