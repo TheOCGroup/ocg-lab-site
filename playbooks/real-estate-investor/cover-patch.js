@@ -1,5 +1,5 @@
 if (typeof spreads !== 'undefined' && spreads[0]) {
-  spreads[0].left = `<div class="approved-book-stage"><img class="approved-book-visual" src="https://cdn.openart.ai/openart-uploads/production/2026-09/create-image/F7tXVTCKiQ3uldEbPShJ/3bef60ba-ecab-4dd9-bb67-133ffac35ab5_1788797902694_437e596b.png" alt="Real Estate Investor AI Playbook retail book cover" /></div>`;
+  spreads[0].left = `<div class="approved-book-stage"><img class="approved-book-visual" src="/playbooks/real-estate-investor/rei-approved-book.webp" alt="Real Estate Investor AI Playbook retail book cover" /></div>`;
 }
 
 (() => {
@@ -16,9 +16,8 @@ if (typeof spreads !== 'undefined' && spreads[0]) {
     .spread:first-child .page.left{padding:0!important;overflow:hidden!important}
     .controls{width:100%!important;margin-top:10px!important}
 
-    /* Etsy production cover: keep the complete retail-book image inside the physical page. */
-    .approved-book-stage{height:100%!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 30px!important;background:radial-gradient(circle at 50% 38%,#fff 0%,#f7fafc 54%,#edf4f8 100%)!important;overflow:hidden!important;box-sizing:border-box!important}
-    .approved-book-visual{display:block!important;width:auto!important;height:auto!important;max-width:88%!important;max-height:88%!important;object-fit:contain!important;object-position:center center!important;image-rendering:auto!important;filter:drop-shadow(0 20px 26px rgba(14,38,67,.22))!important;transform-origin:center center!important;animation:reiCoverSettle .5s cubic-bezier(.2,.75,.2,1) both!important}
+    .approved-book-stage{height:100%!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:10px 12px!important;background:radial-gradient(circle at 50% 38%,#fff 0%,#f7fafc 54%,#edf4f8 100%)!important;overflow:hidden!important;box-sizing:border-box!important}
+    .approved-book-visual{display:block!important;width:auto!important;height:96%!important;max-width:96%!important;max-height:96%!important;object-fit:contain!important;object-position:center center!important;image-rendering:auto!important;filter:drop-shadow(0 20px 26px rgba(14,38,67,.22))!important;transform-origin:center center!important;animation:reiCoverSettle .5s cubic-bezier(.2,.75,.2,1) both!important}
     @keyframes reiCoverSettle{from{opacity:.75;transform:translateY(7px) scale(.985)}to{opacity:1;transform:none}}
 
     .opening{padding:4px 0!important}
@@ -36,8 +35,8 @@ if (typeof spreads !== 'undefined' && spreads[0]) {
       .stage{grid-template-columns:220px minmax(0,1fr)!important}
       .reader{padding:12px!important}
       .book{height:min(720px,calc(100vh - 132px))!important}
-      .approved-book-stage{padding:20px 24px!important}
-      .approved-book-visual{max-width:90%!important;max-height:90%!important}
+      .approved-book-stage{padding:8px 10px!important}
+      .approved-book-visual{height:96%!important;max-width:97%!important;max-height:96%!important}
     }
 
     @media(max-width:860px){
@@ -50,8 +49,8 @@ if (typeof spreads !== 'undefined' && spreads[0]) {
       .page{min-height:calc(100vh - 150px)!important;border-radius:18px!important}
       .page.right{margin-top:10px!important}
       .spread:first-child .page.left{min-height:calc(100vh - 150px)!important;padding:0!important}
-      .approved-book-stage{min-height:calc(100vh - 150px)!important;padding:18px!important}
-      .approved-book-visual{width:auto!important;height:auto!important;max-width:92%!important;max-height:calc(100vh - 195px)!important}
+      .approved-book-stage{min-height:calc(100vh - 150px)!important;padding:8px!important}
+      .approved-book-visual{width:auto!important;height:auto!important;max-width:96%!important;max-height:calc(100vh - 170px)!important}
       .controls{position:sticky!important;bottom:8px!important;z-index:20!important;background:color-mix(in srgb,var(--paper) 88%,transparent)!important;padding:7px!important;border-radius:14px!important;backdrop-filter:blur(12px)!important}
     }
 
@@ -59,8 +58,8 @@ if (typeof spreads !== 'undefined' && spreads[0]) {
       .topbar{height:auto!important;min-height:62px!important;padding:7px 8px!important}
       .top-actions{gap:4px!important}
       .top-actions .pill-btn{font-size:10px!important;padding:7px 8px!important}
-      .approved-book-stage{min-height:500px!important;padding:14px!important}
-      .approved-book-visual{max-width:94%!important;max-height:460px!important}
+      .approved-book-stage{min-height:500px!important;padding:6px!important}
+      .approved-book-visual{max-width:98%!important;max-height:488px!important}
       .page{padding:17px 14px 42px!important;min-height:0!important}
       .spread:first-child .page.left{padding:0!important;min-height:500px!important}
       .navbtn{padding:8px 9px!important;font-size:11px!important}
