@@ -1,8 +1,8 @@
 const REI_QA = {
-  coverAsset: '/playbooks/real-estate-investor/rei-approved-book.webp',
+  coverAsset: 'approved retail-book image',
   master: 'Insurance Agent Digital Product',
   cover: 'Approved Real Estate Investor retail book',
-  firstPageFit: '96% page height with first-page padding removed',
+  firstPageFit: 'Complete book image contained inside first-page bounds with 88% desktop max fit and responsive mobile containment',
   productionRoute: '/playbooks/real-estate-investor/',
   release: 'etsy-ready',
   qa: {
