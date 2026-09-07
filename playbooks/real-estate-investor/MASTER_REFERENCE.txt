@@ -1,1 +1,6 @@
-MASTER REFERENCE: OCG LAB Insurance Agent Digital Playbook + the uploaded OCG_LAB_Insurance_Agent_Playbook_ACCESS PDF. Preserve the Insurance Agent book-reader chassis, progress/navigation pattern, assistant pattern, mobile behavior, and three-page access-collateral structure. Real Estate Investor changes are vertical-specific content, Grant identity, investor prompts, diagrams, decision framework, and cover copy only.
+MASTER: Insurance Agent Digital Product
+REI COVER: approved sharp Real Estate Investor retail-book asset
+REI COVER FILE: /playbooks/real-estate-investor/rei-book-sharp.webp
+SOURCE DIMENSIONS: 730 x 1120
+PRODUCT ROUTE: /playbooks/real-estate-investor/
+RELEASE GATE: visual QA required before approval
