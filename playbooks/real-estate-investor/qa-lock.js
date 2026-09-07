@@ -1,5 +1,6 @@
 const REI_QA = {
   coverAsset: 'approved high-resolution Real Estate Investor retail-book image',
+  coverAssetDimensions: '700 x 1074 WebP',
   master: 'Insurance Agent Digital Product',
   cover: 'Approved Real Estate Investor retail book',
   firstPageFit: 'Book fills the left-page canvas without clipping, stretching, or low-resolution enlargement',
@@ -7,11 +8,14 @@ const REI_QA = {
   productionRoute: '/playbooks/real-estate-investor/',
   release: 'pending-live-visual-qa',
   qa: {
-    route200: false,
-    coverAsset200: false,
-    readingModeVerified: false,
-    navigationVerified: false,
-    responsiveVerified: false,
+    route200: true,
+    coverAsset200: true,
+    coverResolutionVerified: true,
+    readingModeCodeVerified: true,
+    readingModeVisualVerified: false,
+    navigationCodeVerified: true,
+    responsiveCodeVerified: true,
+    responsiveVisualVerified: false,
     pdfLinkVerified: false,
     runtimeErrors: null
   }
