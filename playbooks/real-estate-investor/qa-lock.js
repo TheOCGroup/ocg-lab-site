@@ -6,6 +6,7 @@ const REI_QA = {
   firstPageFit: 'Book fills the left-page canvas without clipping, stretching, or low-resolution enlargement',
   readingMode: 'Focused centered reader with sidebar removed and expanded book canvas',
   productionRoute: '/playbooks/real-estate-investor/',
+  accessPdf: 'OCG_LAB_Real_Estate_Investor_AI_Playbook_ETSY_FINAL.pdf',
   release: 'pending-live-visual-qa',
   qa: {
     route200: true,
@@ -16,7 +17,9 @@ const REI_QA = {
     navigationCodeVerified: true,
     responsiveCodeVerified: true,
     responsiveVisualVerified: false,
-    pdfLinkVerified: false,
+    pdfRenderedVerified: true,
+    pdfLinkVerified: true,
+    pdfLinkTarget: 'https://ocg-lab-products.vercel.app/playbooks/real-estate-investor/',
     runtimeErrors: null
   }
 };
