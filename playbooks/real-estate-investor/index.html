@@ -8,8 +8,8 @@
 <link rel="icon" type="image/png" href="/os/favicon.png"/>
 <link rel="stylesheet" href="styles.css"/>
 <style>
-.cover-image{width:100%;height:100%;object-fit:cover;display:block;background:#f4f8fb}
-.cover-page{padding:0!important;overflow:hidden}.cover-page .page-no{display:none}
+.cover-image{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+.cover-page{padding:0!important;overflow:hidden;background:#fff}.cover-page .page-no{display:none}
 </style>
 </head>
 <body>
@@ -43,7 +43,11 @@
 <div class="assistant-answer" id="assistantAnswer"><div class="answer-label">Playbook specialist</div><p>I know this playbook's chapters, investor workflows, Prompt Vault and PASS / REVIEW / KILL decision framework. Ask me to explain the current lesson, find a prompt, show an example or stress-test a deal.</p></div>
 </div></div>
 <script src="logo.js"></script>
+<script src="approved-book-cover.js?v=cover-lock-1"></script>
 <script>
-(async()=>{const parts=['book-1.html','book-2.html','book-3.html','book-4.html'];try{const rs=await Promise.all(parts.map(p=>fetch(p,{cache:'no-store'})));if(rs.some(r=>!r.ok))throw new Error('book part failed');const html=(await Promise.all(rs.map(r=>r.text()))).join('');document.getElementById('book').innerHTML=html;document.querySelectorAll('[data-asset]').forEach(el=>{el.src=window.OCG_ASSETS?.[el.dataset.asset]||''});for(const src of ['app-data.js?v=etsy-launch','app-core-1.js?v=etsy-launch','app-core-2.js?v=etsy-launch','app-core-3.js?v=etsy-launch','app-core-4.js?v=etsy-launch']){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s)})}}catch(e){document.getElementById('book').innerHTML='<section class="spread active"><div class="page left"><div class="kicker">Loading error</div><h2 class="chapter-title">The playbook could not load.</h2><p>Please refresh this page. If the issue persists, contact OCG LAB support.</p></div><div class="page right"></div></section>';console.error(e)}})();
+(async()=>{const parts=['book-1.html','book-2.html','book-3.html','book-4.html'];try{const rs=await Promise.all(parts.map(p=>fetch(p,{cache:'no-store'})));if(rs.some(r=>!r.ok))throw new Error('book part failed');const html=(await Promise.all(rs.map(r=>r.text()))).join('');document.getElementById('book').innerHTML=html;
+const cover=document.querySelector('.cover-image');
+if(cover&&window.REI_APPROVED_BOOK_COVER){cover.src=window.REI_APPROVED_BOOK_COVER;cover.removeAttribute('srcset');cover.loading='eager';cover.decoding='sync';}
+document.querySelectorAll('[data-asset]').forEach(el=>{el.src=window.OCG_ASSETS?.[el.dataset.asset]||''});for(const src of ['app-data.js?v=etsy-launch','app-core-1.js?v=etsy-launch','app-core-2.js?v=etsy-launch','app-core-3.js?v=etsy-launch','app-core-4.js?v=etsy-launch']){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s)})}}catch(e){document.getElementById('book').innerHTML='<section class="spread active"><div class="page left"><div class="kicker">Loading error</div><h2 class="chapter-title">The playbook could not load.</h2><p>Please refresh this page. If the issue persists, contact OCG LAB support.</p></div><div class="page right"></div></section>';console.error(e)}})();
 </script>
 </body></html>
