@@ -1,0 +1,25 @@
+name: Deploy REI AI PRO to Netlify
+
+on:
+  push:
+    branches:
+      - netlify-rei-ai-pro-hotfix
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify product source
+        run: |
+          test -f real-estate-investor-ai-pro/index.html
+          grep -q 'Real Estate Investor AI PRO | The OCG Lab' real-estate-investor-ai-pro/index.html
+          grep -q 'PLAYBOOK + INSTALLATION' real-estate-investor-ai-pro/index.html
+
+      - name: Deploy product to Netlify
+        working-directory: real-estate-investor-ai-pro
+        run: |
+          npx -y @netlify/mcp@latest --site-id d59919b7-16e0-4a6f-a080-922c16420655 --proxy-path "https://netlify-mcp.netlify.app/proxy/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..cg7yM1CZojNmMY2Q.mMI0wuptpiI1qd_2Ku1nXiSxUSimGuOvDipbSPg42xmUA48lITbSB_prH0sV1KeTqgqTEUaQKPiA5gCGUrC5uBWuxhnH1RKuG4q7jsQhj4Rd7Is36rNW7Dpu2K2Y8zmLn-HsOjlonw-J4n8tFRoJYFrBoVNJLPAvoWGgD8mP1PSvEDHPydUjkCywU9X31ZhkGpVZieEs8AFf4gcIuJlYupsNA_ZqncMhu7_w6i1udKJVCYRH3JqPyWvGMwCYi2nXQN09cq2cWvMCMRoqOpC0WjYW7DxGliliULk22HSTgVldWDfAg91k_Fc8Q6M923oj1wWuvLmtgxLLMXxQi0Z1rxeUjmshfSm5KVOzCKLzGVnAElCoHcqNKAV74mNlCgbg2nk3hcwr.Lt6HlYqGqoRcaqbC_DVPig"
