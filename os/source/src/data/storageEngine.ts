@@ -24,6 +24,11 @@ import { CANONICAL_OBJECTIVES, CANONICAL_WORK_ORDERS, CANONICAL_AUDIT_EVENTS } f
 const STORAGE_KEY = 'ocg_lab_os_state_v2';
 const FOUNDER_SESSION_KEY = 'ocg_founder_key_session';
 const SYNC_ENDPOINT = '/api/os/sync';
+// Reliability: bound the sync fetch so the UI can never stay on SYNCING
+// indefinitely. Longer than the server-side upstream timeouts (10s/15s) so a
+// server 504 surfaces first; the AbortSignal timeout guarantees the promise
+// settles and the existing OFFLINE_CACHED fallback runs.
+const SYNC_TIMEOUT_MS = 30000;
 
 export interface OcgLabOsState {
   projects: ProjectRecord[];
@@ -651,7 +656,8 @@ export class StorageEngine {
         const push = await fetch(SYNC_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-founder-key': founderKey },
-          body: JSON.stringify(localState)
+          body: JSON.stringify(localState),
+          signal: AbortSignal.timeout(SYNC_TIMEOUT_MS)
         });
         if (!push.ok) throw new Error(`Cloud sync POST failed: HTTP ${push.status}`);
         const ack = await push.json();
@@ -660,7 +666,10 @@ export class StorageEngine {
         return { success: true, status: 'LOCAL_DOMINANT', lastSyncedAt: ack.lastSyncedAt };
       }
 
-      const pull = await fetch(SYNC_ENDPOINT, { headers: { 'x-founder-key': founderKey } });
+      const pull = await fetch(SYNC_ENDPOINT, {
+        headers: { 'x-founder-key': founderKey },
+        signal: AbortSignal.timeout(SYNC_TIMEOUT_MS)
+      });
       if (!pull.ok) {
         if (pull.status === 401) return { success: false, status: 'AUTH_REQUIRED', lastSyncedAt: localState.lastSyncedAt, error: 'Founder authentication rejected.' };
         // Authenticated and online, but no canonical cloud object exists yet.

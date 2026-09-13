@@ -5,6 +5,13 @@ import path from "path";
 const BUCKET_NAME = "ocg-pipeline-reactor-assets";
 const OBJECT_NAME = "os/canonical_state.json";
 
+// Reliability: explicit timeouts on all outbound Google API calls so a hung
+// upstream cannot hang the function (and therefore the UI) indefinitely.
+// Values are generous vs. normal Google latency (<2s) but bounded.
+const OAUTH_TIMEOUT_MS = 10000;
+const GCS_READ_TIMEOUT_MS = 10000;
+const GCS_WRITE_TIMEOUT_MS = 15000;
+
 let cachedAccessToken = null;
 let tokenExpiresAt = 0;
 
@@ -39,6 +46,7 @@ async function getGoogleAccessToken(creds) {
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
     body: new URLSearchParams({
       client_id: creds.client_id,
       client_secret: creds.client_secret,
@@ -94,7 +102,8 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
       const url = `https://storage.googleapis.com/storage/v1/b/${BUCKET_NAME}/o/${encodeURIComponent(OBJECT_NAME)}?alt=media`;
       const gcsRes = await fetch(url, {
-        headers: { "Authorization": `Bearer ${accessToken}` }
+        headers: { "Authorization": `Bearer ${accessToken}` },
+        signal: AbortSignal.timeout(GCS_READ_TIMEOUT_MS)
       });
 
       if (gcsRes.status === 404) {
@@ -139,6 +148,7 @@ export default async function handler(req, res) {
           "Authorization": `Bearer ${accessToken}`,
           "Content-Type": "application/json"
         },
+        signal: AbortSignal.timeout(GCS_WRITE_TIMEOUT_MS),
         body: JSON.stringify(cloudState)
       });
 
@@ -160,6 +170,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "METHOD_NOT_ALLOWED" });
   } catch (err) {
     console.error("[api/os/sync] Internal Error:", err);
+    // Fail closed on upstream timeout: the UI treats any non-401/404 error
+    // as OFFLINE_CACHED and leaves the SYNCING state. Auth behavior unchanged.
+    const isTimeout = err && (err.name === "TimeoutError" || /timeout/i.test(String(err.message || "")));
+    if (isTimeout) {
+      return res.status(504).json({ error: "UPSTREAM_TIMEOUT", message: "Google API request timed out: " + String(err.message || err) });
+    }
     return res.status(500).json({ error: "INTERNAL_SERVER_ERROR", message: err.message });
   }
 }
