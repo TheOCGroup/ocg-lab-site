@@ -1,0 +1,25 @@
+# OCG LAB
+
+> OCG LAB builds practical AI systems, AI agents, business automation, custom software, SaaS tools, content systems, and digital products for businesses.
+
+## Primary pages
+- Home: https://www.theocglab.com/
+- Custom AI systems and services: https://www.theocglab.com/services/
+- OCG LAB Store: https://www.theocglab.com/store/
+- AI Weekly / newsletter: https://www.theocglab.com/newsletter/
+
+## Core capabilities
+- Custom AI operating systems
+- AI agents and digital workforce systems
+- CRM and business-process automation
+- Custom web applications and SaaS products
+- AI content, media, and marketing systems
+- AI strategy, implementation, and integration
+
+## Store categories
+- AI PRO and AI SUPER PRO
+- Digital AI Playbooks
+- Real-estate and business calculators
+- Role-specific workflow tools
+
+OCG LAB focuses on practical systems built around real workflows, with governed actions and verified outcomes.
