@@ -7,6 +7,7 @@ import { AidenOrchestratorModal } from "./components/aiden/AidenOrchestratorModa
 
 import { CommandPage } from "./pages/CommandPage";
 import { TedExperiencePage } from "./pages/TedExperiencePage";
+import { UnifiedWorkspacePage } from "./pages/UnifiedWorkspacePage";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { ProjectsPage } from "./pages/ProjectsPage";
 import { OperationsPage } from "./pages/OperationsPage";
@@ -36,6 +37,7 @@ import { Toaster } from "sonner";
 
 const OS_PAGES: Page[] = [
   "ted",
+  "unified",
   "command",
   "portfolio",
   "projects",
@@ -103,7 +105,7 @@ export function App() {
         }}
       />
 
-      {activePage !== "ted" && (
+      {activePage !== "ted" && activePage !== "unified" && (
         <Navbar
           activePage={activePage}
           setActivePage={setActivePage}
@@ -118,7 +120,8 @@ export function App() {
 
       <main className="w-full min-w-0 max-w-full flex-grow overflow-x-clip">
         <div key={activePage} className="w-full min-w-0 max-w-full overflow-x-clip">
-          {activePage === "ted" && <TedExperiencePage onOpenProjects={() => setActivePage("projects")} />}
+          {activePage === "ted" && <TedExperiencePage onOpenProjects={() => setActivePage("projects")} onOpenUnified={() => setActivePage("unified")} />}
+          {activePage === "unified" && <UnifiedWorkspacePage onBack={() => setActivePage("ted")} onNavigate={setActivePage} />}
           {activePage === "command" && (
             <CommandPage onNavigate={setActivePage} onOpenAiden={() => setIsAidenOpen(true)} />
           )}
@@ -149,7 +152,7 @@ export function App() {
         </div>
       </main>
 
-      {activePage !== "ted" && (
+      {activePage !== "ted" && activePage !== "unified" && (
         <Footer
           setActivePage={setActivePage}
           onOpenPrivacy={() => setIsPrivacyOpen(true)}

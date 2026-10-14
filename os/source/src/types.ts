@@ -1,5 +1,6 @@
 export type OperatingArea = 
   | 'ted'
+  | 'unified'
   | 'command'
   | 'portfolio'
   | 'projects'

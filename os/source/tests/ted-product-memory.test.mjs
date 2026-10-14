@@ -41,7 +41,7 @@ import { PRODUCTS_DATA } from '../src/data/products.ts';
 
 test('P0: Footer is hidden on the TED founder page (App.tsx)', () => {
   const app = src('src/App.tsx');
-  assert.match(app, /activePage !== "ted" && \(\s*<Footer/, 'Footer must be conditional on non-TED pages');
+  assert.match(app, /activePage !== "ted" && activePage !== "unified" && \(\s*<Footer/, 'Footer must be conditional on non-TED pages');
 });
 
 test('P0: TED page itself has no storefront clutter', () => {

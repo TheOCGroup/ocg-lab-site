@@ -62,7 +62,7 @@ const ATTACHMENT_NOTE =
  * EXPERIENCE LAYER ONLY. Intelligence and governance stay in src/ted/ and
  * src/data/, untouched.
  */
-export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void }> = ({ onOpenProjects }) => {
+export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUnified?: () => void }> = ({ onOpenProjects, onOpenUnified }) => {
   const [conversations, setConversations] = useState<TedConversation[]>(() => loadConversations());
   const [activeId, setActiveId] = useState<string | null>(null);
   const [messages, setMessages] = useState<TedMessage[]>([]);
@@ -654,6 +654,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void }> = ({ o
             TED · Ready
           </span>
         </span>
+        {onOpenUnified && <button type="button" onClick={onOpenUnified} className="ml-auto rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800" aria-label="Open unified OCG workspace">OCG Workspace</button>}
         {onOpenProjects && <button type="button" onClick={onOpenProjects} className="ml-auto rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100" aria-label="Open Project Workbench">Project Workbench</button>}
       </header>
 
