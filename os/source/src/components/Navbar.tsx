@@ -32,9 +32,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
   const [cloudStatus, setCloudStatus] = useState<"SYNCED" | "OFFLINE_CACHED" | "AUTH_REQUIRED">("AUTH_REQUIRED");
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const isOsMode = ["command", "portfolio", "projects", "operations", "qa", "engineering", "storefronts", "knowledge", "agents", "releases"].includes(activePage);
+  const isOsMode = ["ted", "command", "portfolio", "projects", "operations", "qa", "engineering", "storefronts", "knowledge", "agents", "releases"].includes(activePage);
 
   const osNavItems: { id: Page; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+    { id: "ted", label: "TED", icon: Bot },
     { id: "command", label: "Command", icon: Activity },
     { id: "portfolio", label: "Systems", icon: Layers },
     { id: "projects", label: "Projects", icon: Target },
@@ -81,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
       <div className="h-[2px] w-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
       <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8">
         <div className="flex h-[68px] min-w-0 items-center justify-between gap-3 sm:h-20">
-          <button type="button" aria-label="Open OCG LAB command center" onClick={() => goTo("command")} className="group flex min-w-0 items-center gap-3 text-left">
+          <button type="button" aria-label="Open TED" onClick={() => goTo("ted")} className="group flex min-w-0 items-center gap-3 text-left">
             <div className="flex h-11 w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] px-2 shadow-[0_10px_34px_-18px_rgba(34,211,238,.9)] sm:h-12 sm:w-[86px]">
               <img src="/assets/approved-logo.png" alt="OCG LAB" className="max-h-9 w-auto object-contain sm:max-h-10" />
             </div>

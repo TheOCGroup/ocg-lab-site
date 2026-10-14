@@ -132,7 +132,16 @@ export default async function handler(req, res) {
         syncActor: "Genaro Ocasio (Founder)"
       };
 
-      const uploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${BUCKET_NAME}/o?uploadType=media&name=${encodeURIComponent(OBJECT_NAME)}`;
+      // Read the current generation to prevent simultaneous device writes from
+      // silently overwriting one another. A new object uses generation 0.
+      const metadataUrl = `https://storage.googleapis.com/storage/v1/b/${BUCKET_NAME}/o/${encodeURIComponent(OBJECT_NAME)}?fields=generation`;
+      const metadataRes = await fetch(metadataUrl, { headers: { "Authorization": `Bearer ${accessToken}` } });
+      if (metadataRes.status !== 404 && !metadataRes.ok) {
+        return res.status(502).json({ error: "GCS_METADATA_FAILED" });
+      }
+      const generation = metadataRes.status === 404 ? "0" : String((await metadataRes.json()).generation || "");
+      if (!/^[0-9]+$/.test(generation)) return res.status(502).json({ error: "GCS_GENERATION_INVALID" });
+      const uploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${BUCKET_NAME}/o?uploadType=media&name=${encodeURIComponent(OBJECT_NAME)}&ifGenerationMatch=${generation}`;
       const uploadRes = await fetch(uploadUrl, {
         method: "POST",
         headers: {
@@ -142,6 +151,9 @@ export default async function handler(req, res) {
         body: JSON.stringify(cloudState)
       });
 
+      if (uploadRes.status === 412) {
+        return res.status(409).json({ error: "CLOUD_GENERATION_CONFLICT", message: "Cloud state changed during upload. Refresh and retry." });
+      }
       if (!uploadRes.ok) {
         const errText = await uploadRes.text();
         return res.status(502).json({ error: "GCS_WRITE_FAILED", details: errText });

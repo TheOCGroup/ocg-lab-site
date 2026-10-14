@@ -2,6 +2,17 @@ import { ClientSolutionRecord } from '../types';
 
 export const CLIENT_SOLUTIONS_DATA: ClientSolutionRecord[] = [
   {
+    id: 'client-lotus-insight',
+    clientName: 'Lotus Insight',
+    systemName: 'Lotus Insight AI — Discovery',
+    vertical: 'Custom AI Services',
+    status: 'BUILDING',
+    deliveryDate: '',
+    accessUrl: '',
+    leadAgent: 'TED',
+    summary: 'Discovery phase. Founder reports signed agreement and $1,250 received October 11, 2026; contract and payment evidence not yet independently verified. Next: collect requirements, document scope and secure client approval.'
+  },
+  {
     id: 'client-allie',
     clientName: 'Allie Luxury Destination Weddings',
     systemName: 'Wedding & Destination Concierge AI SUPER PRO',

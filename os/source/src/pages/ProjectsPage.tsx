@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StorageEngine } from "../data/storageEngine";
+import { ProjectActionsPanel } from './ProjectActionsPanel';
 import { ProjectRecord, CanonicalStatus, ProductPipelineStage } from "../types";
 import { 
   FolderGit2, 
@@ -88,6 +89,7 @@ export const ProjectsPage: React.FC = () => {
       </div>
 
       <div className="space-y-4">
+        <ProjectActionsPanel projectId="lotus-insight" />
         {filteredProjects.map(p => (
           <div 
             key={p.id}
@@ -203,6 +205,7 @@ export const ProjectsPage: React.FC = () => {
               </div>
             </div>
 
+            <ProjectActionsPanel key={selectedProject.id} projectId={selectedProject.id} />
             <form onSubmit={handleSaveProject} className="space-y-4 pt-4 border-t border-slate-800">
               <div>
                 <label className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block mb-1">

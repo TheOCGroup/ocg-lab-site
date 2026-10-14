@@ -25,7 +25,18 @@ const STORAGE_KEY = 'ocg_lab_os_state_v2';
 const FOUNDER_SESSION_KEY = 'ocg_founder_key_session';
 const SYNC_ENDPOINT = '/api/os/sync';
 
+export interface ProjectAction {
+  id: string;
+  projectId: string;
+  title: string;
+  owner: string;
+  status: 'TODO' | 'IN_PROGRESS' | 'BLOCKED' | 'DONE';
+  dueDate?: string;
+  updatedAt: string;
+}
+
 export interface OcgLabOsState {
+  projectActions: ProjectAction[];
   projects: ProjectRecord[];
   agents: AgentRecord[];
   taskRuns: AgentTaskRun[];
@@ -46,6 +57,7 @@ export interface OcgLabOsState {
 export class StorageEngine {
   private static getDefaults(): OcgLabOsState {
     return {
+      projectActions: [],
       projects: PROJECTS_DATA,
       agents: AGENTS_DATA,
       taskRuns: INITIAL_TASK_RUNS,
@@ -99,13 +111,14 @@ export class StorageEngine {
       if (!raw) return defaults;
       const parsed = JSON.parse(raw);
       return {
+        projectActions: Array.isArray(parsed.projectActions) ? parsed.projectActions : [],
         projects: parsed.projects && parsed.projects.length ? parsed.projects : defaults.projects,
         agents: parsed.agents && parsed.agents.length ? parsed.agents : defaults.agents,
         taskRuns: parsed.taskRuns && parsed.taskRuns.length ? parsed.taskRuns : defaults.taskRuns,
         decisions: parsed.decisions && parsed.decisions.length ? parsed.decisions : defaults.decisions,
         experiments: parsed.experiments && parsed.experiments.length ? parsed.experiments : defaults.experiments,
         storefrontItems: this.reconcileStorefrontItems(parsed.storefrontItems, defaults.storefrontItems),
-        clientSolutions: parsed.clientSolutions && parsed.clientSolutions.length ? parsed.clientSolutions : defaults.clientSolutions,
+        clientSolutions: [...(parsed.clientSolutions || []), ...defaults.clientSolutions.filter(item => !(parsed.clientSolutions || []).some((saved: ClientSolutionRecord) => saved.id === item.id))],
         certifications: parsed.certifications || [],
         objectives: parsed.objectives && parsed.objectives.length ? parsed.objectives : defaults.objectives,
         workOrders: parsed.workOrders && parsed.workOrders.length ? parsed.workOrders : defaults.workOrders,
@@ -130,6 +143,33 @@ export class StorageEngine {
     } catch (e) {
       console.error('[StorageEngine] Failed to save state to localStorage:', e);
     }
+  }
+
+  public static mergeProjectActions(local: ProjectAction[] = [], cloud: ProjectAction[] = []): ProjectAction[] {
+    const byId = new Map<string, ProjectAction>();
+    for (const action of [...local, ...cloud]) {
+      if (!action?.id || !action.projectId) continue;
+      const previous = byId.get(action.id);
+      if (!previous || (Date.parse(action.updatedAt) || 0) >= (Date.parse(previous.updatedAt) || 0)) {
+        byId.set(action.id, action);
+      }
+    }
+    return [...byId.values()];
+  }
+
+  public static getProjectActions(projectId: string): ProjectAction[] {
+    return this.loadState().projectActions.filter(action => action.projectId === projectId);
+  }
+
+  public static saveProjectAction(action: ProjectAction): ProjectAction[] {
+    if (!action.id || !action.projectId || !action.title.trim() || !action.owner.trim()) {
+      throw new Error('Project action requires id, project, title and owner');
+    }
+    const state = this.loadState();
+    const existing = state.projectActions.filter(item => item.id !== action.id);
+    const actions = [...existing, { ...action, updatedAt: new Date().toISOString() }];
+    this.saveState({ projectActions: actions });
+    return actions;
   }
 
   public static updateProject(id: string, updates: Partial<ProjectRecord>): ProjectRecord[] {
@@ -653,11 +693,37 @@ export class StorageEngine {
           headers: { 'Content-Type': 'application/json', 'x-founder-key': founderKey },
           body: JSON.stringify(localState)
         });
+        if (push.status === 409) {
+          // Conditional cloud write rejected a competing change. Keep local edits
+          // and pull the new remote snapshot before attempting another upload.
+          if (forcePush) {
+            const pull = await fetch(SYNC_ENDPOINT, { headers: { 'x-founder-key': founderKey } });
+            if (!pull.ok) throw new Error(`Cloud conflict refresh failed: HTTP ${pull.status}`);
+            const envelope = await pull.json();
+            if (!envelope.state) throw new Error('Cloud conflict refresh returned no state');
+            const latest = this.loadState();
+            const remote = envelope.state as Partial<OcgLabOsState>;
+            const merged = {
+              ...latest,
+              projectActions: this.mergeProjectActions(latest.projectActions, remote.projectActions),
+              lastSyncedAt: new Date().toISOString(),
+              cloudStatus: 'OFFLINE_CACHED' as const
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            return { success: false, status: 'OFFLINE_CACHED', lastSyncedAt: merged.lastSyncedAt, error: 'Cloud changed during upload; tasks were reconciled locally. Retry synchronization.' };
+          }
+        }
         if (!push.ok) throw new Error(`Cloud sync POST failed: HTTP ${push.status}`);
         const ack = await push.json();
-        const synced = { ...localState, lastSyncedAt: ack.lastSyncedAt, cloudStatus: 'SYNCED' as const };
+        // A task may have changed locally while the network request was in flight.
+        // Never replace the browser's newest actions with the older sent snapshot.
+        const latest = this.loadState();
+        const actions = this.mergeProjectActions(localState.projectActions, latest.projectActions);
+        const changedDuringPush = (Date.parse(latest.lastSyncedAt || '') || 0) > (Date.parse(localState.lastSyncedAt || '') || 0);
+        const synced = { ...latest, projectActions: actions, lastSyncedAt: changedDuringPush ? latest.lastSyncedAt : ack.lastSyncedAt, cloudStatus: changedDuringPush ? 'OFFLINE_CACHED' as const : 'SYNCED' as const };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(synced));
-        return { success: true, status: 'LOCAL_DOMINANT', lastSyncedAt: ack.lastSyncedAt };
+        if (changedDuringPush) this.queueCloudSync();
+        return { success: !changedDuringPush, status: changedDuringPush ? 'OFFLINE_CACHED' : 'LOCAL_DOMINANT', lastSyncedAt: synced.lastSyncedAt, error: changedDuringPush ? 'Local edits arrived during sync; another upload is needed.' : undefined };
       }
 
       const pull = await fetch(SYNC_ENDPOINT, { headers: { 'x-founder-key': founderKey } });
@@ -675,19 +741,36 @@ export class StorageEngine {
       const cloudState = envelope.state as Partial<OcgLabOsState>;
       const cloudMs = Date.parse(cloudState.lastSyncedAt || '') || 0;
       const localMs = Date.parse(localState.lastSyncedAt || '') || 0;
-      if (cloudMs > localMs && cloudState.objectives) {
+      if (cloudMs > localMs) {
         const merged: OcgLabOsState = {
           ...localState,
           ...cloudState,
           storefrontItems: this.reconcileStorefrontItems(cloudState.storefrontItems, STOREFRONT_ITEMS_DATA),
+          projectActions: this.mergeProjectActions(localState.projectActions, cloudState.projectActions),
           lastSyncedAt: cloudState.lastSyncedAt,
           cloudStatus: 'SYNCED'
         } as OcgLabOsState;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        const cloudIds = JSON.stringify([...(cloudState.projectActions || [])].sort((a, b) => a.id.localeCompare(b.id)));
+        const reconciledIds = JSON.stringify([...merged.projectActions].sort((a, b) => a.id.localeCompare(b.id)));
+        if (cloudIds !== reconciledIds) {
+          // The cloud was newer overall but lacked some locally recorded actions.
+          // Persist the merged snapshot before claiming synchronization.
+          return this.syncWithCloud(true);
+        }
         return { success: true, status: 'CLOUD_DOMINANT', lastSyncedAt: cloudState.lastSyncedAt };
       }
 
       if (localMs > cloudMs) return this.syncWithCloud(true);
+      // Equal snapshot timestamps do not prove the task collections match.
+      // Merge missing actions and require an upload before reporting success.
+      const mergedActions = this.mergeProjectActions(localState.projectActions, cloudState.projectActions);
+      const localTasks = JSON.stringify([...localState.projectActions].sort((a, b) => a.id.localeCompare(b.id)));
+      const cloudTasks = JSON.stringify([...(cloudState.projectActions || [])].sort((a, b) => a.id.localeCompare(b.id)));
+      if (localTasks !== cloudTasks) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...localState, projectActions: mergedActions }));
+        return this.syncWithCloud(true);
+      }
       return { success: true, status: 'SYNCED', lastSyncedAt: localState.lastSyncedAt };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

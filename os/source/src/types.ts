@@ -1,4 +1,5 @@
 export type OperatingArea = 
+  | 'ted'
   | 'command'
   | 'portfolio'
   | 'projects'
@@ -38,7 +39,8 @@ export type DepartmentId =
   | 'data-knowledge-intelligence'
   | 'commercialization-storefronts'
   | 'client-solutions'
-  | 'technical-documentation';
+  | 'technical-documentation'
+  | 'ocg-lab-department';
 
 export interface Department {
   id: DepartmentId;

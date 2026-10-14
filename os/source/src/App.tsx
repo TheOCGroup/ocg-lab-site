@@ -6,6 +6,7 @@ import { AIConcierge } from "./components/AIConcierge";
 import { AidenOrchestratorModal } from "./components/aiden/AidenOrchestratorModal";
 
 import { CommandPage } from "./pages/CommandPage";
+import { TedExperiencePage } from "./pages/TedExperiencePage";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { ProjectsPage } from "./pages/ProjectsPage";
 import { OperationsPage } from "./pages/OperationsPage";
@@ -34,6 +35,7 @@ import {
 import { Toaster } from "sonner";
 
 const OS_PAGES: Page[] = [
+  "ted",
   "command",
   "portfolio",
   "projects",
@@ -47,7 +49,7 @@ const OS_PAGES: Page[] = [
 ];
 
 export function App() {
-  const [activePage, setActivePage] = useState<Page>("command");
+  const [activePage, setActivePage] = useState<Page>("ted");
   const [isAidenOpen, setIsAidenOpen] = useState(false);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [selectedSOP, setSelectedSOP] = useState<SOPItem | null>(null);
@@ -101,19 +103,22 @@ export function App() {
         }}
       />
 
-      <Navbar
-        activePage={activePage}
-        setActivePage={setActivePage}
-        onOpenLogin={handleOpenLogin}
-        onOpenWaitlist={handleOpenWaitlist}
-        onOpenCheckout={handleOpenCheckout}
-        onOpenAiden={() => setIsAidenOpen(true)}
-        isFocusMode={isFocusMode}
-        onToggleFocus={() => setIsFocusMode(!isFocusMode)}
-      />
+      {activePage !== "ted" && (
+        <Navbar
+          activePage={activePage}
+          setActivePage={setActivePage}
+          onOpenLogin={handleOpenLogin}
+          onOpenWaitlist={handleOpenWaitlist}
+          onOpenCheckout={handleOpenCheckout}
+          onOpenAiden={() => setIsAidenOpen(true)}
+          isFocusMode={isFocusMode}
+          onToggleFocus={() => setIsFocusMode(!isFocusMode)}
+        />
+      )}
 
       <main className="w-full min-w-0 max-w-full flex-grow overflow-x-clip">
         <div key={activePage} className="w-full min-w-0 max-w-full overflow-x-clip">
+          {activePage === "ted" && <TedExperiencePage onOpenProjects={() => setActivePage("projects")} />}
           {activePage === "command" && (
             <CommandPage onNavigate={setActivePage} onOpenAiden={() => setIsAidenOpen(true)} />
           )}
@@ -144,11 +149,13 @@ export function App() {
         </div>
       </main>
 
-      <Footer
-        setActivePage={setActivePage}
-        onOpenPrivacy={() => setIsPrivacyOpen(true)}
-        onOpenTerms={() => setIsTermsOpen(true)}
-      />
+      {activePage !== "ted" && (
+        <Footer
+          setActivePage={setActivePage}
+          onOpenPrivacy={() => setIsPrivacyOpen(true)}
+          onOpenTerms={() => setIsTermsOpen(true)}
+        />
+      )}
 
       <AidenOrchestratorModal
         isOpen={isAidenOpen}
@@ -179,3 +186,6 @@ export function App() {
 }
 
 export default App;
+
+
+
