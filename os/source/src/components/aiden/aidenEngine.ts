@@ -6,6 +6,7 @@ import { STOREFRONT_ITEMS_DATA } from '../../data/storefronts';
 import { getStorefrontVerificationDebt } from '../../data/storefrontVerification';
 import { WHOP_SELLER_QA_TARGETS } from '../../data/whopSellerQa';
 import { resolveAgentOperationsIntent } from '../../data/agentOperationsSkills';
+import { handleTedQuery } from '../../ted/tedQueryHandlers';
 import { ARCHER_FRESH_SOURCE_REQUIREMENT, ARCHER_INTELLIGENCE_WATCH } from '../../data/aiIntelligenceWatch';
 
 export interface AidenResolution {
@@ -25,6 +26,16 @@ export class AidenEngine {
   public static processQuery(rawQuery: string, context: AidenQueryContext = {}): AidenResolution {
     const q = rawQuery.toLowerCase().trim();
     const state = StorageEngine.loadState();
+    if (q.includes('lotus insight')) {
+      const client = state.clientSolutions.find(c => c.id === 'client-lotus-insight');
+      const actions = StorageEngine.getProjectActions('lotus-insight');
+      const actionsSummary = actions.length ? actions.map(a => `- [${a.status}] ${a.title} (${a.owner})`).join('\n') : 'No project actions recorded yet.';
+      return {
+        reply: client ? `**${client.clientName}** — ${client.systemName}\n\nLead agent: **${client.leadAgent}**\n\n${client.summary}\n\nProject actions:\n${actionsSummary}\n\nNext: TED should complete discovery, confirm scope and client approvals. Live milestones and accounting verification: STATUS UNAVAILABLE.` : 'Lotus Insight is not recorded in the connected OCG LAB client registry. STATUS UNAVAILABLE.',
+        category: 'STATUS',
+        evidence: 'OCG LAB StorageEngine clientSolutions registry; founder-reported discovery facts are not independently verified.'
+      };
+    }
     const agentOps = resolveAgentOperationsIntent(q, context.recentFounderQueries || []);
 
     if (agentOps) {
@@ -86,6 +97,20 @@ export class AidenEngine {
 
       const names = skillNames.map(name => `• **${name}**`).join('\n');
       return { reply: `### **Agent Operations Intent Resolved**\n\n${names}${contextLine}\n\n**Primary skill:** ${agentOps.primary.name}\n**Purpose:** ${agentOps.primary.purpose}\n**Approval policy:** ${agentOps.primary.approvalPolicy}\n\nAiden routed ordinary founder language into the existing OCG LAB operating model; no separate bot or orchestration layer was created.`, category: 'STATUS', suggestedArea: agentOps.primary.operatingArea, evidence: `Semantic resolver confidence: ${agentOps.confidence}.`, skillsUsed: skillNames };
+    }
+
+    // TED — OCG LAB Department Head (FOUNDER → AIDEN → CHIEF → TED).
+    // Resolved after Agent Operations and BEFORE generic keyword branches so
+    // TED's fail-closed commerce replies are never overridden by them.
+    const tedReply = handleTedQuery(rawQuery, context.recentFounderQueries || []);
+    if (tedReply) {
+      return {
+        reply: tedReply.reply,
+        category: 'STATUS',
+        suggestedArea: 'command',
+        evidence: tedReply.evidence,
+        skillsUsed: [`TED ${tedReply.intent}`],
+      };
     }
 
     // COMMERCE CONTROL PLANE — generalized channel/workflow commands.

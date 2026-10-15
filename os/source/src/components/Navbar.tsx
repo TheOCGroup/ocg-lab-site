@@ -32,10 +32,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
   const [cloudStatus, setCloudStatus] = useState<"SYNCED" | "OFFLINE_CACHED" | "AUTH_REQUIRED">("AUTH_REQUIRED");
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const isOsMode = ["command", "portfolio", "projects", "operations", "qa", "engineering", "storefronts", "knowledge", "agents", "releases"].includes(activePage);
+  const isOsMode = ["ted", "unified", "command", "portfolio", "projects", "operations", "qa", "engineering", "storefronts", "knowledge", "agents", "releases"].includes(activePage);
 
   const osNavItems: { id: Page; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: "command", label: "Command", icon: Activity },
+    { id: "ted", label: "TED", icon: Bot },
+    { id: "unified", label: "Workspaces", icon: Layers },
     { id: "portfolio", label: "Systems", icon: Layers },
     { id: "projects", label: "Projects", icon: Target },
     { id: "operations", label: "Workforce", icon: Bot },
@@ -52,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
   ];
 
   const activeNavItems = isOsMode ? osNavItems : publicNavItems;
-  const currentLabel = activeNavItems.find((item) => item.id === activePage)?.label ?? (isOsMode ? "Command" : "Storefront");
+  const currentLabel = activeNavItems.find((item) => item.id === activePage)?.label ?? (isOsMode ? "OCG LAB OS" : "Storefront");
 
   const goTo = (page: Page) => {
     setActivePage(page);
@@ -81,9 +82,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
       <div className="h-[2px] w-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400" />
       <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8">
         <div className="flex h-[68px] min-w-0 items-center justify-between gap-3 sm:h-20">
-          <button type="button" aria-label="Open OCG LAB command center" onClick={() => goTo("command")} className="group flex min-w-0 items-center gap-3 text-left">
+          <button type="button" aria-label="Open TED" onClick={() => goTo("ted")} className="group flex min-w-0 items-center gap-3 text-left">
             <div className="flex h-11 w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] px-2 shadow-[0_10px_34px_-18px_rgba(34,211,238,.9)] sm:h-12 sm:w-[86px]">
-              <img src="/assets/approved-logo.png" alt="OCG LAB" className="max-h-9 w-auto object-contain sm:max-h-10" />
+              <img src="/assets/approved-logo.png" alt="OCG LAB logo" className="h-full w-full object-contain" />
             </div>
             <div className="min-w-0">
               <div className="flex min-w-0 items-center gap-2">
@@ -98,12 +99,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
             </div>
           </button>
 
-          <nav className="hidden items-center gap-1 rounded-2xl border border-white/8 bg-white/[0.025] p-1 lg:flex">
+          <nav aria-label="OCG LAB sections" className="hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto rounded-2xl border border-white/8 bg-white/[0.025] p-1 2xl:flex">
             {activeNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.id === activePage;
               return (
-                <button key={item.id} onClick={() => goTo(item.id)} className={`relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition ${isActive ? "text-white" : "text-slate-400 hover:bg-white/[0.04] hover:text-white"}`}>
+                <button key={item.id} onClick={() => goTo(item.id)} className={`relative flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-xs transition ${isActive ? "text-white" : "text-slate-400 hover:bg-white/[0.04] hover:text-white"}`}>
                   {isActive && <motion.div layoutId="ocg-primary-nav" className="absolute inset-0 rounded-xl border border-cyan-400/20 bg-gradient-to-r from-blue-500/14 via-cyan-400/12 to-emerald-400/14" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
                   <Icon className={`relative z-10 h-3.5 w-3.5 ${isActive ? "text-cyan-300" : ""}`} />
                   <span className="relative z-10">{item.label}</span>
@@ -112,34 +113,34 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage, onOpe
             })}
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-2 lg:flex">
+          <div className="hidden shrink-0 items-center gap-2 2xl:flex">
             {isOsMode && (
               <button onClick={handleCloudSync} title="Founder key is session-only" className="flex items-center gap-1.5 rounded-xl border border-emerald-400/20 bg-emerald-400/8 px-3 py-2 font-mono text-[10px] text-emerald-300 transition hover:bg-emerald-400/12">
                 <Cloud className={`h-3.5 w-3.5 ${isSyncing ? "animate-pulse" : ""}`} />
                 {isSyncing ? "SYNCING" : cloudStatus === "SYNCED" ? "SYNCED" : "SYNC"}
               </button>
             )}
-            <button data-aiden-btn="desktop" onClick={onOpenAiden} className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-extrabold text-slate-950">
+            <button data-aiden-btn="desktop" onClick={onOpenAiden} className="flex items-center gap-2 whitespace-nowrap rounded-xl bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 px-4 py-2 text-xs font-extrabold text-slate-950 hover:brightness-110">
               <Bot className="h-4 w-4" />AIDEN
             </button>
-            <button onClick={() => goTo(isOsMode ? "storefront" : "command")} className="rounded-xl border border-white/10 bg-white/[0.035] px-3 py-2 font-mono text-[10px] text-slate-300 transition hover:bg-white/[0.06]">{isOsMode ? "STORE" : "OS"}</button>
+            <button onClick={() => goTo(isOsMode ? "storefront" : "unified")} className="rounded-xl border border-white/10 bg-white/[0.035] px-3 py-2 font-mono text-[10px] text-slate-300 transition hover:bg-white/[0.06]">{isOsMode ? "STORE" : "OS"}</button>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2 lg:hidden">
+          <div className="flex shrink-0 items-center gap-2 2xl:hidden">
             <button aria-label="Open Aiden" onClick={onOpenAiden} className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-300/20 bg-gradient-to-br from-blue-500/14 via-cyan-400/10 to-emerald-400/12 text-cyan-200"><Bot className="h-4.5 w-4.5" /></button>
             <button aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)} className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.045] text-slate-200">{mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden pb-4">
+          <div className="2xl:hidden pb-4">
             <div className="rounded-[22px] border border-white/10 bg-[#07101c] p-3 shadow-2xl shadow-black/30">
               <div className="mb-3 flex items-center justify-between px-1">
                 <div>
                   <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500">{isOsMode ? "Technology Department" : "OCG LAB"}</p>
                   <p className="mt-1 text-sm font-bold text-white">{currentLabel}</p>
                 </div>
-                <button onClick={() => goTo(isOsMode ? "storefront" : "command")} className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-slate-300">{isOsMode ? "Public Store" : "Open OS"}</button>
+                <button onClick={() => goTo(isOsMode ? "storefront" : "unified")} className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-slate-300">{isOsMode ? "Public Store" : "Open OS"}</button>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {activeNavItems.map((item) => {

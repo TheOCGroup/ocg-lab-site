@@ -58,7 +58,7 @@ export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenAiden }) =
                 <span>Governed technical operations</span>
               </div>
 
-              <h1 className="mt-4 max-w-4xl font-heading text-4xl font-extrabold leading-[.98] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-4 max-w-4xl font-heading text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-5xl">
                 Build. Connect. Protect. Verify.
                 <span className="block bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
                   One department. One operating truth.
@@ -124,7 +124,7 @@ export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenAiden }) =
             <Radar className="h-5 w-5 text-cyan-300" />
           </div>
 
-          <div className="flex snap-x gap-2 overflow-x-auto pb-2 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0">
+          <div className="flex snap-x gap-2 overflow-x-auto pb-2 sm:grid sm:grid-cols-4 sm:overflow-visible sm:pb-0">
             {TECHNOLOGY_FLOW.map((step, index) => (
               <motion.div
                 key={step}
