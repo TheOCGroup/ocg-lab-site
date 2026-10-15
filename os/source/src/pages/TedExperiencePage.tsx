@@ -26,6 +26,7 @@ import { syncBridgeTools } from '../tedexperience/tedTools';
 import { VoiceLatencyTracker } from '../tedexperience/voice/latency';
 import { TedBridgeOp } from '../tedexperience/tedPersona';
 import { TedProducts } from '../tedexperience/components/TedProducts';
+import { TedCommercialization } from '../tedexperience/components/TedCommercialization';
 import { TedProductDetail } from '../tedexperience/components/TedProductDetail';
 import { getProductMemory, clearMemoryOverlay } from '../tedexperience/productMemory';
 import {
@@ -84,6 +85,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
   const [bridgeStatus, setBridgeStatus] = useState<'unknown' | 'connected' | 'unavailable'>('unknown');
   // Phase 2.3 — product inventory state.
   const [productsOpen, setProductsOpen] = useState(false);
+  const [commercialOpen, setCommercialOpen] = useState(false);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
   const personaRef = useRef(persona);
   personaRef.current = persona;
@@ -654,8 +656,9 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
             TED · Ready
           </span>
         </span>
-        {onOpenUnified && <button type="button" onClick={onOpenUnified} className="ml-auto rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800" aria-label="Open unified OCG workspace">OCG Workspace</button>}
-        {onOpenProjects && <button type="button" onClick={onOpenProjects} className="ml-auto rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100" aria-label="Open Project Workbench">Project Workbench</button>}
+        <button type="button" onClick={() => { setCommercialOpen(true); setProductsOpen(false); }} className="ml-auto hidden shrink-0 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 md:inline-flex">Commercialization</button>
+        {onOpenUnified && <button type="button" onClick={onOpenUnified} className="hidden shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 md:inline-flex" aria-label="Open unified OCG workspace">OCG Workspace</button>}
+        {onOpenProjects && <button type="button" onClick={onOpenProjects} className="hidden shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 lg:inline-flex" aria-label="Open Project Workbench">Project Workbench</button>}
       </header>
 
       <div className="flex h-[calc(100dvh-3.5rem)] min-h-0">
@@ -668,7 +671,9 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
 
         {/* TED conversation or founder product inventory */}
         <main className="min-w-0 flex-1 overflow-y-auto bg-white">
-          {productsOpen ? (
+          {commercialOpen ? (
+            <TedCommercialization onBack={() => setCommercialOpen(false)} />
+          ) : productsOpen ? (
             <TedProducts
               onOpenProduct={setOpenProductId}
               onContinueWithTed={(productId) => {
@@ -731,6 +736,11 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
               }}
               onClose={() => setNavOpen(false)}
             />
+            <div className="absolute bottom-0 inset-x-0 flex flex-col gap-2 border-t border-slate-200 bg-white p-3 text-xs font-semibold shadow-lg">
+              <button onClick={() => { setCommercialOpen(true); setProductsOpen(false); setNavOpen(false); }} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-left text-emerald-900">Commercialization</button>
+              {onOpenUnified && <button onClick={() => { onOpenUnified(); setNavOpen(false); }} className="rounded-lg bg-slate-900 px-3 py-2 text-left text-white">OCG Workspace</button>}
+              {onOpenProjects && <button onClick={() => { onOpenProjects(); setNavOpen(false); }} className="rounded-lg border border-slate-200 px-3 py-2 text-left text-slate-800">Project Workbench</button>}
+            </div>
           </div>
         </div>
       )}

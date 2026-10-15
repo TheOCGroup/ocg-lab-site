@@ -5,7 +5,6 @@ import { Footer } from "./components/Footer";
 import { AIConcierge } from "./components/AIConcierge";
 import { AidenOrchestratorModal } from "./components/aiden/AidenOrchestratorModal";
 
-import { CommandPage } from "./pages/CommandPage";
 import { TedExperiencePage } from "./pages/TedExperiencePage";
 import { UnifiedWorkspacePage } from "./pages/UnifiedWorkspacePage";
 import { PortfolioPage } from "./pages/PortfolioPage";
@@ -53,6 +52,11 @@ const OS_PAGES: Page[] = [
 export function App() {
   const [activePage, setActivePage] = useState<Page>("ted");
   const [isAidenOpen, setIsAidenOpen] = useState(false);
+  const [requestedProjectId, setRequestedProjectId] = useState<string | null>(null);
+  const openProjectFromCOO = (projectId: string) => {
+    setRequestedProjectId(projectId);
+    setActivePage("projects");
+  };
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [selectedSOP, setSelectedSOP] = useState<SOPItem | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -105,7 +109,7 @@ export function App() {
         }}
       />
 
-      {activePage !== "ted" && activePage !== "unified" && (
+      {activePage !== "ted" && (
         <Navbar
           activePage={activePage}
           setActivePage={setActivePage}
@@ -122,11 +126,9 @@ export function App() {
         <div key={activePage} className="w-full min-w-0 max-w-full overflow-x-clip">
           {activePage === "ted" && <TedExperiencePage onOpenProjects={() => setActivePage("projects")} onOpenUnified={() => setActivePage("unified")} />}
           {activePage === "unified" && <UnifiedWorkspacePage onBack={() => setActivePage("ted")} onNavigate={setActivePage} />}
-          {activePage === "command" && (
-            <CommandPage onNavigate={setActivePage} onOpenAiden={() => setIsAidenOpen(true)} />
-          )}
+          {activePage === "command" && <UnifiedWorkspacePage onBack={() => setActivePage("ted")} onNavigate={setActivePage} />}
           {activePage === "portfolio" && <PortfolioPage />}
-          {activePage === "projects" && <ProjectsPage />}
+          {activePage === "projects" && <ProjectsPage initialProjectId={requestedProjectId} onSelectionHandled={() => setRequestedProjectId(null)} />}
           {(activePage === "operations" || activePage === "agents") && (
             <OperationsPage onOpenAiden={() => setIsAidenOpen(true)} />
           )}

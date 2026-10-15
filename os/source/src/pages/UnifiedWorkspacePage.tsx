@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowUpRight, Boxes, Building2, Clapperboard, ClipboardList,
 
 type Workspace = { id:string; name:string; lead:string; detail:string; status:string; href?:string; local?: 'projects'|'command'|'operations' };
 const workspaces:Workspace[] = [
- {id:'aiden',name:'MY COO',lead:'AIDEN / CHIEF',detail:'Founder command, assignments, priorities, and approvals.',status:'Existing command workspace · cross-app actions unverified',local:'command'},
+ {id:'aiden',name:'MY COO',lead:'AIDEN / CHIEF',detail:'Founder command, assignments, priorities, and approvals.',status:'Canonical MY COO is a separate Next.js application · direct connection pending verification',local:'command'},
  {id:'acquisitions',name:'ACQUISITIONS',lead:'HUNTER / VICTOR',detail:'Deal discovery, underwriting, and approval before seller handoff.',status:'Separate build passed local QA · live connection not certified'},
  {id:'pipeline',name:'SELLER OPERATIONS',lead:'PIPER / PIPELINE',detail:'Seller history, tasks, offer review, and governed follow-ups.',status:'Separate service · authenticated connection not certified'},
  {id:'media',name:'OCG MEDIA',lead:'ORION / NOVA',detail:'Renovation renderings, creative briefs, video and campaign workflows.',status:'Separate build passed local QA · connection not certified'},
@@ -24,7 +24,7 @@ export function UnifiedWorkspacePage({onBack,onNavigate}:{onBack:()=>void;onNavi
       <h2 className="text-xl font-bold">{w.name}</h2><div className="mt-1 text-xs font-semibold uppercase tracking-widest text-blue-700">{w.lead}</div>
       <p className="mt-4 flex-1 text-sm leading-6 text-slate-600">{w.detail}</p>
       <div className="my-5 rounded-lg bg-slate-50 p-3 text-xs leading-5 text-slate-600">{w.status}</div>
-      {w.local ? <button onClick={()=>onNavigate(w.local!)} className="flex items-center justify-between rounded-xl bg-slate-900 px-4 py-3 text-left text-sm font-semibold text-white hover:bg-blue-800">Open existing workspace <ArrowUpRight size={16}/></button> :
+      {w.id === 'aiden' ? <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-900">Original MY COO preserved in TheOCGroup/chatbot. Live destination not yet verified; this card does not open a substitute dashboard.</div> : w.local ? <button onClick={()=>onNavigate(w.local!)} className="flex items-center justify-between rounded-xl bg-slate-900 px-4 py-3 text-left text-sm font-semibold text-white hover:bg-blue-800">Open existing workspace <ArrowUpRight size={16}/></button> :
        <div className="rounded-xl border border-slate-200 px-4 py-3 text-xs font-medium text-slate-500">Integration pending · source application preserved</div>}
     </section>})}
    </div>

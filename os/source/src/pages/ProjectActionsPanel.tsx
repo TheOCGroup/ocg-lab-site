@@ -36,24 +36,24 @@ export const ProjectActionsPanel: React.FC<{ projectId: string }> = ({ projectId
   const updateStatus = (action: ProjectAction, status: ProjectAction['status']) => {
     StorageEngine.saveProjectAction({ ...action, status }); refresh();
   };
-  return <section className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
-    <h3 className="text-sm text-white font-semibold">Project Actions <span className="text-slate-400">({actions.length})</span></h3>
-    <p className="text-xs text-amber-300">Saved in this browser. Cloud sync requires founder authentication.</p>
+  return <section className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+    <h3 className="text-sm text-slate-900 font-semibold">Project Actions <span className="text-slate-400">({actions.length})</span></h3>
+    <p className="text-xs text-amber-800">Saved in this browser. Cloud sync requires founder authentication.</p>
     <div className="flex flex-wrap items-center gap-3">
-      <button type="button" disabled={syncing} onClick={sync} className="text-xs rounded-lg border border-cyan-700 px-3 py-2 text-cyan-200 disabled:opacity-50">{syncing ? 'Checking cloud...' : 'Check cloud sync'}</button>
-      <span role="status" className="text-xs text-slate-300">{syncResult}</span>
+      <button type="button" disabled={syncing} onClick={sync} className="text-xs rounded-lg border border-blue-300 bg-white px-3 py-2 text-blue-800 disabled:opacity-50">{syncing ? 'Checking cloud...' : 'Check cloud sync'}</button>
+      <span role="status" className="text-xs text-slate-600">{syncResult}</span>
     </div>
     <form onSubmit={add} className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-      <input aria-label="Task title" required value={title} onChange={e => setTitle(e.target.value)} placeholder="Next action" className="sm:col-span-2 bg-slate-900 text-white border border-slate-700 rounded-lg p-2 text-xs" />
-      <input aria-label="Task owner" required value={owner} onChange={e => setOwner(e.target.value)} placeholder="Owner" className="bg-slate-900 text-white border border-slate-700 rounded-lg p-2 text-xs" />
-      <input aria-label="Task due date" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="bg-slate-900 text-white border border-slate-700 rounded-lg p-2 text-xs" />
+      <input aria-label="Task title" required value={title} onChange={e => setTitle(e.target.value)} placeholder="Next action" className="sm:col-span-2 bg-white text-slate-900 border border-slate-300 rounded-lg p-2 text-xs" />
+      <input aria-label="Task owner" required value={owner} onChange={e => setOwner(e.target.value)} placeholder="Owner" className="bg-white text-slate-900 border border-slate-300 rounded-lg p-2 text-xs" />
+      <input aria-label="Task due date" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="bg-white text-slate-900 border border-slate-300 rounded-lg p-2 text-xs" />
       <button type="submit" className="sm:col-span-4 bg-cyan-700 text-white rounded-lg p-2 text-xs font-semibold">Add task</button>
     </form>
     <div className="space-y-2" aria-live="polite">
       {actions.length === 0 && <p className="text-xs text-slate-400">No tasks recorded for this project.</p>}
-      {actions.map(action => <div key={action.id} className="flex items-center justify-between gap-3 border border-slate-800 rounded-lg p-3">
-        <div className="min-w-0"><p className="text-sm text-white break-words">{action.title}</p><p className="text-xs text-slate-400">{action.owner}{action.dueDate ? ' · Due ' + action.dueDate : ''}</p></div>
-        <select aria-label={'Status for ' + action.title} value={action.status} onChange={e => updateStatus(action, e.target.value as ProjectAction['status'])} className="bg-slate-900 text-white rounded-lg p-2 text-xs">
+      {actions.map(action => <div key={action.id} className="flex items-center justify-between gap-3 border border-slate-200 bg-white rounded-lg p-3">
+        <div className="min-w-0"><p className="text-sm text-slate-900 break-words">{action.title}</p><p className="text-xs text-slate-400">{action.owner}{action.dueDate ? ' · Due ' + action.dueDate : ''}</p></div>
+        <select aria-label={'Status for ' + action.title} value={action.status} onChange={e => updateStatus(action, e.target.value as ProjectAction['status'])} className="bg-white border border-slate-300 text-slate-900 rounded-lg p-2 text-xs">
           <option value="TODO">To do</option><option value="IN_PROGRESS">In progress</option><option value="BLOCKED">Blocked</option><option value="DONE">Done</option>
         </select>
       </div>)}
