@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { TedNav } from '../tedexperience/components/TedNav';
+import { TedVoicePicker } from '../tedexperience/components/TedVoicePicker';
 import { TedChat, TedAttachment, TedMessage, TedVoiceUiState } from '../tedexperience/components/TedChat';
 import { TedArtifactPanel, TedArtifact } from '../tedexperience/components/TedArtifactPanel';
 import {
@@ -656,7 +657,8 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
             TED · Ready
           </span>
         </span>
-        <button type="button" onClick={() => { setCommercialOpen(true); setProductsOpen(false); }} className="ml-auto hidden shrink-0 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 md:inline-flex">Commercialization</button>
+        <div className="ml-auto"><TedVoicePicker /></div>
+        <button type="button" onClick={() => { setCommercialOpen(true); setProductsOpen(false); }} className="hidden shrink-0 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 md:inline-flex">Commercialization</button>
         {onOpenUnified && <button type="button" onClick={onOpenUnified} className="hidden shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 md:inline-flex" aria-label="Open unified OCG workspace">OCG Workspace</button>}
         {onOpenProjects && <button type="button" onClick={onOpenProjects} className="hidden shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 lg:inline-flex" aria-label="Open Project Workbench">Project Workbench</button>}
       </header>
