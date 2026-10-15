@@ -19,7 +19,7 @@ import {
 import { TECHNOLOGY_AGENTS, TECHNOLOGY_FLOW } from '../data/technologyAgents';
 
 interface OperationsPageProps {
-  onOpenAiden?: () => void;
+  onOpenTed?: () => void;
 }
 
 const iconForLayer = (layer: string) => {
@@ -39,7 +39,7 @@ const stateTone = (readiness: 'RUNTIME_ACTIVE' | 'ROLE_READY') =>
     ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200'
     : 'border-cyan-400/25 bg-cyan-400/8 text-cyan-200';
 
-export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenAiden }) => {
+export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenTed }) => {
   const activeCount = TECHNOLOGY_AGENTS.filter(agent => agent.readiness === 'RUNTIME_ACTIVE').length;
   const roleReadyCount = TECHNOLOGY_AGENTS.filter(agent => agent.readiness === 'ROLE_READY').length;
 
@@ -66,23 +66,23 @@ export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenAiden }) =
               </h1>
 
               <p className="mt-5 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
-                Aiden directs a governed set of technical specialist roles across software, integrations, tooling, infrastructure, data, security, QA and product experience. No duplicate public personas. No fake activity. No system is called operational until its full runtime path is verified.
+                TED coordinates a governed set of technical specialist roles across software, integrations, tooling, infrastructure, data, security, QA and product experience. No duplicate public personas. No fake activity. No system is called operational until its full runtime path is verified.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <button
-                  onClick={onOpenAiden}
+                  onClick={onOpenTed}
                   className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 px-5 py-3.5 text-sm font-bold text-slate-950 shadow-[0_12px_40px_rgba(6,182,212,.18)] transition hover:scale-[1.01]"
                 >
-                  <Bot className="h-4 w-4" /> Command Aiden <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <Bot className="h-4 w-4" /> Talk to TED <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </button>
                 <a
-                  href="https://chatbot-seven-tau-23.vercel.app/workforce"
+                  href="https://ocg-lab-os.netlify.app/os/"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm font-semibold text-white transition hover:border-cyan-400/30 hover:bg-cyan-400/[0.06]"
                 >
-                  Open Workforce <ChevronRight className="h-4 w-4" />
+                  OCG LAB Home <ChevronRight className="h-4 w-4" />
                 </a>
               </div>
             </div>
@@ -106,7 +106,7 @@ export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenAiden }) =
                   <div>
                     <p className="text-xs font-semibold text-white">Truth boundary</p>
                     <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                      Specialist roles remain STANDBY until a real Aiden/Workforce execution is bound to them. The OS will not manufacture “working” indicators.
+                      Specialist roles remain STANDBY until a real TED/LAB execution is bound to them. The OS will not manufacture “working” indicators.
                     </p>
                   </div>
                 </div>
@@ -150,7 +150,7 @@ export const OperationsPage: React.FC<OperationsPageProps> = ({ onOpenAiden }) =
               <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-300">Technical workforce</p>
               <h2 className="mt-1 text-2xl font-bold text-white">All technology agent roles</h2>
               <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-400">
-                These are governed execution roles behind Aiden. They are deliberately descriptive instead of inventing another layer of characters.
+                These are governed execution roles within TED-led LAB operations. They are deliberately descriptive instead of inventing another layer of characters.
               </p>
             </div>
             <div className="inline-flex items-center gap-2 text-xs text-slate-400">
