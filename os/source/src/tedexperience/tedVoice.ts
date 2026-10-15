@@ -376,7 +376,14 @@ export class TedVoiceController {
     const clean = stripMarkdownForSpeech(text);
     if (!clean.trim()) return;
     const utterance = new Utterance(clean);
-    const voice = selectVoice(synthesis.getVoices());
+    const voices = synthesis.getVoices();
+    // Prefer a US English executive male voice where the browser provides one.
+    // A saved exact voice name takes priority and survives subsequent sessions.
+    let preferredName = '';
+    try { preferredName = localStorage.getItem('ted-preferred-voice') ?? ''; } catch { /* storage unavailable */ }
+    const preferred = preferredName ? voices.find((v) => v.name === preferredName && v.lang.toLowerCase().startsWith('en')) : null;
+    const executive = voices.find((v) => v.lang.toLowerCase() === 'en-us' && /^(Microsoft (Guy|David)|Google US English Male)/i.test(v.name));
+    const voice = preferred ?? executive ?? selectVoice(voices);
     if (voice) utterance.voice = voice;
     utterance.rate = 1;
     utterance.pitch = 1;
