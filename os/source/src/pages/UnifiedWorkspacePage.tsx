@@ -1,4 +1,5 @@
 import React from 'react';
+import { InteractivePlanningStudio } from '../components/InteractivePlanningStudio';
 import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, Boxes, ClipboardList, FlaskConical, ShieldCheck, Wrench } from 'lucide-react';
 
 type Destination = 'ted'|'projects'|'engineering'|'storefronts'|'operations'|'qa';
@@ -24,7 +25,7 @@ export function UnifiedWorkspacePage({onBack,onNavigate}:{onBack:()=>void;onNavi
      <button onClick={()=>onNavigate(area.destination)} className="flex items-center justify-between rounded-xl bg-slate-900 px-4 py-3 text-left text-sm font-semibold text-white hover:bg-blue-800">Open workspace <ArrowUpRight size={16}/></button>
     </section>})}
    </div>
-   <p className="mt-8 text-xs leading-6 text-slate-500">Workspaces show the information their connected data supports. Unavailable integrations and unverified activity must not be presented as live.</p>
+   <div className="mt-9"><InteractivePlanningStudio /></div>`n   <p className="mt-8 text-xs leading-6 text-slate-500">Workspaces show the information their connected data supports. Unavailable integrations and unverified activity must not be presented as live.</p>
   </div>
  </div>;
 }
