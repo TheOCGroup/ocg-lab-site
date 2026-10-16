@@ -111,6 +111,11 @@ export class WebSpeechVoiceProvider implements VoiceProvider {
         'Voice input needs a browser with speech recognition (Chrome or Edge on desktop work best).',
       );
     }
+    if (!support.synthesis) {
+      this.connectFailed = true;
+      throw new Error('This browser cannot speak TED responses aloud. Text chat is still available.');
+    }
+    this.connectFailed = false;
     // Pre-warm synthesis voices: the first getVoices() call can be slow or
     // empty; warming here cuts first-speech startup latency.
     try {
