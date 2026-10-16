@@ -17,6 +17,8 @@ export const TedVoicePicker: React.FC = () => {
     setChosen(name);
     try { if (name) localStorage.setItem(KEY, name); else localStorage.removeItem(KEY); } catch { /* storage disabled */ }
   };
+  const thomas = voices.find(v => v.lang.toLowerCase().startsWith('en-gb') && /microsoft.*thomas/i.test(v.name));
+  const selectedVoice = chosen ? voices.find(v => v.name === chosen) : thomas;
   const preview = () => {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
@@ -38,6 +40,7 @@ export const TedVoicePicker: React.FC = () => {
         <option value="">Automatic (Microsoft Thomas UK when available)</option>
         {voices.map(v => <option key={v.voiceURI} value={v.name}>{v.name} ({v.lang})</option>)}
       </select>
+      <p className="mt-2 text-xs text-slate-600" role="status">{selectedVoice ? `Selected voice: ${selectedVoice.name} (${selectedVoice.lang})` : chosen ? 'Saved voice unavailable in this browser; TED will use an available fallback.' : 'Microsoft Thomas UK is not available in this browser; TED will use an available fallback.'}</p>
       <div className="mt-3 flex gap-2">
         <button type="button" onClick={preview} disabled={!voices.length} className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">Preview voice</button>
         <button type="button" onClick={() => window.speechSynthesis?.cancel()} className="rounded-lg border border-slate-300 px-3 py-2 text-xs">Stop preview</button>
