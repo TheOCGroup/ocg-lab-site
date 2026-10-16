@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { selectVoice } from '../tedVoice';
 const KEY = 'ted-preferred-voice';
 const PREVIEW = 'Hello. I am Ted, your OCG LAB technology lead. What would you like to work on today?';
 export const TedVoicePicker: React.FC = () => {
@@ -20,8 +21,10 @@ export const TedVoicePicker: React.FC = () => {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(PREVIEW);
-    const voice = voices.find(v => v.name === chosen);
-    if (voice) utterance.voice = voice;
+    const voice = voices.find(v => v.name === chosen)
+      ?? voices.find(v => v.lang.toLowerCase().startsWith('en-gb') && /microsoft.*thomas/i.test(v.name))
+      ?? selectVoice(voices);
+    if (voice) utterance.voice = voice as SpeechSynthesisVoice;
     utterance.rate = 1;
     window.speechSynthesis.speak(utterance);
   };
@@ -32,7 +35,7 @@ export const TedVoicePicker: React.FC = () => {
       <p className="mb-3 text-xs text-slate-600">Choose and preview a voice installed in this browser. Premium neural speech is not connected.</p>
       <label htmlFor="ted-voice-select" className="mb-1 block text-xs font-medium">Speaking voice</label>
       <select id="ted-voice-select" value={chosen} onChange={e => save(e.target.value)} className="w-full rounded-lg border border-slate-300 bg-white p-2 text-sm">
-        <option value="">Automatic executive voice</option>
+        <option value="">Automatic (Microsoft Thomas UK when available)</option>
         {voices.map(v => <option key={v.voiceURI} value={v.name}>{v.name} ({v.lang})</option>)}
       </select>
       <div className="mt-3 flex gap-2">
