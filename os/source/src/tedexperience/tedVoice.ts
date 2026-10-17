@@ -376,7 +376,10 @@ export class TedVoiceController {
     const clean = stripMarkdownForSpeech(text);
     if (!clean.trim()) return;
     const utterance = new Utterance(clean);
-    const voices = synthesis.getVoices();
+    // Some browser speech engines throw while their voice inventory is loading.
+    // The browser's default voice can still speak even without a voice list.
+    let voices: TedVoiceLike[] = [];
+    try { voices = synthesis.getVoices(); } catch { /* use default voice */ }
     // Prefer a US English executive male voice where the browser provides one.
     // A saved exact voice name takes priority and survives subsequent sessions.
     let preferredName = '';
