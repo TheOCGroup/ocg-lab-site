@@ -23,3 +23,14 @@ test('fails closed if federation is rejected', async () => {
 test('fails closed without identity configuration', async () => {
   await assert.rejects(invokePrivateGateway({ ...config, assertion: '' }), /CALLER_CONFIG_MISSING/);
 });
+
+test('fails closed if ID-token minting fails', async () => {
+  let calls = 0;
+  await assert.rejects(invokePrivateGateway({ ...config, fetcher: async () => ++calls === 1 ? { ok: true, json: async () => ({ access_token: 'synthetic-sts' }) } : { ok: false } }), /IDENTITY_MINT_FAILED/);
+  assert.equal(calls, 2);
+});
+test('fails closed if minted token is absent', async () => {
+  let calls = 0;
+  await assert.rejects(invokePrivateGateway({ ...config, fetcher: async () => ++calls === 1 ? { ok: true, json: async () => ({ access_token: 'synthetic-sts' }) } : { ok: true, json: async () => ({}) } }), /IDENTITY_MINT_FAILED/);
+  assert.equal(calls, 2);
+});
