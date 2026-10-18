@@ -63,3 +63,11 @@ jobs:
         run: node scripts/check-production-parity.mjs
       - name: Scan checked-in production bundle
         run: node scripts/scan-production-bundle.mjs ..
+      - name: Verify staging-only build disables cloud writes
+        if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'cloudflare-staging-only')
+        env:
+          VITE_CLOUD_SYNC_READ_ONLY: 'true'
+        run: |
+          npm run build
+          node scripts/scan-production-bundle.mjs dist
+          node -e "const fs=require('node:fs');const p=fs.readdirSync('dist/assets').find(x=>/^index-.*\.js$/.test(x));if(!p||!fs.readFileSync('dist/assets/'+p,'utf8').includes('Cloud writes disabled in this preview.'))process.exit(1);"
