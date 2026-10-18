@@ -756,6 +756,7 @@ export class StorageEngine {
         const cloudIds = JSON.stringify([...(cloudState.projectActions || [])].sort((a, b) => a.id.localeCompare(b.id)));
         const reconciledIds = JSON.stringify([...merged.projectActions].sort((a, b) => a.id.localeCompare(b.id)));
         if (cloudIds !== reconciledIds) {
+            if (CLOUD_SYNC_READ_ONLY) return { success: false, status: 'OFFLINE_CACHED', error: 'Read-only preview: merged local actions are not uploaded.', lastSyncedAt: merged.lastSyncedAt };
           // The cloud was newer overall but lacked some locally recorded actions.
           // Persist the merged snapshot before claiming synchronization.
           return this.syncWithCloud(true);
@@ -773,7 +774,7 @@ export class StorageEngine {
       const cloudTasks = JSON.stringify([...(cloudState.projectActions || [])].sort((a, b) => a.id.localeCompare(b.id)));
       if (localTasks !== cloudTasks) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...localState, projectActions: mergedActions }));
-        return this.syncWithCloud(true);
+        return CLOUD_SYNC_READ_ONLY ? { success: false, status: 'OFFLINE_CACHED', error: 'Read-only preview: merged local actions are not uploaded.', lastSyncedAt: localState.lastSyncedAt } : this.syncWithCloud(true);
       }
       return { success: true, status: 'SYNCED', lastSyncedAt: localState.lastSyncedAt };
     } catch (error) {
