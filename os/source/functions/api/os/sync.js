@@ -8,7 +8,14 @@ const hex = (value) => {
   return Uint8Array.from(value.match(/../g), part => parseInt(part, 16));
 };
 async function decryptCredential(key, encrypted) {
-  const envelope = JSON.parse(encrypted);
+  let envelope;
+  try { envelope = JSON.parse(encrypted); }
+  catch {
+    // Legacy Netlify envelope uses unquoted field names and bare hexadecimal values.
+    const match = /^\s*\{\s*iv:([0-9a-f]+),\s*authTag:([0-9a-f]+),\s*encryptedData:([0-9a-f]+)\s*\}\s*$/i.exec(encrypted);
+    if (!match) throw Error('INVALID_ENCRYPTED_CREDENTIALS');
+    envelope = { iv: match[1], authTag: match[2], encryptedData: match[3] };
+  }
   const secret = await crypto.subtle.importKey('raw', hex(key), 'AES-GCM', false, ['decrypt']);
   const ciphertext = hex(envelope.encryptedData);
   const tag = hex(envelope.authTag);
