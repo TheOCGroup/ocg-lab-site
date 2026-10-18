@@ -68,3 +68,20 @@ test('Cloudflare staging decrypts credential and reads GCS without writing', asy
     globalThis.fetch = originalFetch;
   }
 });
+
+test('Cloudflare staging responses are never cacheable', async () => {
+  for (const [method, headers, env] of [
+    ['GET', {}, {}],
+    ['GET', { 'x-founder-key': 'a'.repeat(64) }, {}],
+    ['POST', { 'x-founder-key': 'a'.repeat(64) }, {}],
+    ['GET', { origin: 'https://attacker.example' }, {}],
+  ]) {
+    const response = await invoke(method, headers, env);
+    assert.match(response.headers.get('cache-control') || '', /no-store/i);
+  }
+});
+
+test('Cloudflare staging rejects cross-origin preflight', async () => {
+  const response = await invoke('OPTIONS', { origin: 'https://attacker.example' });
+  assert.equal(response.status, 403);
+});
