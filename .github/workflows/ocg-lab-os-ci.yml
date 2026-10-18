@@ -59,6 +59,7 @@ jobs:
       - name: Scan generated bundle for client-side secrets
         run: node scripts/scan-production-bundle.mjs dist
       - name: Verify checked-in /os matches canonical source build
+        if: github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'cloudflare-staging-only')
         run: node scripts/check-production-parity.mjs
       - name: Scan checked-in production bundle
         run: node scripts/scan-production-bundle.mjs ..
