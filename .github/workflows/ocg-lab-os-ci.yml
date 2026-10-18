@@ -9,6 +9,7 @@ on:
       - 'os/favicon.*'
       - 'api/os/sync.js'
       - 'tests/cloudflare-staging-sync.test.mjs'
+      - 'services/ocg-os-read-gateway/**'
       - '.github/workflows/ocg-lab-os-ci.yml'
       - '.github/workflows/ocg-lab-os-promote.yml'
   push:
@@ -20,6 +21,7 @@ on:
       - 'os/assets/**'
       - 'os/favicon.*'
       - 'api/os/sync.js'
+      - 'services/ocg-os-read-gateway/**'
       - '.github/workflows/ocg-lab-os-ci.yml'
       - '.github/workflows/ocg-lab-os-promote.yml'
 
@@ -48,6 +50,8 @@ jobs:
         run: npm test
       - name: Cloudflare staging API safety tests
         run: node --test ../../tests/cloudflare-staging-sync.test.mjs
+      - name: Cloud Run read gateway safety tests
+        run: node --test ../../services/ocg-os-read-gateway/server.test.mjs
       - name: Typecheck
         run: npm run lint
       - name: Build
