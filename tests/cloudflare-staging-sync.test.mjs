@@ -55,13 +55,15 @@ test('Cloudflare staging decrypts credential and reads GCS without writing', asy
     return Response.json({ version: '3.0.0', lastSyncedAt: '2026-10-18T00:00:00Z' });
   };
   try {
-    const response = await invoke('GET', { 'x-founder-key': founderKey }, { OCG_GCS_ADC_ENCRYPTED_JSON: envelope });
+    for (const encoded of [envelope, '{iv:' + Buffer.from(iv).toString('hex') + ',authTag:' + Buffer.from(encrypted.slice(-16)).toString('hex') + ',encryptedData:' + Buffer.from(encrypted.slice(0, -16)).toString('hex') + '}']) {
+    const response = await invoke('GET', { 'x-founder-key': founderKey }, { OCG_GCS_ADC_ENCRYPTED_JSON: encoded });
     assert.equal(response.status, 200);
     const body = await response.json();
     assert.equal(body.ok, true);
     assert.equal(body.version, '3.0.0');
-    assert.deepEqual(calls.map(c => c.method), ['POST', 'GET']);
+    assert.deepEqual(calls.map(c => c.method).slice(-2), ['POST', 'GET']);
     assert.equal(calls.filter(c => c.url.includes('storage.googleapis.com') && c.method !== 'GET').length, 0);
+    }
   } finally {
     globalThis.fetch = originalFetch;
   }
