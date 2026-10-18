@@ -51,7 +51,7 @@ jobs:
       - name: Cloudflare staging API safety tests
         run: node --test ../../tests/cloudflare-staging-sync.test.mjs
       - name: Cloud Run read gateway safety tests
-        run: node --test ../../services/ocg-os-read-gateway/server.test.mjs
+        run: node --test ../../services/ocg-os-read-gateway/*.test.mjs
       - name: Typecheck
         run: npm run lint
       - name: Build
