@@ -1,0 +1,39 @@
+name: OCG LAB OS Firebase Deployment Readiness
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  firebase-readiness:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: os/source
+    steps:
+      - name: Checkout selected ref
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: os/source/package-lock.json
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check API route before any deployment
+        run: node scripts/check-firebase-deploy-readiness.mjs
+      - name: Run unit tests
+        run: npm test
+      - name: Typecheck
+        run: npm run lint
+      - name: Build read-only staging frontend
+        env:
+          VITE_CLOUD_SYNC_READ_ONLY: 'true'
+        run: npm run build
+      - name: Scan staging bundle for secrets
+        run: node scripts/scan-production-bundle.mjs dist
+      - name: Readiness review only
+        run: echo 'Checks passed. This workflow does not deploy or change production.'
