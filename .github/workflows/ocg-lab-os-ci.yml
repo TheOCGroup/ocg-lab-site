@@ -8,6 +8,7 @@ on:
       - 'os/assets/**'
       - 'os/favicon.*'
       - 'api/os/sync.js'
+      - 'tests/cloudflare-staging-sync.test.mjs'
       - '.github/workflows/ocg-lab-os-ci.yml'
       - '.github/workflows/ocg-lab-os-promote.yml'
   push:
@@ -45,6 +46,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Test
         run: npm test
+      - name: Cloudflare staging API safety tests
+        run: node --test ../../tests/cloudflare-staging-sync.test.mjs
       - name: Typecheck
         run: npm run lint
       - name: Build
