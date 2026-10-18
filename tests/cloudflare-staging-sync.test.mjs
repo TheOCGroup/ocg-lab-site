@@ -85,3 +85,22 @@ test('Cloudflare staging rejects cross-origin preflight', async () => {
   const response = await invoke('OPTIONS', { origin: 'https://attacker.example' });
   assert.equal(response.status, 403);
 });
+
+test('Cloudflare staging allows same-origin preflight without caching', async () => {
+  const response = await invoke('OPTIONS', { origin: 'https://preview.example' });
+  assert.equal(response.status, 204);
+  assert.match(response.headers.get('cache-control') || '', /no-store/i);
+});
+
+test('Cloudflare staging rejects writes before invoking upstream services', async () => {
+  const originalFetch = globalThis.fetch;
+  let upstreamCalls = 0;
+  globalThis.fetch = async () => { upstreamCalls++; throw Error('Unexpected upstream request'); };
+  try {
+    const response = await invoke('POST', { 'x-founder-key': 'a'.repeat(64) }, { OCG_GCS_ADC_ENCRYPTED_JSON: 'test' });
+    assert.equal(response.status, 403);
+    assert.equal(upstreamCalls, 0);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
