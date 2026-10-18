@@ -7,7 +7,7 @@ A minimal Google Cloud Run service that uses its attached service identity to GE
 - Source and unit tests exist. Not deployed.
 - Do not reuse the broad-privilege `sa-reactor` identity.
 - Require authenticated Cloud Run invocation (do **not** grant `allUsers` invoker).
-- Cloudflare-to-Cloud Run caller authentication is **not yet designed or implemented**. Do not deploy as a publicly accessible shortcut.
+- A federated caller **prototype** is implemented and unit-tested, but there is no verified Cloudflare-issued OIDC assertion, dedicated Google provider, or deployed caller. Do not deploy as a publicly accessible shortcut.
 
 ## IAM deployment requirements
 
@@ -20,8 +20,12 @@ A minimal Google Cloud Run service that uses its attached service identity to GE
 
 ## Local test
 
-`node --test services/ocg-os-read-gateway/server.test.mjs`
+`node --test services/ocg-os-read-gateway/*.test.mjs`
 
 ## Rollout gate
 
 Do not alter production DNS, deploy this gateway, or merge the Cloudflare PR until caller identity, IAM least privilege, and live authenticated reads have been reviewed and verified.
+
+## Identity federation blocker
+
+The caller prototype assumes a cryptographically verifiable OIDC JWT issued to the Cloudflare workload, accepted by a dedicated Google Workload Identity Federation provider. Cloudflare Pages deployment does not by itself establish such an issuer, audience, or JWT. **Do not substitute an arbitrary Cloudflare Access user JWT** without verifying that the token identifies the intended workload and is restricted to the exact caller. Before configuring IAM, document the token issuer, JWKS, audience, claims, rotation, and replay/threat model. If no suitable workload assertion is available, choose another authenticated transport rather than exposing Cloud Run publicly.
