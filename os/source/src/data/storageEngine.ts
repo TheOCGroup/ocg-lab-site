@@ -24,6 +24,7 @@ import { CANONICAL_OBJECTIVES, CANONICAL_WORK_ORDERS, CANONICAL_AUDIT_EVENTS } f
 const STORAGE_KEY = 'ocg_lab_os_state_v2';
 const FOUNDER_SESSION_KEY = 'ocg_founder_key_session';
 const SYNC_ENDPOINT = '/api/os/sync';
+const CLOUD_SYNC_READ_ONLY = (import.meta as ImportMeta & { env?: { VITE_CLOUD_SYNC_READ_ONLY?: string } }).env?.VITE_CLOUD_SYNC_READ_ONLY === 'true';
 
 export interface ProjectAction {
   id: string;
@@ -688,6 +689,7 @@ export class StorageEngine {
 
     try {
       if (forcePush) {
+        if (CLOUD_SYNC_READ_ONLY) return { success: false, status: 'OFFLINE_CACHED', error: 'Cloud writes disabled in this preview.', lastSyncedAt: localState.lastSyncedAt };
         const push = await fetch(SYNC_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-founder-key': founderKey },
@@ -782,7 +784,7 @@ export class StorageEngine {
   private static syncTimeout: ReturnType<typeof setTimeout> | null = null;
 
   public static queueCloudSync(): void {
-    if (typeof window === 'undefined' || !this.getFounderKey()) return;
+    if (CLOUD_SYNC_READ_ONLY || typeof window === 'undefined' || !this.getFounderKey()) return;
     if (this.syncTimeout) clearTimeout(this.syncTimeout);
     this.syncTimeout = setTimeout(() => {
       this.syncWithCloud(true).catch(error => console.warn('[StorageEngine] Auto-sync notice:', error));
