@@ -763,7 +763,9 @@ export class StorageEngine {
         return { success: true, status: 'CLOUD_DOMINANT', lastSyncedAt: cloudState.lastSyncedAt };
       }
 
-      if (localMs > cloudMs) return this.syncWithCloud(true);
+      if (localMs > cloudMs) return CLOUD_SYNC_READ_ONLY
+        ? { success: false, status: 'OFFLINE_CACHED', error: 'Read-only preview: local changes are not uploaded.', lastSyncedAt: localState.lastSyncedAt }
+        : this.syncWithCloud(true);
       // Equal snapshot timestamps do not prove the task collections match.
       // Merge missing actions and require an upload before reporting success.
       const mergedActions = this.mergeProjectActions(localState.projectActions, cloudState.projectActions);
