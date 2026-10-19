@@ -1,31 +1,30 @@
-# OCG OS Read Gateway (staging only)
+# OCG OS Canonical Read Gateway — private staging
 
-A minimal Google Cloud Run service that uses its attached service identity to GET `gs://ocg-pipeline-reactor-assets/os/canonical_state.json`. No storage writes are implemented.
+This Google Cloud Run service reads only `gs://ocg-pipeline-reactor-assets/os/canonical_state.json` using its attached service account. It does not write to storage.
 
-## Current state
+## Verified deployment (2026-10-19)
 
-- Source and unit tests exist. Not deployed.
-- Do not reuse the broad-privilege `sa-reactor` identity.
-- Require authenticated Cloud Run invocation (do **not** grant `allUsers` invoker).
-- A federated caller **prototype** is implemented and unit-tested, but there is no verified Cloudflare-issued OIDC assertion, dedicated Google provider, or deployed caller. Do not deploy as a publicly accessible shortcut.
+- Google Cloud project: `ocg-pipeline`, region: `us-central1`.
+- Service: `ocg-os-canonical-reader-staging`; deployed and Ready.
+- Cloud Run ingress: `internal`; unauthenticated access disabled. No public or external invoker IAM binding was present at the last verification.
+- Runtime identity: `ocg-os-canonical-reader@ocg-pipeline.iam.gserviceaccount.com`.
+- Storage IAM: one conditional `roles/storage.objectViewer` grant to the runtime identity, matching exactly `os/canonical_state.json`.
+- Revision-level maximum instances: 1. The service-level `run.googleapis.com/maxScale` annotation has been observed as 20; resolve this discrepancy before asserting a global scaling cap.
+- Repeatable configuration check: `powershell -File services/ocg-os-read-gateway/verify-live-security.ps1`.
 
-## IAM deployment requirements
+**Not verified:** an authenticated internal GET returning canonical state, the corresponding error response for forbidden storage access, or a production-safe frontend caller. A desktop request returned HTTP 404 under internal-only ingress, which does not prove application-level authorization or successful storage access.
 
-1. Create a dedicated service account for this service.
-2. Grant only `roles/storage.objectViewer` on the required bucket, preferably with an object-specific IAM condition where supported.
-3. Deploy Cloud Run with `--no-allow-unauthenticated` and the dedicated service account.
-4. Grant `roles/run.invoker` only to a verified Cloudflare caller identity. This requires a supported Google-signed ID token flow or an independently reviewed alternative.
-5. Confirm anonymous requests return 401/403, authenticated GET reads only the canonical object, and POST returns 405.
-6. Never expose service credentials or canonical state in public logs.
+## Connection and release gates
 
-## Local test
+1. Create a narrowly authorized caller **inside the permitted Google Cloud network**, without exposing Cloud Run publicly. Grant `roles/run.invoker` only to that caller service identity.
+2. Verify a successful authenticated GET `/canonical-state` from that caller and validate the JSON envelope without logging the data. Verify POST is rejected (405) from the same authorized caller.
+3. Confirm that the canonical object is current and has the intended founder-approved data before making it authoritative. Existence alone is not freshness.
+4. Design and verify an explicit founder authorization boundary before returning canonical state to a browser. Cloud Run IAM alone does not authorize an arbitrary browser user.
+5. Only after these checks, add a verified API route to Firebase Hosting and pass the fail-closed readiness gate. Never point a public rewrite directly at this internal data service.
+6. Do not alter production DNS, enable writes, or merge the staging branch as a deployment shortcut.
+
+## Local tests
 
 `node --test services/ocg-os-read-gateway/*.test.mjs`
 
-## Rollout gate
-
-Do not alter production DNS, deploy this gateway, or merge the Cloudflare PR until caller identity, IAM least privilege, and live authenticated reads have been reviewed and verified.
-
-## Identity federation blocker
-
-The caller prototype assumes a cryptographically verifiable OIDC JWT issued to the Cloudflare workload, accepted by a dedicated Google Workload Identity Federation provider. Cloudflare Pages deployment does not by itself establish such an issuer, audience, or JWT. **Do not substitute an arbitrary Cloudflare Access user JWT** without verifying that the token identifies the intended workload and is restricted to the exact caller. Before configuring IAM, document the token issuer, JWKS, audience, claims, rotation, and replay/threat model. If no suitable workload assertion is available, choose another authenticated transport rather than exposing Cloud Run publicly.
+The Cloudflare workload-federation prototype remains **unverified**: no trusted issuer, JWKS, audience, or workload assertion has been demonstrated. Do not accept a user JWT as a workload identity or expose the service to compensate.
