@@ -26,3 +26,7 @@ No approval to merge, promote, deploy, change DNS, secrets, or production settin
 - Isolated local Vite preview, Playwright Chromium, mobile viewport 390x844: opening drawer shows intelligence button, clicking opens overview and closes drawer; reopening drawer and clicking Products opens inventory and closes drawer; New chat returns to TED conversation. PASS.
 - No production host or real backend was exercised; TED voice, persistence, reduced-motion emulation and independent reviewer sign-off remain NOT VERIFIED.
 - CI run 39487663656 on earlier commit failed only `/os` parity; source tests, typecheck, build and generated security scan passed. Latest source commit should be checked separately.
+
+## Builder-run TED navigation regression (2026-10-20)
+- Isolated Playwright Chromium desktop viewport 1440x900 with `reducedMotion: reduce`: TED chat textbox visible before and after Intelligence -> Products -> New chat; voice-related controls present (2 matching controls) before/after; Intelligence overview received keyboard focus; Products inventory visible; no page JavaScript exceptions. PASS.
+- This verifies control visibility and browser navigation only, **not** actual microphone input, live speech synthesis, session persistence, production API or independent certification.
