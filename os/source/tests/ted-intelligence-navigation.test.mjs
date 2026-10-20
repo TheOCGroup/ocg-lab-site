@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
@@ -24,5 +24,12 @@ test('Products view receives intelligence focus from navigation state', () => {
   const page = read('../src/pages/TedExperiencePage.tsx');
   const products = read('../src/tedexperience/components/TedProducts.tsx');
   assert.match(page, /<TedProducts\s+focusIntelligence=\{focusIntelligence\}/);
-  assert.match(products, /if \(focusIntelligence\) intelligenceRef\.current\?\.scrollIntoView/);
+  assert.match(products, /intelligenceRef\.current\.scrollIntoView/);
+});
+
+test('intelligence overview receives keyboard focus and respects reduced motion', () => {
+  const products = read('../src/tedexperience/components/TedProducts.tsx');
+  assert.match(products, /prefers-reduced-motion: reduce/);
+  assert.match(products, /intelligenceRef\.current\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(products, /tabIndex=\{-1\}/);
 });

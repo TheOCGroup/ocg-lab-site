@@ -39,7 +39,10 @@ export interface TedProductsProps {
 export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onContinueWithTed, focusIntelligence = false }) => {
   const intelligenceRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (focusIntelligence) intelligenceRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+    if (!focusIntelligence || !intelligenceRef.current) return;
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    intelligenceRef.current.scrollIntoView({ block: "start", behavior: reducedMotion ? "instant" : "smooth" });
+    intelligenceRef.current.focus({ preventScroll: true });
   }, [focusIntelligence]);
   const products = getProductCardSummaries();
 

@@ -638,6 +638,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
         setCommercialOpen(false);
       }}
       onOpenProducts={() => {
+        setFocusIntelligence(false);
         setProductsOpen(true);
         setOpenProductId(null);
       }}
@@ -748,7 +749,8 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
                 setNavOpen(false);
               }}
               onOpenProducts={() => {
-                setProductsOpen(true);
+                setFocusIntelligence(false);
+        setProductsOpen(true);
                 setOpenProductId(null);
                 setNavOpen(false);
               }}
