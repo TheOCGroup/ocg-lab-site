@@ -36,3 +36,7 @@ No approval to merge, promote, deploy, change DNS, secrets, or production settin
 - Interactive TED workspace branch `origin/feat/interactive-ted-workspace-20261016` has no merge base with this head in the current repository graph. Do not use `--allow-unrelated-histories` or force a merge.
 - Compared workspace branch to its own base `origin/ted/ocg-lab-department-integration`: changed files include `InteractivePlanningStudio.tsx`, `UnifiedWorkspacePage.tsx`, parity script and generated `/os` assets, but not `TedNav.tsx` or `TedExperiencePage.tsx`. Direct source overlap with PR #82 is low, but shared build/deployment surfaces still require integration QA.
 - Reconciliation proposal: integration owner selects a canonical target branch, applies reviewed source-only changes in a clean worktree, rebuilds generated assets once from the final combined source, runs the existing parity gate, then obtains independent reviewer certification. No merge or promotion authorized.
+
+## Builder-run history regression (2026-10-20)
+- Isolated Playwright Chromium with synthetic localStorage fixture `ted.conversations.v1` (not real user data): saved conversation appears in Previous Work, remains selectable after visiting OCG INTELLIGENCE, stored founder message displays, and fixture remains in localStorage after reload. PASS.
+- This validates existing browser-local history behavior, not live backend persistence, cross-device sync or real founder conversation content.
