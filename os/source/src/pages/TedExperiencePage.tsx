@@ -622,6 +622,8 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setConversations(loadConversations());
   }, []);
 
+  const [focusIntelligence, setFocusIntelligence] = useState(false);
+
   const nav = (
     <TedNav
       conversations={conversations}
@@ -630,6 +632,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
       onSelectConversation={openConversation}
       onDeleteConversation={removeConversation}
       onOpenIntelligence={() => {
+        setFocusIntelligence(true);
         setProductsOpen(true);
         setOpenProductId(null);
         setCommercialOpen(false);
@@ -737,6 +740,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
               onSelectConversation={openConversation}
               onDeleteConversation={removeConversation}
               onOpenIntelligence={() => {
+                setFocusIntelligence(true);
                 setProductsOpen(true);
                 setOpenProductId(null);
                 setCommercialOpen(false);

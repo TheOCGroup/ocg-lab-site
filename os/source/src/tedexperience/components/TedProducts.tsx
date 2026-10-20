@@ -6,7 +6,7 @@
  * TED/chat remains the primary surface; this is secondary.
  */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { INTELLIGENCE_PRODUCT } from '../intelligenceProduct';
 import { getProductCardSummaries, FounderProductStatus } from '../productMemory';
 
@@ -33,9 +33,14 @@ function StatusBadge({ status }: { status: FounderProductStatus }) {
 export interface TedProductsProps {
   onOpenProduct: (productId: string) => void;
   onContinueWithTed: (productId: string) => void;
+  focusIntelligence?: boolean;
 }
 
-export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onContinueWithTed }) => {
+export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onContinueWithTed, focusIntelligence = false }) => {
+  const intelligenceRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (focusIntelligence) intelligenceRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+  }, [focusIntelligence]);
   const products = getProductCardSummaries();
 
   return (
@@ -48,7 +53,7 @@ export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onConti
           OCG LAB's product inventory — what we're building, where it stands, what's next.
         </p>
 
-        <div className="mt-5 rounded-2xl border border-blue-200 bg-white p-5">
+        <div ref={intelligenceRef} tabIndex={-1} aria-label="OCG INTELLIGENCE development overview" className="mt-5 scroll-mt-5 rounded-2xl border border-blue-200 bg-white p-5">
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-700">In development · OCG LAB research</p>
           <h3 className="mt-2 font-heading text-[16px] font-bold text-slate-900">{INTELLIGENCE_PRODUCT.title}</h3>
           <p className="mt-1 text-[13px] text-slate-600">{INTELLIGENCE_PRODUCT.whatIsIt}</p>
