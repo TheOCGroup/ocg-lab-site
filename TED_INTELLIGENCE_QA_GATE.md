@@ -45,3 +45,9 @@ No approval to merge, promote, deploy, change DNS, secrets, or production settin
 - Replaced one-shot boolean intelligence focus with incrementing selection token; each click now triggers the overview focus effect, while ordinary Products selection clears it.
 - Isolated Playwright Chromium local preview: first OCG INTELLIGENCE selection focused overview; moving focus away and selecting the same entry again restored overview focus. PASS.
 - TypeScript lint PASS, 231/231 automated tests PASS, Vite build PASS, generated-bundle security scan PASS. No `/os` promotion or deployment.
+
+## Asset parity dry run (2026-10-20; no branch promotion)
+- Actual checked-in `/os` parity remains FAIL: generated `assets/index-D-0CO5T1.js` and `assets/index-ZLHoDpBV.css` missing; checked-in `index.html` differs; old `assets/index-Csp06Jh5.js` and `assets/index-DVlxCvxx.css` remain.
+- Reconstructed a temporary staging `/os` directory from the current local `os/source/dist`, ran the repository's unchanged `check-production-parity.mjs` in that staging directory: PASS (6 artifacts). Temporary staging files removed afterward.
+- GitHub PR #82 checks: `test-build` failed on checked-in parity; separate Vercel check reports blocked account and is not the approved Google Cloud hosting direction.
+- No generated assets committed to `/os`, no promotion workflow invoked, no DNS or production deployment changed. Integration owner and independent QA approval remain required before asset promotion.
