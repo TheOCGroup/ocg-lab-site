@@ -629,6 +629,11 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
       onNewChat={startNewChat}
       onSelectConversation={openConversation}
       onDeleteConversation={removeConversation}
+      onOpenIntelligence={() => {
+        setProductsOpen(true);
+        setOpenProductId(null);
+        setCommercialOpen(false);
+      }}
       onOpenProducts={() => {
         setProductsOpen(true);
         setOpenProductId(null);
@@ -731,6 +736,12 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
               onNewChat={startNewChat}
               onSelectConversation={openConversation}
               onDeleteConversation={removeConversation}
+              onOpenIntelligence={() => {
+                setProductsOpen(true);
+                setOpenProductId(null);
+                setCommercialOpen(false);
+                setNavOpen(false);
+              }}
               onOpenProducts={() => {
                 setProductsOpen(true);
                 setOpenProductId(null);
