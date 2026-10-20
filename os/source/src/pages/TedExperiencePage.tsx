@@ -622,6 +622,8 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setConversations(loadConversations());
   }, []);
 
+  const [focusIntelligence, setFocusIntelligence] = useState<number | null>(null);
+
   const nav = (
     <TedNav
       conversations={conversations}
@@ -629,7 +631,14 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
       onNewChat={startNewChat}
       onSelectConversation={openConversation}
       onDeleteConversation={removeConversation}
+      onOpenIntelligence={() => {
+        setFocusIntelligence((previous) => (previous ?? 0) + 1);
+        setProductsOpen(true);
+        setOpenProductId(null);
+        setCommercialOpen(false);
+      }}
       onOpenProducts={() => {
+        setFocusIntelligence(null);
         setProductsOpen(true);
         setOpenProductId(null);
       }}
@@ -677,6 +686,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
             <TedCommercialization onBack={() => setCommercialOpen(false)} />
           ) : productsOpen ? (
             <TedProducts
+              focusIntelligence={focusIntelligence}
               onOpenProduct={setOpenProductId}
               onContinueWithTed={(productId) => {
                 setProductsOpen(false);
@@ -731,8 +741,16 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
               onNewChat={startNewChat}
               onSelectConversation={openConversation}
               onDeleteConversation={removeConversation}
-              onOpenProducts={() => {
+              onOpenIntelligence={() => {
+                setFocusIntelligence((previous) => (previous ?? 0) + 1);
                 setProductsOpen(true);
+                setOpenProductId(null);
+                setCommercialOpen(false);
+                setNavOpen(false);
+              }}
+              onOpenProducts={() => {
+                setFocusIntelligence(null);
+        setProductsOpen(true);
                 setOpenProductId(null);
                 setNavOpen(false);
               }}

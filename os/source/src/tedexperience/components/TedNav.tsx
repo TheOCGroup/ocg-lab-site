@@ -9,6 +9,7 @@ interface TedNavProps {
   onSelectConversation: (id: string) => void;
   onDeleteConversation: (id: string) => void;
   onOpenProducts: () => void;
+  onOpenIntelligence: () => void;
   onClose?: () => void;
 }
 
@@ -35,6 +36,7 @@ export const TedNav: React.FC<TedNavProps> = ({
   onSelectConversation,
   onDeleteConversation,
   onOpenProducts,
+  onOpenIntelligence,
   onClose,
 }) => {
   return (
@@ -69,6 +71,12 @@ export const TedNav: React.FC<TedNavProps> = ({
         >
           <Boxes className="h-4 w-4" />
           Products
+        </button>
+      </div>
+
+      <div className="mt-2 px-3">
+        <button type="button" onClick={onOpenIntelligence} className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-[13px] font-semibold text-blue-800 transition hover:bg-blue-50">
+          OCG INTELLIGENCE <span className="ml-auto text-[10px] font-normal text-slate-500">Preview</span>
         </button>
       </div>
 
