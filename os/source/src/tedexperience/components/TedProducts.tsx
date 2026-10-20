@@ -33,13 +33,13 @@ function StatusBadge({ status }: { status: FounderProductStatus }) {
 export interface TedProductsProps {
   onOpenProduct: (productId: string) => void;
   onContinueWithTed: (productId: string) => void;
-  focusIntelligence?: boolean;
+  focusIntelligence?: number | null;
 }
 
-export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onContinueWithTed, focusIntelligence = false }) => {
+export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onContinueWithTed, focusIntelligence = null }) => {
   const intelligenceRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!focusIntelligence || !intelligenceRef.current) return;
+    if (focusIntelligence === null || !intelligenceRef.current) return;
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     intelligenceRef.current.scrollIntoView({ block: "start", behavior: reducedMotion ? "instant" : "smooth" });
     intelligenceRef.current.focus({ preventScroll: true });

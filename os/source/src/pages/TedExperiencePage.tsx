@@ -622,7 +622,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setConversations(loadConversations());
   }, []);
 
-  const [focusIntelligence, setFocusIntelligence] = useState(false);
+  const [focusIntelligence, setFocusIntelligence] = useState<number | null>(null);
 
   const nav = (
     <TedNav
@@ -632,13 +632,13 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
       onSelectConversation={openConversation}
       onDeleteConversation={removeConversation}
       onOpenIntelligence={() => {
-        setFocusIntelligence(true);
+        setFocusIntelligence((previous) => (previous ?? 0) + 1);
         setProductsOpen(true);
         setOpenProductId(null);
         setCommercialOpen(false);
       }}
       onOpenProducts={() => {
-        setFocusIntelligence(false);
+        setFocusIntelligence(null);
         setProductsOpen(true);
         setOpenProductId(null);
       }}
@@ -742,14 +742,14 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
               onSelectConversation={openConversation}
               onDeleteConversation={removeConversation}
               onOpenIntelligence={() => {
-                setFocusIntelligence(true);
+                setFocusIntelligence((previous) => (previous ?? 0) + 1);
                 setProductsOpen(true);
                 setOpenProductId(null);
                 setCommercialOpen(false);
                 setNavOpen(false);
               }}
               onOpenProducts={() => {
-                setFocusIntelligence(false);
+                setFocusIntelligence(null);
         setProductsOpen(true);
                 setOpenProductId(null);
                 setNavOpen(false);

@@ -40,3 +40,8 @@ No approval to merge, promote, deploy, change DNS, secrets, or production settin
 ## Builder-run history regression (2026-10-20)
 - Isolated Playwright Chromium with synthetic localStorage fixture `ted.conversations.v1` (not real user data): saved conversation appears in Previous Work, remains selectable after visiting OCG INTELLIGENCE, stored founder message displays, and fixture remains in localStorage after reload. PASS.
 - This validates existing browser-local history behavior, not live backend persistence, cross-device sync or real founder conversation content.
+
+## Repeat-selection focus fix (2026-10-20)
+- Replaced one-shot boolean intelligence focus with incrementing selection token; each click now triggers the overview focus effect, while ordinary Products selection clears it.
+- Isolated Playwright Chromium local preview: first OCG INTELLIGENCE selection focused overview; moving focus away and selecting the same entry again restored overview focus. PASS.
+- TypeScript lint PASS, 231/231 automated tests PASS, Vite build PASS, generated-bundle security scan PASS. No `/os` promotion or deployment.
