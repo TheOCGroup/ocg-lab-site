@@ -30,3 +30,9 @@ No approval to merge, promote, deploy, change DNS, secrets, or production settin
 ## Builder-run TED navigation regression (2026-10-20)
 - Isolated Playwright Chromium desktop viewport 1440x900 with `reducedMotion: reduce`: TED chat textbox visible before and after Intelligence -> Products -> New chat; voice-related controls present (2 matching controls) before/after; Intelligence overview received keyboard focus; Products inventory visible; no page JavaScript exceptions. PASS.
 - This verifies control visibility and browser navigation only, **not** actual microphone input, live speech synthesis, session persistence, production API or independent certification.
+
+## Cross-branch integration review (2026-10-20)
+- Draft PR #82 head is based on exact PR #81 commit `7cfa7cccca33c84fff569883250c44fa68635fd5` (`git merge-base` verified).
+- Interactive TED workspace branch `origin/feat/interactive-ted-workspace-20261016` has no merge base with this head in the current repository graph. Do not use `--allow-unrelated-histories` or force a merge.
+- Compared workspace branch to its own base `origin/ted/ocg-lab-department-integration`: changed files include `InteractivePlanningStudio.tsx`, `UnifiedWorkspacePage.tsx`, parity script and generated `/os` assets, but not `TedNav.tsx` or `TedExperiencePage.tsx`. Direct source overlap with PR #82 is low, but shared build/deployment surfaces still require integration QA.
+- Reconciliation proposal: integration owner selects a canonical target branch, applies reviewed source-only changes in a clean worktree, rebuilds generated assets once from the final combined source, runs the existing parity gate, then obtains independent reviewer certification. No merge or promotion authorized.
