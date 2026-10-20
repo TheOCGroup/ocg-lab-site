@@ -19,3 +19,10 @@ test('both desktop and mobile TED navigation wire the preview action', () => {
   assert.match(page, /setNavOpen\(false\)/);
   assert.match(page, /setProductsOpen\(true\)/);
 });
+
+test('Products view receives intelligence focus from navigation state', () => {
+  const page = read('../src/pages/TedExperiencePage.tsx');
+  const products = read('../src/tedexperience/components/TedProducts.tsx');
+  assert.match(page, /<TedProducts\s+focusIntelligence=\{focusIntelligence\}/);
+  assert.match(products, /if \(focusIntelligence\) intelligenceRef\.current\?\.scrollIntoView/);
+});

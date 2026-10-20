@@ -685,6 +685,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
             <TedCommercialization onBack={() => setCommercialOpen(false)} />
           ) : productsOpen ? (
             <TedProducts
+              focusIntelligence={focusIntelligence}
               onOpenProduct={setOpenProductId}
               onContinueWithTed={(productId) => {
                 setProductsOpen(false);
