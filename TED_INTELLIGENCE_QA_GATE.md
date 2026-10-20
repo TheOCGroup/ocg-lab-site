@@ -20,3 +20,9 @@ Date: 2026-10-20. Scope: draft PR #82 stacked on draft PR #81. **Development onl
 
 ## Stop conditions
 No approval to merge, promote, deploy, change DNS, secrets, or production settings. A passing local test is not a browser test. Independent reviewer must attach actual evidence and mark PASS/FAIL for each acceptance item. Grant-ready record: source commits, commands, outputs, limitations and corrective actions retained in PR #82.
+
+## Builder-run browser evidence (2026-10-20; not independent certification)
+- Isolated local Vite preview, Playwright Chromium, desktop viewport 1440x900: sidebar OCG INTELLIGENCE button present, overview visible and focused after click, Products inventory available. PASS.
+- Isolated local Vite preview, Playwright Chromium, mobile viewport 390x844: opening drawer shows intelligence button, clicking opens overview and closes drawer; reopening drawer and clicking Products opens inventory and closes drawer; New chat returns to TED conversation. PASS.
+- No production host or real backend was exercised; TED voice, persistence, reduced-motion emulation and independent reviewer sign-off remain NOT VERIFIED.
+- CI run 39487663656 on earlier commit failed only `/os` parity; source tests, typecheck, build and generated security scan passed. Latest source commit should be checked separately.
