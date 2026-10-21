@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
-import { TedNav } from '../tedexperience/components/TedNav';
+import { TedNav, type TedActiveView } from '../tedexperience/components/TedNav';
+import { TedIntelligenceWorkspace } from '../tedexperience/components/TedIntelligenceWorkspace';
 import { TedChat, TedAttachment, TedMessage, TedVoiceUiState } from '../tedexperience/components/TedChat';
 import { TedArtifactPanel, TedArtifact } from '../tedexperience/components/TedArtifactPanel';
 import {
@@ -86,6 +87,10 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
   // Phase 2.3 — product inventory state.
   const [productsOpen, setProductsOpen] = useState(false);
   const [commercialOpen, setCommercialOpen] = useState(false);
+  // OCG INTELLIGENCE — focused workspace view, mutually exclusive with
+  // the products and commercialization views; conversation state is
+  // never touched by view switching.
+  const [intelligenceOpen, setIntelligenceOpen] = useState(false);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
   const personaRef = useRef(persona);
   personaRef.current = persona;
@@ -282,6 +287,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setPersona(fresh);
     setArtifact(null);
     setProductsOpen(false);
+    setIntelligenceOpen(false);
     setOpenProductId(null);
     clearMemoryOverlay(); // Phase 2.3 — new chat starts with a clean product memory slate.
     setNavOpen((v) => (typeof window !== 'undefined' && window.innerWidth < 1024 ? false : v));
@@ -310,6 +316,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setPersona(fresh);
     setArtifact(null);
     setProductsOpen(false);
+    setIntelligenceOpen(false);
     setOpenProductId(null);
     clearMemoryOverlay(); // Phase 2.3 — switching conversations clears product context too.
     if (typeof window !== 'undefined' && window.innerWidth < 1024) setNavOpen(false);
@@ -621,6 +628,19 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setConversations(loadConversations());
   }, []);
 
+  const openIntelligence = () => {
+    setIntelligenceOpen(true);
+    setProductsOpen(false);
+    setCommercialOpen(false);
+  };
+  const openProductsView = () => {
+    setIntelligenceOpen(false);
+    setCommercialOpen(false);
+    setProductsOpen(true);
+    setOpenProductId(null);
+  };
+  const activeView: TedActiveView = intelligenceOpen ? 'intelligence' : 'chat';
+
   const nav = (
     <TedNav
       conversations={conversations}
@@ -628,10 +648,9 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
       onNewChat={startNewChat}
       onSelectConversation={openConversation}
       onDeleteConversation={removeConversation}
-      onOpenProducts={() => {
-        setProductsOpen(true);
-        setOpenProductId(null);
-      }}
+      onOpenProducts={openProductsView}
+      onOpenIntelligence={openIntelligence}
+      activeView={activeView}
     />
   );
 
@@ -656,7 +675,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
             TED · Ready
           </span>
         </span>
-        <button type="button" onClick={() => { setCommercialOpen(true); setProductsOpen(false); }} className="ml-auto hidden shrink-0 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 md:inline-flex">Commercialization</button>
+        <button type="button" onClick={() => { setCommercialOpen(true); setProductsOpen(false); setIntelligenceOpen(false); }} className="ml-auto hidden shrink-0 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 md:inline-flex">Commercialization</button>
         {onOpenUnified && <button type="button" onClick={onOpenUnified} className="hidden shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 md:inline-flex" aria-label="Open unified OCG workspace">OCG Workspace</button>}
         {onOpenProjects && <button type="button" onClick={onOpenProjects} className="hidden shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 lg:inline-flex" aria-label="Open Project Workbench">Project Workbench</button>}
       </header>
@@ -671,11 +690,14 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
 
         {/* TED conversation or founder product inventory */}
         <main className="min-w-0 flex-1 overflow-y-auto bg-white">
-          {commercialOpen ? (
+          {intelligenceOpen ? (
+            <TedIntelligenceWorkspace onBackToChat={() => setIntelligenceOpen(false)} />
+          ) : commercialOpen ? (
             <TedCommercialization onBack={() => setCommercialOpen(false)} />
           ) : productsOpen ? (
             <TedProducts
               onOpenProduct={setOpenProductId}
+              onOpenIntelligence={openIntelligence}
               onContinueWithTed={(productId) => {
                 setProductsOpen(false);
                 continueWithTed(productId);
@@ -729,15 +751,13 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
               onNewChat={startNewChat}
               onSelectConversation={openConversation}
               onDeleteConversation={removeConversation}
-              onOpenProducts={() => {
-                setProductsOpen(true);
-                setOpenProductId(null);
-                setNavOpen(false);
-              }}
+              onOpenProducts={() => { openProductsView(); setNavOpen(false); }}
+              onOpenIntelligence={() => { openIntelligence(); setNavOpen(false); }}
+              activeView={activeView}
               onClose={() => setNavOpen(false)}
             />
             <div className="absolute bottom-0 inset-x-0 flex flex-col gap-2 border-t border-slate-200 bg-white p-3 text-xs font-semibold shadow-lg">
-              <button onClick={() => { setCommercialOpen(true); setProductsOpen(false); setNavOpen(false); }} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-left text-emerald-900">Commercialization</button>
+              <button onClick={() => { setCommercialOpen(true); setProductsOpen(false); setIntelligenceOpen(false); setNavOpen(false); }} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-left text-emerald-900">Commercialization</button>
               {onOpenUnified && <button onClick={() => { onOpenUnified(); setNavOpen(false); }} className="rounded-lg bg-slate-900 px-3 py-2 text-left text-white">OCG Workspace</button>}
               {onOpenProjects && <button onClick={() => { onOpenProjects(); setNavOpen(false); }} className="rounded-lg border border-slate-200 px-3 py-2 text-left text-slate-800">Project Workbench</button>}
             </div>
