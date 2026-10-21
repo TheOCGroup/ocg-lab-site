@@ -23,7 +23,7 @@ const STATUS_STYLES: Record<FounderProductStatus, { bg: string; text: string; do
 function StatusBadge({ status }: { status: FounderProductStatus }) {
   const s = STATUS_STYLES[status];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${s.bg} ${s.text}`}>
+    <span className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${s.bg} ${s.text}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} aria-hidden />
       {status}
     </span>
