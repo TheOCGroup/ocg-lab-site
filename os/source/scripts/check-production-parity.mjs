@@ -4,7 +4,13 @@ import crypto from 'node:crypto';
 
 const sourceRoot = path.resolve('dist');
 const prodRoot = path.resolve('..');
-const hash = p => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const hash = (p, rel) => {
+  const bytes = fs.readFileSync(p);
+  // Generated HTML line endings differ between Windows and Linux builders.
+  // Normalize only HTML; binary JS/CSS parity stays byte-exact.
+  const content = rel === 'index.html' ? Buffer.from(bytes.toString('utf8').replaceAll(String.fromCharCode(13), '')) : bytes;
+  return crypto.createHash('sha256').update(content).digest('hex');
+};
 const list = root => {
   const out = [];
   const walk = (dir, rel='') => {
@@ -25,7 +31,7 @@ for (const rel of new Set([...expected, ...actual])) {
   const a = path.join(sourceRoot, rel), b = path.join(prodRoot, rel);
   if (!fs.existsSync(a)) mismatches.push(`production-only: ${rel}`);
   else if (!fs.existsSync(b)) mismatches.push(`missing production: ${rel}`);
-  else if (hash(a) !== hash(b)) mismatches.push(`content mismatch: ${rel}`);
+  else if (hash(a, rel) !== hash(b, rel)) mismatches.push(`content mismatch: ${rel}`);
 }
 if (mismatches.length) {
   console.error('OCG LAB OS production assets are stale relative to os/source build:\n' + mismatches.join('\n'));
