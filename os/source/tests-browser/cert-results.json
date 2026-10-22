@@ -1,0 +1,421 @@
+{
+  "summary": {
+    "total": 58,
+    "passed": 58,
+    "failed": 0,
+    "notes": [
+      "Voice: exercised with Chromium fake media device only. Real microphone capture and Web Speech recognition service NOT VERIFIED in this environment.",
+      "External attempts observed (all aborted by the harness): 12 total — 12 pre-existing app-shell Google Fonts, 0 localhost (Tool Bridge health probe surface, pre-existing), 0 other.",
+      "Console error messages observed: 24 — first: Failed to load resource: net::ERR_FAILED",
+      "Empty/malformed-data rendering states: covered by unit tests via the workspace test seam (compiled bundles cannot be re-injected); scenario invalid-input states exercised live in Section C."
+    ]
+  },
+  "results": [
+    {
+      "id": 1,
+      "area": "Shell",
+      "check": "TED hero renders (identity + prompt + composer)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 2,
+      "area": "Chat",
+      "check": "Suggestion chip sends its prompt and TED replies",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 3,
+      "area": "Chat",
+      "check": "Composer + Send delivers a message and TED replies",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 4,
+      "area": "Chat",
+      "check": "Attach button opens the attachment menu",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 5,
+      "area": "Chat",
+      "check": "Attachment option opens the system file chooser",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 6,
+      "area": "Nav",
+      "check": "Previous Work lists the conversation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 7,
+      "area": "Nav",
+      "check": "Previous Work entry reopens the conversation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 8,
+      "area": "Nav",
+      "check": "Delete removes conversations (empty state returns)",
+      "pass": true,
+      "detail": "deleted=2"
+    },
+    {
+      "id": 9,
+      "area": "Nav",
+      "check": "New chat resets to a clean thread",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 10,
+      "area": "Voice",
+      "check": "Microphone control is present in the composer",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 11,
+      "area": "Voice",
+      "check": "Mic click takes an honest path (listening state or truthful notice, no crash)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 12,
+      "area": "Products",
+      "check": "Products nav opens the retained inventory view",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 13,
+      "area": "Products",
+      "check": "Product cards render with Open Product actions",
+      "pass": true,
+      "detail": "cards=10"
+    },
+    {
+      "id": 14,
+      "area": "Products",
+      "check": "Open Product opens the product detail dialog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 15,
+      "area": "Products",
+      "check": "Close product detail dismisses the dialog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 16,
+      "area": "Products",
+      "check": "Continue with TED hands context into the conversation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 17,
+      "area": "Products",
+      "check": "Intelligence card links the OCG-ONE PR #20 provenance",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 18,
+      "area": "Products",
+      "check": "Intelligence card button opens the workspace",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 19,
+      "area": "Intel",
+      "check": "Workspace opens focused (heading + quality + both competitors)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 20,
+      "area": "Intel",
+      "check": "Truth: unscored rendered as unscored (never 0/100)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 21,
+      "area": "Intel",
+      "check": "Truth: pricing gate BLOCKED with reasons",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 22,
+      "area": "Intel",
+      "check": "Classification visible: quality tiles + verdict chips",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 23,
+      "area": "Intel",
+      "check": "Every evidence/competitor link target is an expected official source",
+      "pass": true,
+      "detail": "https://smith.ai, https://smith.ai/ai-receptionist, https://smith.ai/pricing/ai-receptionist, https://www.goodcall.com, https://www.goodcall.com/faq, https://www.goodcall.com/pricing"
+    },
+    {
+      "id": 24,
+      "area": "Intel",
+      "check": "All links open in a new tab with noopener",
+      "pass": true,
+      "detail": "links=10"
+    },
+    {
+      "id": 25,
+      "area": "Intel",
+      "check": "Scenario math: 200 calls / 150 customers -> Smith.ai $462.5, Goodcall $118.5 (model-exact)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 26,
+      "area": "Intel",
+      "check": "Scenario labeled illustrative (not a quote)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 27,
+      "area": "Intel",
+      "check": "Invalid: customers > calls surfaces an announced error",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 28,
+      "area": "Intel",
+      "check": "Invalid: negative calls surfaces an announced error",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 29,
+      "area": "Intel",
+      "check": "Edge: very large inputs compute without crashing",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 30,
+      "area": "Intel",
+      "check": "Signal: planned panel is honest (not built, nothing fabricated)",
+      "pass": true,
+      "detail": "It is planned only — no sources are collected or monitored today"
+    },
+    {
+      "id": 31,
+      "area": "Intel",
+      "check": "Signal: no overflow with panel open",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 32,
+      "area": "Intel",
+      "check": "Watchtower: planned panel is honest (not built, nothing fabricated)",
+      "pass": true,
+      "detail": "It is planned only — no monitoring is running today"
+    },
+    {
+      "id": 33,
+      "area": "Intel",
+      "check": "Watchtower: no overflow with panel open",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 34,
+      "area": "Intel",
+      "check": "Strategist: planned panel is honest (not built, nothing fabricated)",
+      "pass": true,
+      "detail": "It is planned only — no recommendations are generated today"
+    },
+    {
+      "id": 35,
+      "area": "Intel",
+      "check": "Strategist: no overflow with panel open",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 36,
+      "area": "A11y",
+      "check": "Back button carries a visible-focus ring treatment",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 37,
+      "area": "A11y",
+      "check": "Keyboard Enter on Back returns to the conversation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 38,
+      "area": "A11y",
+      "check": "Keyboard Space activates a module tab",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 39,
+      "area": "A11y",
+      "check": "Module tabs carry a visible-focus ring treatment",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 40,
+      "area": "Intel",
+      "check": "New chat from inside the workspace returns to a clean conversation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 41,
+      "area": "Width 320",
+      "check": "Workspace renders at this width",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 42,
+      "area": "Width 320",
+      "check": "No horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 43,
+      "area": "Width 390",
+      "check": "Workspace renders at this width",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 44,
+      "area": "Width 390",
+      "check": "No horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 45,
+      "area": "Width 768",
+      "check": "Workspace renders at this width",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 46,
+      "area": "Width 768",
+      "check": "No horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 47,
+      "area": "Width 1024",
+      "check": "Workspace renders at this width",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 48,
+      "area": "Width 1024",
+      "check": "No horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 49,
+      "area": "Width 1440",
+      "check": "Workspace renders at this width",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 50,
+      "area": "Width 1440",
+      "check": "No horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 51,
+      "area": "Zoom 200%",
+      "check": "Workspace usable at 200% zoom (720 CSS px @2x)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 52,
+      "area": "Zoom 200%",
+      "check": "No horizontal overflow at 200% zoom",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 53,
+      "area": "Motion",
+      "check": "Workspace fully functional with reduced motion",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 54,
+      "area": "Persist",
+      "check": "Conversation intact after intelligence round-trip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 55,
+      "area": "Persist",
+      "check": "Conversation survives a full browser refresh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 56,
+      "area": "Persist",
+      "check": "History is stored locally (no account/server dependency)",
+      "pass": true,
+      "detail": "ted.conversations.v1"
+    },
+    {
+      "id": 57,
+      "area": "Network",
+      "check": "No intelligence-attributable external requests in any flow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": 58,
+      "area": "Console",
+      "check": "Zero uncaught page errors across the whole battery",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}
