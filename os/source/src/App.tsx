@@ -130,7 +130,7 @@ export function App() {
           {activePage === "portfolio" && <PortfolioPage />}
           {activePage === "projects" && <ProjectsPage initialProjectId={requestedProjectId} onSelectionHandled={() => setRequestedProjectId(null)} />}
           {(activePage === "operations" || activePage === "agents") && (
-            <OperationsPage onOpenAiden={() => setIsAidenOpen(true)} />
+            <OperationsPage onOpenTed={() => setActivePage("ted")} />
           )}
           {(activePage === "qa" || activePage === "releases") && <QAReleasesPage />}
           {activePage === "engineering" && <EngineeringPage />}
