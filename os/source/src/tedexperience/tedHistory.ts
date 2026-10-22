@@ -55,6 +55,15 @@ export function deleteConversation(id: string): void {
   writeStorage(readStorage().filter((c) => c.id !== id));
 }
 
+/** Remove every saved conversation from this browser. Irreversible. */
+export function clearAllConversations(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Storage unavailable — nothing was stored, nothing to clear.
+  }
+}
+
 export function newConversationId(): string {
   return `ted-conv-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
 }

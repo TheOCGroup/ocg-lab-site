@@ -1,8 +1,8 @@
 import React from 'react';
-import { Boxes, MessageSquarePlus, Radar, Trash2, X } from 'lucide-react';
+import { Boxes, MessageSquarePlus, Radar, Settings, Trash2, X } from 'lucide-react';
 import type { TedConversation } from '../tedHistory';
 
-export type TedActiveView = 'chat' | 'intelligence';
+export type TedActiveView = 'chat' | 'intelligence' | 'settings';
 
 interface TedNavProps {
   conversations: TedConversation[];
@@ -12,6 +12,7 @@ interface TedNavProps {
   onDeleteConversation: (id: string) => void;
   onOpenProducts: () => void;
   onOpenIntelligence: () => void;
+  onOpenSettings: () => void;
   activeView?: TedActiveView;
   onClose?: () => void;
 }
@@ -41,6 +42,7 @@ export const TedNav: React.FC<TedNavProps> = ({
   onDeleteConversation,
   onOpenProducts,
   onOpenIntelligence,
+  onOpenSettings,
   activeView = 'chat',
   onClose,
 }) => {
@@ -93,6 +95,22 @@ export const TedNav: React.FC<TedNavProps> = ({
           <Radar className="h-4 w-4" />
           OCG INTELLIGENCE
           <span className="ml-auto text-[11px] font-medium text-slate-500">Preview</span>
+        </button>
+      </div>
+
+      <div className="mt-1 px-3">
+        <button
+          type="button"
+          onClick={onOpenSettings}
+          aria-current={activeView === 'settings' ? 'page' : undefined}
+          className={`flex min-h-[40px] w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-[13px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1 ${
+            activeView === 'settings'
+              ? 'bg-blue-600/[0.08] text-blue-900 ring-1 ring-inset ring-blue-600/20'
+              : 'text-slate-700 hover:bg-slate-900/[0.05]'
+          }`}
+        >
+          <Settings className="h-4 w-4" />
+          Settings
         </button>
       </div>
 

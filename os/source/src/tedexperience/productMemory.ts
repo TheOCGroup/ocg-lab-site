@@ -367,6 +367,11 @@ export function getProductMemoryWithOverlay(id: string): ProductMemory | null {
   return overlay ? { ...base, ...overlay } : base;
 }
 
+/** How many products carry session-overlay notes in this browser. */
+export function getMemoryOverlayCount(): number {
+  return loadMemoryOverlay().size;
+}
+
 /** Clear the session overlay (e.g. on New chat). */
 export function clearMemoryOverlay(): void {
   // Product decisions are independent of chat sessions. Do not erase them

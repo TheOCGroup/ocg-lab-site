@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { TedNav, type TedActiveView } from '../tedexperience/components/TedNav';
 import { TedIntelligenceWorkspace } from '../tedexperience/components/TedIntelligenceWorkspace';
+import { TedSettings } from '../tedexperience/components/TedSettings';
 import { TedChat, TedAttachment, TedMessage, TedVoiceUiState } from '../tedexperience/components/TedChat';
 import { TedArtifactPanel, TedArtifact } from '../tedexperience/components/TedArtifactPanel';
 import {
@@ -91,6 +92,8 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
   // the products and commercialization views; conversation state is
   // never touched by view switching.
   const [intelligenceOpen, setIntelligenceOpen] = useState(false);
+  // Settings — truthful status/data-controls view, same exclusivity rule.
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
   const personaRef = useRef(persona);
   personaRef.current = persona;
@@ -288,6 +291,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setArtifact(null);
     setProductsOpen(false);
     setIntelligenceOpen(false);
+    setSettingsOpen(false);
     setOpenProductId(null);
     clearMemoryOverlay(); // Phase 2.3 — new chat starts with a clean product memory slate.
     setNavOpen((v) => (typeof window !== 'undefined' && window.innerWidth < 1024 ? false : v));
@@ -317,6 +321,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setArtifact(null);
     setProductsOpen(false);
     setIntelligenceOpen(false);
+    setSettingsOpen(false);
     setOpenProductId(null);
     clearMemoryOverlay(); // Phase 2.3 — switching conversations clears product context too.
     if (typeof window !== 'undefined' && window.innerWidth < 1024) setNavOpen(false);
@@ -632,14 +637,43 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
     setIntelligenceOpen(true);
     setProductsOpen(false);
     setCommercialOpen(false);
+    setSettingsOpen(false);
   };
   const openProductsView = () => {
     setIntelligenceOpen(false);
     setCommercialOpen(false);
+    setSettingsOpen(false);
     setProductsOpen(true);
     setOpenProductId(null);
   };
-  const activeView: TedActiveView = intelligenceOpen ? 'intelligence' : 'chat';
+  const openSettings = () => {
+    setSettingsOpen(true);
+    setIntelligenceOpen(false);
+    setProductsOpen(false);
+    setCommercialOpen(false);
+    setOpenProductId(null);
+  };
+  const activeView: TedActiveView = intelligenceOpen ? 'intelligence' : settingsOpen ? 'settings' : 'chat';
+
+  /** Settings wiped every saved conversation: reset to a fresh chat
+   *  WITHOUT startNewChat's save step (which would resurrect the active
+   *  conversation that was just deleted). */
+  const handleConversationsCleared = useCallback(() => {
+    setConversations([]);
+    setActiveId(null);
+    setMessages([]);
+    convoRef.current = { id: null, messages: [] };
+    const fresh = initialPersonaState();
+    personaRef.current = fresh;
+    setPersona(fresh);
+    setArtifact(null);
+  }, []);
+
+  /** Settings forgot the bridge token: mirror the discover() bookkeeping. */
+  const handleBridgeTokenForgotten = useCallback(() => {
+    setBridgeStatus('unavailable');
+    syncBridgeTools(false);
+  }, []);
 
   const nav = (
     <TedNav
@@ -650,6 +684,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
       onDeleteConversation={removeConversation}
       onOpenProducts={openProductsView}
       onOpenIntelligence={openIntelligence}
+      onOpenSettings={openSettings}
       activeView={activeView}
     />
   );
@@ -675,7 +710,7 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
             TED · Ready
           </span>
         </span>
-        <button type="button" onClick={() => { setCommercialOpen(true); setProductsOpen(false); setIntelligenceOpen(false); }} className="ml-auto hidden shrink-0 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 md:inline-flex">Commercialization</button>
+        <button type="button" onClick={() => { setCommercialOpen(true); setProductsOpen(false); setIntelligenceOpen(false); setSettingsOpen(false); }} className="ml-auto hidden shrink-0 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 md:inline-flex">Commercialization</button>
         {onOpenUnified && <button type="button" onClick={onOpenUnified} className="hidden shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 md:inline-flex" aria-label="Open unified OCG workspace">OCG Workspace</button>}
         {onOpenProjects && <button type="button" onClick={onOpenProjects} className="hidden shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 lg:inline-flex" aria-label="Open Project Workbench">Project Workbench</button>}
       </header>
@@ -692,6 +727,13 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
         <main className="min-w-0 flex-1 overflow-y-auto bg-white">
           {intelligenceOpen ? (
             <TedIntelligenceWorkspace onBackToChat={() => setIntelligenceOpen(false)} />
+          ) : settingsOpen ? (
+            <TedSettings
+              bridgeStatus={bridgeStatus}
+              onBackToChat={() => setSettingsOpen(false)}
+              onConversationsCleared={handleConversationsCleared}
+              onBridgeTokenForgotten={handleBridgeTokenForgotten}
+            />
           ) : commercialOpen ? (
             <TedCommercialization onBack={() => setCommercialOpen(false)} />
           ) : productsOpen ? (
@@ -753,11 +795,12 @@ export const TedExperiencePage: React.FC<{ onOpenProjects?: () => void; onOpenUn
               onDeleteConversation={removeConversation}
               onOpenProducts={() => { openProductsView(); setNavOpen(false); }}
               onOpenIntelligence={() => { openIntelligence(); setNavOpen(false); }}
+              onOpenSettings={() => { openSettings(); setNavOpen(false); }}
               activeView={activeView}
               onClose={() => setNavOpen(false)}
             />
             <div className="absolute bottom-0 inset-x-0 flex flex-col gap-2 border-t border-slate-200 bg-white p-3 text-xs font-semibold shadow-lg">
-              <button onClick={() => { setCommercialOpen(true); setProductsOpen(false); setIntelligenceOpen(false); setNavOpen(false); }} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-left text-emerald-900">Commercialization</button>
+              <button onClick={() => { setCommercialOpen(true); setProductsOpen(false); setIntelligenceOpen(false); setSettingsOpen(false); setNavOpen(false); }} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-left text-emerald-900">Commercialization</button>
               {onOpenUnified && <button onClick={() => { onOpenUnified(); setNavOpen(false); }} className="rounded-lg bg-slate-900 px-3 py-2 text-left text-white">OCG Workspace</button>}
               {onOpenProjects && <button onClick={() => { onOpenProjects(); setNavOpen(false); }} className="rounded-lg border border-slate-200 px-3 py-2 text-left text-slate-800">Project Workbench</button>}
             </div>
