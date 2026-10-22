@@ -26,7 +26,14 @@ for (const file of files) {
   for (const match of text.matchAll(/[0-9a-f]{64}/gi)) {
     const start = Math.max(0, match.index - 12);
     const prefix = text.slice(start, match.index).toLowerCase();
-    if (!prefix.includes('sha256:')) failures.push(`${file}: unprefixed 64-hex literal found`);
+    // A 64-hex literal is a documented hash — not a credential — only when
+    // it carries its algorithm label immediately before it, in any standard
+    // written form: "sha256:<hex>", "SHA-256 <hex>", "sha-256: <hex>".
+    // Published artifact hashes cited in prose (e.g. the knowledge base's
+    // verified-artifact reference) are documentation. An UNLABELED 64-hex
+    // literal still fails this scan, and the founder-key checks above are
+    // unaffected.
+    if (!/sha[-\s]?256[\s:]*$/.test(prefix)) failures.push(`${file}: unprefixed 64-hex literal found`);
   }
 }
 if (failures.length) {

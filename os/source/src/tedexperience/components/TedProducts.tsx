@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import { INTELLIGENCE_PRODUCT } from '../intelligenceProduct';
 import { getProductCardSummaries, FounderProductStatus } from '../productMemory';
 
 const STATUS_STYLES: Record<FounderProductStatus, { bg: string; text: string; dot: string }> = {
@@ -22,7 +23,7 @@ const STATUS_STYLES: Record<FounderProductStatus, { bg: string; text: string; do
 function StatusBadge({ status }: { status: FounderProductStatus }) {
   const s = STATUS_STYLES[status];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${s.bg} ${s.text}`}>
+    <span className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] ${s.bg} ${s.text}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} aria-hidden />
       {status}
     </span>
@@ -32,9 +33,11 @@ function StatusBadge({ status }: { status: FounderProductStatus }) {
 export interface TedProductsProps {
   onOpenProduct: (productId: string) => void;
   onContinueWithTed: (productId: string) => void;
+  /** Opens the focused OCG INTELLIGENCE workspace inside TED. */
+  onOpenIntelligence?: () => void;
 }
 
-export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onContinueWithTed }) => {
+export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onContinueWithTed, onOpenIntelligence }) => {
   const products = getProductCardSummaries();
 
   return (
@@ -46,6 +49,28 @@ export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onConti
         <p className="mt-1 text-[13px] text-slate-500">
           OCG LAB's product inventory — what we're building, where it stands, what's next.
         </p>
+
+        <div aria-label="OCG INTELLIGENCE development overview" className="mt-5 rounded-2xl border border-blue-200 bg-white p-5">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-700">In development · OCG LAB research</p>
+          <h3 className="mt-2 font-heading text-[16px] font-bold text-slate-900">{INTELLIGENCE_PRODUCT.title}</h3>
+          <p className="mt-1 text-[13px] text-slate-600">{INTELLIGENCE_PRODUCT.whatIsIt}</p>
+          <p className="mt-3 text-[12.5px] text-slate-600">Market Radar: preview only. Signal, Watchtower and Strategist: planned.</p>
+          <p className="mt-2 text-[12px] text-slate-600">Next: {INTELLIGENCE_PRODUCT.whatsNext}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {onOpenIntelligence && (
+              <button
+                onClick={onOpenIntelligence}
+                className="inline-flex min-h-[40px] items-center rounded-xl bg-slate-900 px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1"
+              >
+                Open Intelligence workspace
+              </button>
+            )}
+            <a href={INTELLIGENCE_PRODUCT.pullRequest} target="_blank" rel="noopener noreferrer"
+               className="inline-flex rounded-xl border border-blue-200 px-4 py-2 text-[13px] font-semibold text-blue-800 hover:bg-blue-50">
+              View development progress
+            </a>
+          </div>
+        </div>
 
         <div className="mt-5 space-y-3">
           {products.map((p) => (
@@ -75,13 +100,13 @@ export const TedProducts: React.FC<TedProductsProps> = ({ onOpenProduct, onConti
               <div className="mt-4 flex gap-2">
                 <button
                   onClick={() => onOpenProduct(p.id)}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50"
+                  className="min-h-[40px] rounded-xl border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1"
                 >
                   Open Product
                 </button>
                 <button
                   onClick={() => onContinueWithTed(p.id)}
-                  className="rounded-xl bg-slate-900 px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-slate-700"
+                  className="min-h-[40px] rounded-xl bg-slate-900 px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1"
                 >
                   Continue with TED
                 </button>
