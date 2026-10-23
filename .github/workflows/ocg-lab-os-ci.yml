@@ -8,6 +8,8 @@ on:
       - 'os/assets/**'
       - 'os/favicon.*'
       - 'api/os/sync.js'
+      - 'tests/cloudflare-staging-sync.test.mjs'
+      - 'services/ocg-os-read-gateway/**'
       - '.github/workflows/ocg-lab-os-ci.yml'
       - '.github/workflows/ocg-lab-os-promote.yml'
   push:
@@ -19,6 +21,7 @@ on:
       - 'os/assets/**'
       - 'os/favicon.*'
       - 'api/os/sync.js'
+      - 'services/ocg-os-read-gateway/**'
       - '.github/workflows/ocg-lab-os-ci.yml'
       - '.github/workflows/ocg-lab-os-promote.yml'
 
@@ -45,6 +48,10 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Test
         run: npm test
+      - name: Cloudflare staging API safety tests
+        run: node --test ../../tests/cloudflare-staging-sync.test.mjs
+      - name: Cloud Run read gateway safety tests
+        run: node --test ../../services/ocg-os-read-gateway/*.test.mjs
       - name: Typecheck
         run: npm run lint
       - name: Build
@@ -52,6 +59,15 @@ jobs:
       - name: Scan generated bundle for client-side secrets
         run: node scripts/scan-production-bundle.mjs dist
       - name: Verify checked-in /os matches canonical source build
+        if: github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'cloudflare-staging-only')
         run: node scripts/check-production-parity.mjs
       - name: Scan checked-in production bundle
         run: node scripts/scan-production-bundle.mjs ..
+      - name: Verify staging-only build disables cloud writes
+        if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'cloudflare-staging-only')
+        env:
+          VITE_CLOUD_SYNC_READ_ONLY: 'true'
+        run: |
+          npm run build
+          node scripts/scan-production-bundle.mjs dist
+          node -e "const fs=require('node:fs');const p=fs.readdirSync('dist/assets').find(x=>/^index-.*\.js$/.test(x));if(!p||!fs.readFileSync('dist/assets/'+p,'utf8').includes('Cloud writes disabled in this preview.'))process.exit(1);"

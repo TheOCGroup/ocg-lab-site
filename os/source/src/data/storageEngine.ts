@@ -24,6 +24,7 @@ import { CANONICAL_OBJECTIVES, CANONICAL_WORK_ORDERS, CANONICAL_AUDIT_EVENTS } f
 const STORAGE_KEY = 'ocg_lab_os_state_v2';
 const FOUNDER_SESSION_KEY = 'ocg_founder_key_session';
 const SYNC_ENDPOINT = '/api/os/sync';
+const CLOUD_SYNC_READ_ONLY = (import.meta as ImportMeta & { env?: { VITE_CLOUD_SYNC_READ_ONLY?: string } }).env?.VITE_CLOUD_SYNC_READ_ONLY === 'true';
 
 export interface ProjectAction {
   id: string;
@@ -688,6 +689,7 @@ export class StorageEngine {
 
     try {
       if (forcePush) {
+        if (CLOUD_SYNC_READ_ONLY) return { success: false, status: 'OFFLINE_CACHED', error: 'Cloud writes disabled in this preview.', lastSyncedAt: localState.lastSyncedAt };
         const push = await fetch(SYNC_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-founder-key': founderKey },
@@ -754,6 +756,7 @@ export class StorageEngine {
         const cloudIds = JSON.stringify([...(cloudState.projectActions || [])].sort((a, b) => a.id.localeCompare(b.id)));
         const reconciledIds = JSON.stringify([...merged.projectActions].sort((a, b) => a.id.localeCompare(b.id)));
         if (cloudIds !== reconciledIds) {
+            if (CLOUD_SYNC_READ_ONLY) return { success: false, status: 'OFFLINE_CACHED', error: 'Read-only preview: merged local actions are not uploaded.', lastSyncedAt: merged.lastSyncedAt };
           // The cloud was newer overall but lacked some locally recorded actions.
           // Persist the merged snapshot before claiming synchronization.
           return this.syncWithCloud(true);
@@ -761,7 +764,9 @@ export class StorageEngine {
         return { success: true, status: 'CLOUD_DOMINANT', lastSyncedAt: cloudState.lastSyncedAt };
       }
 
-      if (localMs > cloudMs) return this.syncWithCloud(true);
+      if (localMs > cloudMs) return CLOUD_SYNC_READ_ONLY
+        ? { success: false, status: 'OFFLINE_CACHED', error: 'Read-only preview: local changes are not uploaded.', lastSyncedAt: localState.lastSyncedAt }
+        : this.syncWithCloud(true);
       // Equal snapshot timestamps do not prove the task collections match.
       // Merge missing actions and require an upload before reporting success.
       const mergedActions = this.mergeProjectActions(localState.projectActions, cloudState.projectActions);
@@ -769,7 +774,7 @@ export class StorageEngine {
       const cloudTasks = JSON.stringify([...(cloudState.projectActions || [])].sort((a, b) => a.id.localeCompare(b.id)));
       if (localTasks !== cloudTasks) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...localState, projectActions: mergedActions }));
-        return this.syncWithCloud(true);
+        return CLOUD_SYNC_READ_ONLY ? { success: false, status: 'OFFLINE_CACHED', error: 'Read-only preview: merged local actions are not uploaded.', lastSyncedAt: localState.lastSyncedAt } : this.syncWithCloud(true);
       }
       return { success: true, status: 'SYNCED', lastSyncedAt: localState.lastSyncedAt };
     } catch (error) {
@@ -782,7 +787,7 @@ export class StorageEngine {
   private static syncTimeout: ReturnType<typeof setTimeout> | null = null;
 
   public static queueCloudSync(): void {
-    if (typeof window === 'undefined' || !this.getFounderKey()) return;
+    if (CLOUD_SYNC_READ_ONLY || typeof window === 'undefined' || !this.getFounderKey()) return;
     if (this.syncTimeout) clearTimeout(this.syncTimeout);
     this.syncTimeout = setTimeout(() => {
       this.syncWithCloud(true).catch(error => console.warn('[StorageEngine] Auto-sync notice:', error));
