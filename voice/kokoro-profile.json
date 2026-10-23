@@ -1,0 +1,10 @@
+{
+  "agentId": "ted",
+  "enVoice": "am_eric",
+  "enAlternate": "am_michael",
+  "esVoice": "em_alex",
+  "speed": 1.0,
+  "fallbackProvider": "voice-core",
+  "rolloutEnv": "OCG_TED_KOKORO_TTS_ENABLED",
+  "notes": "Audition candidate only. Adapter target: TED's existing provider-independent voiceCore VoiceProvider contract. TED's current providers stay live until the founder approves audible quality and this lane flips the rollout flag."
+}
